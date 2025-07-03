@@ -97,6 +97,12 @@ jobs:
           path: logs/screenshot/
           retention-days: 7
           if-no-files-found: ignore
+
+      - name: Publish app
+        uses: actions/upload-artifact@v4
+        with:
+          name: node
+          path: .nuxt
   bundle-node:
     runs-on: ubuntu-latest
 
@@ -114,6 +120,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Download application artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: node
+          path: .nuxt
 
       # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
       - name: Extract metadata (tags, labels) for Docker
