@@ -1,0 +1,33 @@
+name: Cleanup packages
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '38 8 * * sun'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  cleanup-packages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: 'false'
+
+      - name: Delete old versions
+        uses: smartsquaregmbh/delete-old-packages@v0.8.1
+        with:
+          user: roelofr
+          type: container
+          keep: 5
+          names: vana-logistiek-frontend
+
+      - name: Delete orphan and untagged versions of frontend
+        run: .github/prune-package.sh roelofr vana-logistiek-frontend
+        env:
+          GH_TOKEN: ${{ github.token }}
