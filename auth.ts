@@ -1,7 +1,9 @@
-import NextAuth, {type DefaultSession} from 'next-auth';
+import NextAuth, {type DefaultSession, Session} from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import type {Provider} from 'next-auth/providers';
 import {DateTime} from 'luxon'
+import {JWT} from "@auth/core/jwt";
+import {ApiStore} from "@/app/stores/apiStore";
 
 const loginPath = "/auth/login";
 
@@ -15,7 +17,10 @@ interface QuarkusSession {
 
 declare module "next-auth" {
     interface Session {
-        user: QuarkusSession & DefaultSession["user"]
+        user: {
+            roles: string[];
+            jwt: string;
+        } & DefaultSession["user"]
     }
 }
 
@@ -26,10 +31,7 @@ const providers: Provider[] = [
             password: {label: 'Wachtwoord', type: 'password'},
         },
         async authorize(credentials) {
-            const loginUrl = new URL(loginPath, process.env.SERVER_URL);
-            console.log('Login URL = %s', loginUrl);
-
-            const response = await fetch(loginUrl, {
+            const response = await fetch(ApiStore.apiUrl(loginPath), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -73,12 +75,19 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
 
             return token;
         },
+        session({session, token}: { session: Session, token: JWT }) {
+            // @ts-ignore
+            session.user.roles = token.roles
+            // @ts-ignore
+            session.user.jwt = token.nonce
+            return session
+        },
         authorized({auth: session, request: {nextUrl}}) {
             const isPublicPage = nextUrl.pathname.startsWith('/public');
             if (isPublicPage)
                 return true;
 
-            return Boolean(session?.user);
+            return Boolean(session?.user?.jwt);
         },
 
     },

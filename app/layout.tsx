@@ -19,15 +19,21 @@ const NAVIGATION: Navigation = [
         icon: <DashboardIcon/>,
     },
     {
-        segment: 'orders',
-        title: 'Orders',
+        segment: 'tickets',
+        title: 'Tickets',
         icon: <ShoppingCartIcon/>,
     },
     {
-        segment: 'employees',
-        title: 'Employees',
+        segment: 'vendors',
+        title: 'Standhouders',
         icon: <PersonIcon/>,
-        pattern: 'employees{/:employeeId}*',
+        pattern: 'vendors{/:vendorId}*',
+    },
+    {
+        segment: 'users',
+        title: 'Gebruikers',
+        icon: <PersonIcon/>,
+        pattern: 'user{/:userId}*',
     },
 ];
 
