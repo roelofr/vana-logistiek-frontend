@@ -5,7 +5,7 @@ React frontend with a more extensive Material Design library.
 Used libraries
 
 - [React](https://react.dev/)
-- [Next JS](https://nextjs.org/)
+- [Next](https://nextjs.org/)
 - [MUI Material Design](https://mui.com/material-ui/)
 - [MUI Toolpad](https://mui.com/toolpad/)
 
