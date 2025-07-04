@@ -66,9 +66,8 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
         jwt({token, user}) {
             if (user) {
                 const quarkusUser = user as QuarkusSession;
-                token.jwt = quarkusUser.jwt
                 token.exp = DateTime.fromISO(quarkusUser.expiration).toSeconds()
-                token.
+                token.nonce = quarkusUser.jwt;
                 token.roles = quarkusUser.roles;
             }
 
