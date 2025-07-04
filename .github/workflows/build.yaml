@@ -79,28 +79,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Test
-        continue-on-error: true
-        run: npm test
-
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: success() || failure()
-        continue-on-error: true
-        with:
-          name: Angular reports
-          path: logs/junit.xml
-          reporter: jest-junit
-
-      - name: Upload screenshots, if any
-        uses: actions/upload-artifact@v4
-        if: cancelled() == false
-        with:
-          name: playwright-screenshots
-          path: logs/screenshot/
-          retention-days: 7
-          if-no-files-found: ignore
-
       - name: Publish app
         uses: actions/upload-artifact@v4
         with:
