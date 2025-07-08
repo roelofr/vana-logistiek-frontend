@@ -7,10 +7,11 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, {SelectChangeEvent} from '@mui/material/Select';
+import {ApiResponse} from "@/app/stores/apiStore";
 
-
-export default function VendorPickerUi({vendors}: { vendors: Promise<Vendor[]> }) {
-    const allVendors = React.use(vendors)
+export default function VendorPickerUi({vendors}: { vendors: Promise<ApiResponse<Vendor[]>> }) {
+    const apiResponse = React.use(vendors)
+    const allVendors = apiResponse.ok ? apiResponse.data : [];
     const [vendor, setVendor] = React.useState('');
 
     const handleChange = (event: SelectChangeEvent) => {

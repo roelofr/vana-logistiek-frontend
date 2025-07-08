@@ -1,8 +1,9 @@
 import * as React from 'react';
-import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 
 export default function Copyright(props: any) {
+    const sx = Array.isArray(props.sx) ? props.sx : [props.sx];
+
     return (
         <Typography
             variant="body2"
@@ -12,15 +13,12 @@ export default function Copyright(props: any) {
                 {
                     color: 'text.secondary',
                 },
-                ...(Array.isArray(props.sx) ? props.sx : [props.sx]),
+                ...sx,
             ]}
         >
-            {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Co
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
+            {`© ${new Date().getFullYear()}. Alle rechten voorbehouden.`}<br/>
+            {'Toegang tot dit systeem is alleen voor geautoriseerde medewerkers van Vana Events B.V.'}<br/>
+            {'Misbruik is strafbaar en gebruik wordt gelogd.'}
         </Typography>
     );
 }

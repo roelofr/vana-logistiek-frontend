@@ -82,12 +82,26 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
             session.user.jwt = token.nonce
             return session
         },
-        authorized({auth: session, request: {nextUrl}}) {
+        async authorized({auth: session, request: {nextUrl}}) {
             const isPublicPage = nextUrl.pathname.startsWith('/public');
             if (isPublicPage)
                 return true;
 
-            return Boolean(session?.user?.jwt);
+            if (!session?.user?.jwt)
+                return false;
+
+            try {
+                return (await fetch(ApiStore.apiUrl('/auth'), {
+                    method: 'HEAD',
+                    cache: 'no-cache',
+                    headers: {
+                        'Authorization': `Bearer ${session.user.jwt}`
+                    }
+                })).ok
+            } catch (error) {
+                console.error("Fetch failed %o", error);
+                return false;
+            }
         },
 
     },

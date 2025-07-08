@@ -2,7 +2,7 @@ import {Suspense} from 'react'
 import {ApiStore} from "@/app/stores/apiStore";
 import {auth} from "@/auth";
 import {Vendor} from "@/app/domain";
-import VendorPickerUi from "@/app/ui/VendorPickerUi";
+import VendorPickerUi from "@/app/ui/pickers/VendorPickerUi";
 
 export default function VendorPicker() {
     // Don't await the data fetching function

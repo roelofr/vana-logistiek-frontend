@@ -7,7 +7,8 @@ import {auth} from "@/auth";
 import {Ticket} from "@/app/domain";
 import Tickets from "@/app/ui/tickets/tickets";
 import {ApiStore} from "@/app/stores/apiStore";
-import VendorPicker from "@/app/components/VendorPicker";
+import VendorPicker from "@/app/components/pickers/VendorPicker";
+import UserPicker from "@/app/components/pickers/UserPicker";
 
 export default async function TicketsPage() {
     const session = await auth()
@@ -24,6 +25,8 @@ export default async function TicketsPage() {
             </Suspense>
 
             <VendorPicker/>
+
+            <UserPicker/>
         </PageContainer>
     )
 }

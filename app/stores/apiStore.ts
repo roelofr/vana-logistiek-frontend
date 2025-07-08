@@ -4,13 +4,16 @@ import {HttpError} from "@/app/exceptions";
 const DEFAULT_HOST = new URL('https://example.com/api')
 
 export class ApiStore {
-    public static apiUrl(path: string) {
+    public static apiUrl(path: string, searchParams: null | URLSearchParams = null) {
         const asUrl = new URL(path, DEFAULT_HOST)
         if (asUrl.origin !== DEFAULT_HOST.origin)
             throw new Error("Not a proper API route")
 
         const cleanPath = path.replace(/^\/+/, '')
-        return new URL(cleanPath, process.env.SERVER_URL)
+        const apiUrl = new URL(cleanPath, process.env.SERVER_URL)
+        if (searchParams != null)
+            searchParams.forEach((value, key) => apiUrl.searchParams.append(key, value));
+        return apiUrl
     }
 
 
@@ -25,7 +28,7 @@ export class ApiStore {
         return this.session.user.jwt
     }
 
-    private async fetch<T>(path: string, params: RequestInit): Promise<T> {
+    private async fetch<T>(path: string, params: RequestInit): Promise<ApiResponse<T>> {
         const requestHeaders = new Headers({
             ...(params.headers ?? {}),
             'Accept': 'application/json',
@@ -41,21 +44,29 @@ export class ApiStore {
 
         const response = await fetch(requestUrl, requestParams);
 
-        if (!response.headers.get('Content-Type')?.startsWith('application/json'))
-            throw new HttpError(response.status, response.statusText, await response.text())
+        // Run some default response codes
+        if (response.status === 401) {
+            return {ok: false, error: 401}
+        }
+
+        const contentType = response.headers.get('Content-Type');
+        if (!contentType?.startsWith('application/json')) {
+            console.warn('Recieved HTTP Content-Type %s from %s, which does not JSON-decode', contentType, response.url)
+            return {ok: false, error: response.status}
+        }
 
         const responseBody = await response.json();
         if (!response.ok)
-            throw new HttpError(response.status, response.statusText, responseBody);
+            return {ok: false, error: response.status, message: responseBody as string}
 
-        return responseBody as T;
+        return {ok: true, data: responseBody as T};
     }
 
-    async get<T>(url: string): Promise<T> {
+    async get<T>(url: string): Promise<ApiResponse<T>> {
         return this.fetch<T>(url, {method: 'GET'})
     }
 
-    async post<T>(url: string, body: unknown): Promise<T> {
+    async post<T>(url: string, body: unknown): Promise<ApiResponse<T>> {
         return this.fetch<T>(url, {
             method: 'POST',
             body: JSON.stringify(body),
@@ -64,4 +75,13 @@ export class ApiStore {
             }
         })
     }
+}
+
+export type ApiResponse<T> = {
+    ok: true;
+    data: T;
+} | {
+    ok: false;
+    error: number;
+    message?: string;
 }

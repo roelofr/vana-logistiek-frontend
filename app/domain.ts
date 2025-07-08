@@ -1,4 +1,5 @@
 import {DateTime} from "luxon"
+import {DataModel} from "@toolpad/core/Crud";
 
 /*
  * ENUMS
@@ -24,7 +25,7 @@ export enum TicketType {
 /*
  * MODELS
  */
-export interface District {
+export interface District extends DataModel {
     id: number
     name: string
     mobileName: string
@@ -33,7 +34,7 @@ export interface District {
     vendors?: Vendor
 }
 
-export interface Ticket {
+export interface Ticket extends DataModel {
     id: number
     createdAt: DateTime
     updatedAt: DateTime
@@ -46,7 +47,7 @@ export interface Ticket {
     attachments?: TicketAttachment[]
 }
 
-export interface TicketAttachment {
+export interface TicketAttachment extends DataModel {
     id: number
     createdAt: DateTime
     ticket?: Ticket
@@ -56,7 +57,7 @@ export interface TicketAttachment {
     description: string
 }
 
-export interface User {
+export interface User extends DataModel {
     id: number
     name: string
     email?: string
@@ -65,7 +66,7 @@ export interface User {
     district?: District
 }
 
-export interface Vendor {
+export interface Vendor extends DataModel {
     id: number
     name: string
     number: string
