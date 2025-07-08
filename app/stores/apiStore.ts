@@ -1,5 +1,4 @@
 import {Session} from "next-auth";
-import {HttpError} from "@/app/exceptions";
 
 const DEFAULT_HOST = new URL('https://example.com/api')
 

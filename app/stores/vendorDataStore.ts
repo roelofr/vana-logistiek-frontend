@@ -2,7 +2,6 @@
 import {DataSource, DataSourceCache} from '@toolpad/core/Crud';
 import {z} from 'zod';
 import {Vendor} from '../domain';
-import {apiBaseUrl} from "next-auth/src/lib/client";
 import {ApiStore} from "@/app/stores/apiStore";
 
 const Urls = {
