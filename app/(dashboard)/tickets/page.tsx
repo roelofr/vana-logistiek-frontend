@@ -13,7 +13,7 @@ export default async function TicketsPage() {
     // Lazy load the tickets, eventually.
     const tickets = auth()
         .then(session => new ApiStore(session))
-        .then(api => api.get<Ticket[]>('/ticket');
+        .then(api => api.get<Ticket[]>('/ticket'));
 
     return (
         <PageContainer>
