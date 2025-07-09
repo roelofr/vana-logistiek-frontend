@@ -1,5 +1,3 @@
-'use server';
-
 import {ApiStore} from "@/app/stores/apiStore";
 import {auth} from "@/auth";
 import {PageContainer} from '@toolpad/core/PageContainer';
