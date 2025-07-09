@@ -1,21 +1,19 @@
 'use server';
 
-import * as React from 'react';
-import {Suspense} from 'react';
-import {PageContainer} from '@toolpad/core/PageContainer';
+import {ApiStore} from "@/app/stores/apiStore";
 import {auth} from "@/auth";
+import {PageContainer} from '@toolpad/core/PageContainer';
+import {Suspense} from 'react';
 import {Ticket} from "@/app/domain";
 import Tickets from "@/app/ui/tickets/tickets";
-import {ApiStore} from "@/app/stores/apiStore";
-import VendorPicker from "@/app/components/pickers/VendorPicker";
 import UserPicker from "@/app/components/pickers/UserPicker";
+import VendorPicker from "@/app/components/pickers/VendorPicker";
 
 export default async function TicketsPage() {
-    const session = await auth()
-    const api = new ApiStore(session)
-
-    // Lazy-load the ticket
-    const tickets = api.get<Ticket[]>('/ticket');
+    // Lazy load the tickets, eventually.
+    const tickets = auth()
+        .then(session => new ApiStore(session))
+        .then(api => api.get<Ticket[]>('/ticket');
 
     return (
         <PageContainer>
