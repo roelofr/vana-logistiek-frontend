@@ -5,21 +5,21 @@ import {DataModel} from "@toolpad/core/Crud";
  * ENUMS
  */
 export enum AttachmentType {
-    Created,
-    Comment,
-    StatusChange,
-    Assignment
+    Created = 'Created',
+    Comment = 'Comment',
+    StatusChange = 'StatusChange',
+    Assignment = 'Assignment'
 }
 
 export enum TicketStatus {
-    Created,
-    Assigned,
-    Updated,
-    Resolved
+    Created = 'Created',
+    Assigned = 'Assigned',
+    Updated = 'Updated',
+    Resolved = 'Resolved'
 }
 
 export enum TicketType {
-    Generic
+    Generic = 'Generic'
 }
 
 /*
