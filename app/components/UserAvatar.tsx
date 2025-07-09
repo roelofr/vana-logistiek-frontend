@@ -23,15 +23,22 @@ function stringToColor(string: string) {
 
 interface UserAvatarArgs {
     user: User;
+    sx?: unknown;
 }
 
-export default function UserAvatar({user}: UserAvatarArgs) {
-    if (user == null)
-        return "";
-
+export default function UserAvatar(props: UserAvatarArgs) {
+    const { user } = props;
     const userInitial = user.name.trim().toUpperCase()[0];
 
+    const childProps = {
+        ...props,
+        sx: {
+            ...(props.sx ?? {}),
+            bgcolor: stringToColor(user.name)
+        }
+    }
+
     return (
-        <Avatar sx={{bgcolor: stringToColor(user.name)}}>{userInitial}</Avatar>
+        <Avatar {...childProps}>{userInitial}</Avatar>
     );
 }

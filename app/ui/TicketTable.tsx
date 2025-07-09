@@ -39,10 +39,10 @@ function Row(props: { ticket: Ticket }) {
                 <TableCell>
                     {ticket.description}
                 </TableCell>
-                <TableCell align="right">
+                <TableCell>
                     <VendorBadge vendor={ticket.vendor!}/>
                 </TableCell>
-                <TableCell align="right">
+                <TableCell>
                     <StatusBadge status={ticket.status}/>
                 </TableCell>
             </TableRow>
@@ -53,21 +53,19 @@ function Row(props: { ticket: Ticket }) {
                             <Typography variant="h6" gutterBottom component="div">
                                 Samenvatting
                             </Typography>
-                            <Typography variant="subtitle1" component="div">
-                                <p>
-                                    This is still todo.
-                                </p>
+                            <p>
+                                This is still todo.
+                            </p>
 
-                                <p>
-                                    Created by
-                                    <UserBadge user={ticket.creator!}/>
-                                </p>
+                            <p>
+                                Created by
+                                <UserBadge user={ticket.creator!}/>
+                            </p>
 
-                                <p>
-                                    Assigned to
-                                    {ticket.assignee ? <UserBadge user={ticket.assignee}/> : "Nobody"}
-                                </p>
-                            </Typography>
+                            <p>
+                                Assigned to
+                                {ticket.assignee ? <UserBadge user={ticket.assignee}/> : "Nobody"}
+                            </p>
                         </Box>
                     </Collapse>
                 </TableCell>
@@ -86,7 +84,7 @@ export default function TicketTable({tickets}: TicketTableArgs) {
             <Table aria-label="Tabel met tickets">
                 <TableHead>
                     <TableRow>
-                        <TableCell/>
+                        <TableCell>&nbsp;</TableCell>
                         <TableCell>Nr</TableCell>
                         <TableCell>Omschrijving</TableCell>
                         <TableCell>Standhouder</TableCell>
