@@ -80,6 +80,11 @@ jobs:
       - name: Set version
         run: npm version --no-git-tag-version "${{ needs.set-version.outputs.fullSemVer }}"
 
+      - name: Prepare .env-file
+        run: |
+          cp .env.example .env
+          sed -i "s#AUTH_SECRET=#AUTH_SECRET=$( openssl rand -base64 32 )#" .env
+
       - name: Lint
         continue-on-error: true
         run: npm run lint
