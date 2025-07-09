@@ -5,8 +5,9 @@ import {Vendor} from '../domain';
 import {ApiStore} from "@/app/stores/apiStore";
 
 const Urls = {
-    All: () => '/vendors',
-    Single: (id: number) => `/vendors/${id}`,
+    List: (queryParams: URLSearchParams | null = null) => ApiStore.apiUrl('/vendors', queryParams),
+    Create: () => ApiStore.apiUrl('/vendors'),
+    Single: (id: number) => ApiStore.apiUrl(`/vendors/${id}`),
 };
 
 export const vendorDataSource: DataSource<Vendor> = {
@@ -29,7 +30,7 @@ export const vendorDataSource: DataSource<Vendor> = {
             queryParams.append('filter', JSON.stringify(filterModel.items));
         }
 
-        const fetchUrl = ApiStore.apiUrl(Urls.All(), queryParams)
+        const fetchUrl = Urls.List(queryParams)
         const res = await fetch(fetchUrl, {
             method: 'GET',
         });
@@ -43,47 +44,47 @@ export const vendorDataSource: DataSource<Vendor> = {
     },
 
     async getOne(employeeId) {
-        const res = await fetch(`${API_URL}/${employeeId}`);
+        const res = await fetch(Urls.Single(employeeId as number));
         const resJson = await res.json();
 
-        if (!res.ok) {
+        if (!res.ok)
             throw new Error(resJson.error);
-        }
+
         return resJson;
     },
     async createOne(data) {
-        const res = await fetch(API_URL, {
+        const res = await fetch(Urls.Create(), {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {'Content-Type': 'application/json'},
         });
         const resJson = await res.json();
 
-        if (!res.ok) {
+        if (!res.ok)
             throw new Error(resJson.error);
-        }
+
         return resJson;
     },
     async updateOne(employeeId, data) {
-        const res = await fetch(`${API_URL}/${employeeId}`, {
+        const res = await fetch(Urls.Single(employeeId as number), {
             method: 'PUT',
             body: JSON.stringify(data),
             headers: {'Content-Type': 'application/json'},
         });
         const resJson = await res.json();
 
-        if (!res.ok) {
+        if (!res.ok)
             throw new Error(resJson.error);
-        }
+
         return resJson;
     },
     async deleteOne(employeeId) {
-        const res = await fetch(`${API_URL}/${employeeId}`, {method: 'DELETE'});
+        const res = await fetch(Urls.Single(employeeId as number), {method: 'DELETE'});
         const resJson = await res.json();
 
-        if (!res.ok) {
+        if (!res.ok)
             throw new Error(resJson.error);
-        }
+
         return resJson;
     },
     validate: z.object({
@@ -98,4 +99,4 @@ export const vendorDataSource: DataSource<Vendor> = {
     })['~standard'].validate,
 };
 
-export const employeesCache = new DataSourceCache();
+export const vendorCache = new DataSourceCache();
