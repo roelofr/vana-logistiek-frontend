@@ -7,12 +7,18 @@ import {auth} from "@/auth";
 export default async function createTicket(type: TicketType, vendorId: number, description: string) {
     const api = new ApiStore(await auth())
 
-    const ticket = await api.post<Ticket>('/ticket', {
+    const resp = await api.post<Ticket>('/ticket', {
         type,
         vendorId,
         description
     })
 
+    if (!resp.ok) {
+        console.error('Failed to create ticket')
+        throw new Error(`Failed to create ticket: ${resp.error}: ${resp.message}`)
+    }
+
+    const ticket = resp.data;
     console.log("Created ticket %o: %s", ticket.id, ticket.description)
 
     return ticket;
