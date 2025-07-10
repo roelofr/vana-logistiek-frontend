@@ -1,11 +1,10 @@
-import NextAuth, {type DefaultSession, Session} from 'next-auth';
+import NextAuth, {Session} from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import type {Provider} from 'next-auth/providers';
-import {DateTime} from 'luxon'
 import {JWT} from "@auth/core/jwt";
 import {ApiStore} from "@/app/stores/apiStore";
 
-const loginPath = "/auth/login";
+const loginPath = "/auth/consume";
 
 interface QuarkusSession {
     name: string;
@@ -15,35 +14,27 @@ interface QuarkusSession {
     expiration: string;
 }
 
-declare module "next-auth" {
-    interface Session {
-        user: {
-            roles: string[];
-            jwt: string;
-        } & DefaultSession["user"]
-    }
-}
-
 const providers: Provider[] = [
     Credentials({
         credentials: {
-            email: {label: 'E-mailadres', type: 'email'},
-            password: {label: 'Wachtwoord', type: 'password'},
+            token: {},
         },
         async authorize(credentials) {
+            console.log('Credential login started, credentials = %o', credentials);
             const response = await fetch(ApiStore.apiUrl(loginPath), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    username: credentials.email,
-                    password: credentials.password,
-                })
+                body: JSON.stringify({token: credentials.token})
             })
 
-            if (!response.ok)
+            if (!response.ok) {
+                console.warn('Login response was %o', response);
                 return null
+            }
+
+            console.log('Got OK response from API');
 
             return await response.json() as QuarkusSession;
         },
@@ -68,18 +59,20 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
         jwt({token, user}) {
             if (user) {
                 const quarkusUser = user as QuarkusSession;
-                token.exp = DateTime.fromISO(quarkusUser.expiration).toSeconds()
-                token.nonce = quarkusUser.jwt;
+                token.jwt = quarkusUser.jwt;
                 token.roles = quarkusUser.roles;
+                token.email = quarkusUser.email;
+                token.given_name = quarkusUser.name;
             }
 
             return token;
         },
         session({session, token}: { session: Session, token: JWT }) {
-            // @ts-ignore
-            session.user.roles = token.roles
-            // @ts-ignore
-            session.user.jwt = token.nonce
+            session.user.jwt = token.jwt as string
+            session.user.roles = token.roles as string[]
+            session.user.email = token.email as string
+            session.user.name = token.given_name as string
+
             return session
         },
         async authorized({auth: session, request: {nextUrl}}) {
@@ -89,6 +82,11 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
 
             if (!session?.user?.jwt)
                 return false;
+
+            console.log('Got session user %o', {
+                ...session.user,
+                jwt: 'jwt',
+            });
 
             try {
                 return (await fetch(ApiStore.apiUrl('/auth'), {

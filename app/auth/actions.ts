@@ -1,15 +1,15 @@
 'use server';
 import {AuthError} from 'next-auth';
-import type {AuthProvider} from '@toolpad/core';
-import {signIn as signInAction} from '../../../auth';
+import {signIn} from '@/auth';
 
-async function signIn(provider: AuthProvider, formData: FormData, callbackUrl?: string) {
+export default async function signInAction(token: string, callbackUrl?: string) {
     try {
-        return await signInAction(provider.id, {
-            ...(formData && {email: formData.get('email'), password: formData.get('password')}),
+        return await signIn("credentials", {
+            token,
             redirectTo: callbackUrl ?? '/',
         });
     } catch (error) {
+        console.log('Error = %o', error);
         // The desired flow for successful sign in in all cases
         // and unsuccessful sign in for OAuth providers will cause a `redirect`,
         // and `redirect` is a throwing function, so we need to re-throw
@@ -36,5 +36,3 @@ async function signIn(provider: AuthProvider, formData: FormData, callbackUrl?: 
         };
     }
 }
-
-export default signIn;

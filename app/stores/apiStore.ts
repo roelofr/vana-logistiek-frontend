@@ -15,8 +15,7 @@ export class ApiStore {
         return apiUrl
     }
 
-
-    constructor(private readonly session: Session | null) {
+    constructor(private readonly session: Pick<Session, 'user'> | null) {
         //
     }
 
@@ -59,6 +58,10 @@ export class ApiStore {
             return {ok: false, error: response.status, message: responseBody as string}
 
         return {ok: true, data: responseBody as T};
+    }
+
+    async head<T>(url: string): Promise<ApiResponse<T>> {
+        return this.fetch<T>(url, {method: 'HEAD'})
     }
 
     async get<T>(url: string): Promise<ApiResponse<T>> {

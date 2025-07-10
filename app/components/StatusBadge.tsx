@@ -16,12 +16,12 @@ const statusProperties = (status: TicketStatus): Partial<ChipProps> => {
             }
         case TicketStatus.Updated:
             return {
-                color: 'warning',
+                color: 'secondary',
                 icon: <FlagCircleRoundedIcon/>
             }
         case TicketStatus.Assigned:
             return {
-                color: 'info',
+                color: 'success',
                 icon: <Person4RoundedIcon/>
             }
         case TicketStatus.Resolved:

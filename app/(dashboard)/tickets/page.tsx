@@ -4,8 +4,7 @@ import {PageContainer} from '@toolpad/core/PageContainer';
 import {Suspense} from 'react';
 import {Ticket} from "@/app/domain";
 import Tickets from "@/app/ui/tickets/tickets";
-import UserPicker from "@/app/components/pickers/UserPicker";
-import VendorPicker from "@/app/components/pickers/VendorPicker";
+import AppSpeedDial from "@/app/components/AppSpeedDial";
 
 export default async function TicketsPage() {
     // Lazy load the tickets, eventually.
@@ -20,9 +19,7 @@ export default async function TicketsPage() {
                 <Tickets tickets={tickets}/>
             </Suspense>
 
-            <VendorPicker/>
-
-            <UserPicker/>
+            <AppSpeedDial/>
         </PageContainer>
     )
 }
