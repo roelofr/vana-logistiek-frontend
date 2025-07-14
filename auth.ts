@@ -53,7 +53,7 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
     providers,
     secret: process.env.AUTH_SECRET,
     pages: {
-        signIn: '/auth/signin',
+        signIn: '/auth',
     },
     callbacks: {
         jwt({token, user}) {
@@ -82,11 +82,6 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
 
             if (!session?.user?.jwt)
                 return false;
-
-            console.log('Got session user %o', {
-                ...session.user,
-                jwt: 'jwt',
-            });
 
             try {
                 return (await fetch(ApiStore.apiUrl('/auth'), {
