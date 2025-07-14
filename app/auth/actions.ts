@@ -1,7 +1,7 @@
 'use server';
 import {AuthError} from 'next-auth';
 import {signIn} from '@/auth';
-import {REDIRECT_ERROR_CODE} from "next/dist/client/components/redirect-error";
+import {isRedirectError, RedirectError} from "next/dist/client/components/redirect-error";
 
 export default async function signInAction(token: string, callbackUrl?: string) {
     try {
@@ -16,8 +16,8 @@ export default async function signInAction(token: string, callbackUrl?: string) 
         // to allow the redirect to happen
         // Source: https://github.com/vercel/next.js/issues/49298#issuecomment-1542055642
         // Detect a `NEXT_REDIRECT` error and re-throw it
-        if (error instanceof Error && error.message === REDIRECT_ERROR_CODE) {
-            console.log('Caught redirect error %o', error);
+        if (isRedirectError(error)) {
+            console.log('Redirecting to %s', (error as RedirectError).digest.split(';')[2])
             throw error;
         }
 
