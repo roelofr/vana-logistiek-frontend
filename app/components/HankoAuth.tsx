@@ -36,7 +36,7 @@ export default function HankoAuth({onLoginAction}: HankoAuthProps) {
         return <hanko-auth/>;
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <CircularProgress />
         </Box>
     );
