@@ -1,5 +1,7 @@
 import {DateTime} from "luxon"
 import {DataModel} from "@toolpad/core/Crud";
+import {ElementType} from "react";
+import AssignmentIcon from '@mui/icons-material/Assignment';
 
 /*
  * ENUMS
@@ -73,3 +75,19 @@ export interface Vendor extends DataModel {
     numberNumeric: number
     district?: District
 }
+
+class TicketTypeDetail {
+    constructor(public readonly type: TicketType,
+                public readonly label: string,
+                public readonly icon: ElementType) {
+        //
+    }
+}
+
+export const TicketTypeDetails = new Map([
+    [TicketType.Generic, new TicketTypeDetail(
+        TicketType.Generic,
+        'Generiek',
+        AssignmentIcon,
+    )]
+])
