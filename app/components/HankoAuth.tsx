@@ -12,7 +12,7 @@ interface HankoAuthProps {
 
 export default function HankoAuth({onLoginAction}: HankoAuthProps) {
     const [hanko, setHanko] = useState<Hanko>();
-    const [loading, setLoading] = useState<Boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => setHanko(createHanko()), []);
 
