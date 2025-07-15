@@ -32,7 +32,7 @@ export default function HankoAuth({onLoginAction}: HankoAuthProps) {
         });
     }, []);
 
-    if ! (loading)
+    if (!loading)
         return <hanko-auth/>;
 
     return (
