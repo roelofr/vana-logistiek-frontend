@@ -1,6 +1,7 @@
 'use client';
 import * as React from 'react';
 import Stack from '@mui/material/Stack';
+import Image from 'next/image'
 import {DashboardLayout, ThemeSwitcher} from '@toolpad/core/DashboardLayout';
 import Copyright from '../components/Copyright';
 import SidebarFooterAccount, {ToolbarAccountOverride} from './SidebarFooterAccount';
@@ -17,6 +18,11 @@ function CustomActions() {
 export default function Layout(props: { children: React.ReactNode }) {
     return (
         <DashboardLayout
+            branding={{
+                logo: <Image src="/logo.svg" alt="Logo van de app" width={28} height={28}/>,
+                title: "Vana LogistiekApp",
+                homeUrl: '/',
+            }}
             slots={{
                 toolbarActions: CustomActions,
                 sidebarFooter: SidebarFooterAccount,

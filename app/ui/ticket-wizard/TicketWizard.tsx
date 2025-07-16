@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import {useState} from 'react';
 import {TicketType, Vendor} from "@/app/domain";
 import TicketVendorStep from "@/app/ui/ticket-wizard/TicketVendorStep";
 import TicketTypeStep from "@/app/ui/ticket-wizard/TicketTypeStep";
@@ -35,10 +35,10 @@ enum Steps {
 }
 
 export default function TicketWizard() {
-    const [step, setStep] = React.useState(0);
-    const [vendor, setVendor] = React.useState<Vendor | null>(null);
-    const [type, setType] = React.useState<TicketType>(TicketType.Generic);
-    const [data, setData] = React.useState<Record<string, unknown>>({});
+    const [step, setStep] = useState(0);
+    const [vendor, setVendor] = useState<Vendor | null>(null);
+    const [type, setType] = useState<TicketType>(TicketType.Generic);
+    const [data, setData] = useState<Record<string, unknown>>({});
 
     const setVendorAndContinue = (vendor: Vendor) => {
         setVendor(vendor)

@@ -7,6 +7,7 @@ import SpeedDialAction from '@mui/material/SpeedDialAction';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import {useRouter} from "next/navigation";
+import Box from "@mui/material/Box";
 
 declare interface ActionType {
     name: string;
@@ -35,25 +36,27 @@ export default function AppSpeedDial() {
     const handleClose = () => setOpen(false);
 
     return (
-        <SpeedDial
-            ariaLabel="Snelle acties"
-            sx={{position: 'absolute', bottom: 16, right: 16}}
-            icon={<SpeedDialIcon/>}
-            onOpen={handleOpen}
-            onClose={handleClose}
-            open={open}
-        >
-            {actions.map((action) => (
-                <SpeedDialAction
-                    key={action.name}
-                    icon={action.icon}
-                    slotProps={{tooltip: {title: action.name}}}
-                    onClick={() => {
-                        handleClose();
-                        router.push(action.href)
-                    }}
-                />
-            ))}
-        </SpeedDial>
+        <Box sx={{marginRight: "auto"}}>
+            <SpeedDial
+                ariaLabel="Snelle acties"
+                sx={{position: 'absolute', bottom: 16}}
+                icon={<SpeedDialIcon/>}
+                onOpen={handleOpen}
+                onClose={handleClose}
+                open={open}
+            >
+                {actions.map((action) => (
+                    <SpeedDialAction
+                        key={action.name}
+                        icon={action.icon}
+                        slotProps={{tooltip: {title: action.name}}}
+                        onClick={() => {
+                            handleClose();
+                            router.push(action.href)
+                        }}
+                    />
+                ))}
+            </SpeedDial>
+        </Box>
     );
 }

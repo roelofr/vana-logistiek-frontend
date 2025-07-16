@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import {Vendor} from "@/app/domain";
 import TicketWizardActionBar from "@/app/ui/ticket-wizard/TicketWizardActionBar";
 import * as React from "react";
-import {useState} from "react";
+import {Suspense, useState} from "react";
 import VendorPicker from "@/app/components/pickers/VendorPicker";
 
 interface VendorStepProps {
@@ -26,7 +26,9 @@ export default function TicketVendorStep({vendor, setVendor}: VendorStepProps) {
         <Box>
             <h1>Set vendor</h1>
 
-            <VendorPicker/>
+            <Suspense>
+                <VendorPicker/>
+            </Suspense>
 
             <TicketWizardActionBar handleSubmit={submit} firstStep={true}/>
         </Box>

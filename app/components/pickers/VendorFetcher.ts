@@ -4,7 +4,7 @@ import {auth} from "@/auth";
 import {ApiStore} from "@/app/stores/apiStore";
 import {Vendor} from "@/app/domain";
 
-export default async function VendorFetcher() {
+export default async function fetchVendors() {
     const session = await auth();
 
     if (session == null)
