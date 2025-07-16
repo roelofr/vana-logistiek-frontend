@@ -1,18 +1,35 @@
 import {Suspense} from 'react'
-import {ApiStore} from "@/app/stores/apiStore";
-import {auth} from "@/auth";
-import {Vendor} from "@/app/domain";
 import VendorPickerUi from "@/app/ui/pickers/VendorPickerUi";
+import {auth} from "@/auth";
+import {ApiStore} from "@/app/stores/apiStore";
+import {Vendor} from "@/app/domain";
 
-export default function VendorPicker() {
-    // Don't await the data fetching function
-    const vendors = auth()
-        .then(session => new ApiStore(session))
-        .then(api => api.get<Vendor[]>('/vendor'));
+async function fetchVendors() {
+    const session = await auth();
+
+    if (session == null)
+        throw new Error("Session not found");
+
+    const api = new ApiStore(session);
+
+    return await api.get<Vendor[]>('/vendor');
+}
+
+interface VendorPickerProps {
+    vendors?: Promise<Vendor[]> | Vendor[];
+}
+
+export default function VendorPicker({vendors}: VendorPickerProps) {
+    const actualVendors = vendors == null
+        ? fetchVendors()
+        : (vendors instanceof Promise
+            ? vendors
+            : Promise.resolve(vendors)
+        );
 
     return (
         <Suspense fallback={<div>Loading...</div>}>
-            <VendorPickerUi vendors={vendors}/>
+            <VendorPickerUi vendors={actualVendors}/>
         </Suspense>
     )
 }
