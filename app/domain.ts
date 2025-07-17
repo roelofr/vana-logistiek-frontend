@@ -101,6 +101,6 @@ export interface ModelPicker<T> {
 }
 
 
-export interface DownloadingModelPicker<T> extends ModelPicker<T> {
+export interface DownloadingModelPicker<T> extends Omit<ModelPicker<T>, "values"> {
     values?: Promise<ApiResponse<T[]>>;
 }
