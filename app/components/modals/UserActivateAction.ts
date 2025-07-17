@@ -12,6 +12,6 @@ export default async function ActivateUser(user: User, roles: string[], district
 
     return await api.post(`/admin/users/${user.id}/activate`, {
         roles,
-        districtId: district?.id ?? null
+        district: district?.id ?? null
     });
 }
