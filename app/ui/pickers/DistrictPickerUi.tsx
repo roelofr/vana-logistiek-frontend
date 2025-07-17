@@ -4,7 +4,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import {District} from "@/app/domain";
+import {District, ModelPicker} from "@/app/domain";
 import {ApiResponse} from "@/app/stores/apiStore";
 
 export function DistrictPickerUi({values, value, setValue}: ModelPicker<District>) {

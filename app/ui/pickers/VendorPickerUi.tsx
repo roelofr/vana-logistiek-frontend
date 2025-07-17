@@ -4,7 +4,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import {Vendor} from "@/app/domain";
+import {ModelPicker, Vendor} from "@/app/domain";
 import {ApiResponse} from "@/app/stores/apiStore";
 
 export function VendorPickerUi({values, value, setValue}: ModelPicker<Vendor>) {
