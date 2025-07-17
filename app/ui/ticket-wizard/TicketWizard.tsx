@@ -11,6 +11,7 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
+import {ApiResponse} from "@/app/stores/apiStore";
 
 const steps = [
     {
@@ -34,15 +35,20 @@ enum Steps {
     Summary
 }
 
-export default function TicketWizard() {
+interface TicketWizardProps {
+    vendors: Promise<ApiResponse<Vendor[]>>;
+}
+
+export default function TicketWizard({vendors}: TicketWizardProps) {
     const [step, setStep] = useState(0);
     const [vendor, setVendor] = useState<Vendor | null>(null);
     const [type, setType] = useState<TicketType>(TicketType.Generic);
     const [data, setData] = useState<Record<string, unknown>>({});
 
-    const setVendorAndContinue = (vendor: Vendor) => {
+    const setVendorAndContinue = (vendor: Vendor | null) => {
         setVendor(vendor)
-        setStep(Steps.Vendor)
+        if (vendor)
+            setStep(Steps.Type)
     }
     const setTypeAndContinue = (type: TicketType) => {
         setType(type)
@@ -56,7 +62,7 @@ export default function TicketWizard() {
 
     const renderCorrectStep = () => {
         if (step == Steps.Vendor)
-            return <TicketVendorStep vendor={vendor} setVendor={setVendorAndContinue}/>
+            return <TicketVendorStep vendors={vendors} vendor={vendor} setVendor={setVendorAndContinue}/>
 
         if (step == Steps.Type)
             return <TicketTypeStep type={type} setType={setTypeAndContinue} back={() => setStep(1)}/>
@@ -93,7 +99,7 @@ export default function TicketWizard() {
                 ))}
             </Stepper>
 
-            ${renderCorrectStep()}
+            {renderCorrectStep()}
         </Box>
     );
 }

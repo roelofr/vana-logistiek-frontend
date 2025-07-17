@@ -2,6 +2,7 @@ import {DateTime} from "luxon"
 import {DataModel} from "@toolpad/core/Crud";
 import {ElementType} from "react";
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import {ApiResponse} from "@/app/stores/apiStore";
 
 /*
  * ENUMS
@@ -91,3 +92,15 @@ export const TicketTypeDetails = new Map([
         AssignmentIcon,
     )]
 ])
+
+export interface ModelPicker<T> {
+    values: Promise<ApiResponse<T[]>>;
+    value: T | null;
+    setValue: (value: T | null) => void;
+    disabled?: boolean;
+}
+
+
+export interface DownloadingModelPicker<T> extends ModelPicker<T> {
+    values?: Promise<ApiResponse<T[]>>;
+}

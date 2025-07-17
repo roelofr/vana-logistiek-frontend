@@ -4,11 +4,11 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import {Vendor} from "@/app/domain";
+import {District} from "@/app/domain";
 import {ApiResponse} from "@/app/stores/apiStore";
 
-export function VendorPickerUi({values, value, setValue}: ModelPicker<Vendor>) {
-    const apiResponse = use(values) as ApiResponse<Vendor[]>;
+export function DistrictPickerUi({values, value, setValue}: ModelPicker<District>) {
+    const apiResponse = use(values) as ApiResponse<District[]>;
     const allVendors = useMemo(() => apiResponse.ok ? apiResponse.data : [], [apiResponse]);
 
     const [inputValue, setInputValue] = useState<string | number>(value?.id ?? '');
@@ -28,7 +28,7 @@ export function VendorPickerUi({values, value, setValue}: ModelPicker<Vendor>) {
 
         const vendor = allVendors.find(row => row.id === inputValue);
 
-        console.log('Picked vendor %o', vendor);
+        console.log('Picked district %o', vendor);
 
         setValue(vendor ?? null);
     }, [setValue, inputValue, allVendors]);
@@ -36,16 +36,16 @@ export function VendorPickerUi({values, value, setValue}: ModelPicker<Vendor>) {
     return (
         <Box sx={{minWidth: 120}}>
             <FormControl fullWidth>
-                <InputLabel id="vendor-select-label">Standhouder</InputLabel>
+                <InputLabel id="vendor-select-label">Wijk</InputLabel>
                 <Select
-                    labelId="vendor-select-label"
-                    id="vendor-select"
+                    labelId="district-select-label"
+                    id="district-select"
                     label="Standhouder"
                     value={inputValue}
                     onChange={event => handleChange(event as ChangeEvent)}
                 >
-                    {allVendors.map((vendor) => (
-                        <MenuItem key={String(vendor.id)} value={vendor.id}>{vendor.number} - {vendor.name}</MenuItem>
+                    {allVendors.map((district) => (
+                        <MenuItem key={String(district.id)} value={district.id}>{district.name}</MenuItem>
                     ))}
                 </Select>
             </FormControl>

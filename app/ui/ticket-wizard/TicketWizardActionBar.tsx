@@ -4,15 +4,15 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 
 interface ActionBarProps {
-    handleBack?: () => void;
-    handleSubmit: () => void;
+    onBack?: () => void;
+    onSubmit: () => void;
     firstStep?: boolean;
     lastStep?: boolean;
 }
 
 export default function TicketWizardActionBar({
-                                                  handleBack,
-                                                  handleSubmit,
+                                                  onBack,
+                                                  onSubmit,
                                                   firstStep = false,
                                                   lastStep = false
                                               }: ActionBarProps) {
@@ -21,14 +21,14 @@ export default function TicketWizardActionBar({
             <Button
                 color="inherit"
                 disabled={firstStep}
-                onClick={handleBack}
+                onClick={onBack}
                 sx={{mr: 1}}
             >
                 Back
             </Button>
 
             <Box sx={{flex: '1 1 auto'}}/>
-            <Button onClick={handleSubmit}>
+            <Button onClick={onSubmit}>
                 {lastStep ? 'Afronden' : 'Volgende'}
             </Button>
         </Box>

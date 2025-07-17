@@ -39,7 +39,7 @@ export default function TicketSummaryStep({vendor, type, data, back, submit}: Su
                 </dd>
             </dl>
 
-            <TicketWizardActionBar handleSubmit={submit} handleBack={back} lastStep={true}/>
+            <TicketWizardActionBar onSubmit={submit} onBack={back} lastStep={true}/>
         </Box>
     )
 }

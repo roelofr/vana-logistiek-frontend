@@ -13,9 +13,9 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import {Ticket} from "@/app/domain";
-import VendorBadge from "@/app/components/VendorBadge";
-import StatusBadge from "@/app/components/StatusBadge";
-import UserBadge from "@/app/components/UserBadge";
+import VendorBadge from "@/app/components/badges/VendorBadge";
+import StatusBadge from "@/app/components/badges/StatusBadge";
+import UserBadge from "@/app/components/badges/UserBadge";
 
 function Row(props: { ticket: Ticket }) {
     const {ticket} = props;

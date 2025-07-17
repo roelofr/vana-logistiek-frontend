@@ -79,11 +79,15 @@ export class ApiStore {
     }
 }
 
-export type ApiResponse<T> = {
+export interface ApiSuccessResponse<T> {
     ok: true;
     data: T;
-} | {
+}
+
+export interface ApiErrorResponse {
     ok: false;
     error: number;
     message?: string;
 }
+
+export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse

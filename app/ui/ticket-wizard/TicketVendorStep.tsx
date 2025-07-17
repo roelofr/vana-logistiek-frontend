@@ -3,34 +3,36 @@
 import Box from "@mui/material/Box";
 import {Vendor} from "@/app/domain";
 import TicketWizardActionBar from "@/app/ui/ticket-wizard/TicketWizardActionBar";
-import * as React from "react";
-import {Suspense, useState} from "react";
-import VendorPicker from "@/app/components/pickers/VendorPicker";
+import {Suspense, useCallback, useState} from "react";
+import {ApiResponse} from "@/app/stores/apiStore";
+import PickerSkeleton from "@/app/ui/pickers/PickerSkeleton";
+import {VendorPickerUi} from "@/app/ui/pickers/VendorPickerUi";
 
 interface VendorStepProps {
+    vendors: Promise<ApiResponse<Vendor[]>>;
     vendor: Vendor | null;
-    setVendor: (vendor: Vendor) => void;
+    setVendor: (vendor: Vendor | null) => void;
 }
 
-export default function TicketVendorStep({vendor, setVendor}: VendorStepProps) {
-    const [value] = useState<Vendor | null>(vendor ?? null);
+export default function TicketVendorStep({vendors, vendor, setVendor}: VendorStepProps) {
+    const [value, setValue] = useState<Vendor | null>(vendor ?? null);
 
-    const submit = () => {
-        if (!value)
-            return;
+    const doSetValue = useCallback((newValue: Vendor | null) => {
+        console.log('Issued valeu %o', newValue);
+        setValue(newValue)
+    }, [setValue]);
 
-        setVendor(value);
-    }
+    const submit = useCallback(() => value && setVendor(value), [setVendor, value]);
 
     return (
         <Box>
             <h1>Set vendor</h1>
 
-            <Suspense>
-                <VendorPicker/>
+            <Suspense fallback={<PickerSkeleton/>}>
+                <VendorPickerUi values={vendors} value={value} setValue={selected => doSetValue(selected)}/>
             </Suspense>
 
-            <TicketWizardActionBar handleSubmit={submit} firstStep={true}/>
+            <TicketWizardActionBar onSubmit={submit} firstStep={true}/>
         </Box>
     )
 }

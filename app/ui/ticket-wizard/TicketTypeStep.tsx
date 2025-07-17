@@ -47,7 +47,7 @@ export default function TicketTypeStep({type, setType, back}: TypeStepProps) {
             ))}
             </ToggleButtonGroup>
 
-            <TicketWizardActionBar handleSubmit={submit} handleBack={back}/>
+            <TicketWizardActionBar onSubmit={submit} onBack={back}/>
         </Box>
     )
 }
