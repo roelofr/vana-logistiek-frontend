@@ -18,7 +18,6 @@ export default function TicketVendorStep({vendors, vendor, setVendor}: VendorSte
     const [value, setValue] = useState<Vendor | null>(vendor ?? null);
 
     const doSetValue = useCallback((newValue: Vendor | null) => {
-        console.log('Issued valeu %o', newValue);
         setValue(newValue)
     }, [setValue]);
 
