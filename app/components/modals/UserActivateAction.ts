@@ -1,8 +1,10 @@
+'use server';
+
 import {auth} from "@/auth";
 import {ApiStore} from "@/app/stores/apiStore";
 import {District, User} from "@/app/domain";
 
-export default async function ActivateUser(user: User, roles: string[], district: District | null) {
+export default async function UserActivateAction(user: User, roles: string[], district: District | null) {
     const session = await auth()
 
     if (!session)

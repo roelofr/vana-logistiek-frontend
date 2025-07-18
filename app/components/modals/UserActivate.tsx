@@ -10,6 +10,7 @@ import {District, User} from "@/app/domain";
 import PickerSkeleton from "@/app/ui/pickers/PickerSkeleton";
 import DistrictPicker from "@/app/components/pickers/DistrictPicker";
 import {Checkbox, FormControlLabel, FormGroup} from "@mui/material";
+import UserActivateAction from "@/app/components/modals/UserActivateAction";
 
 interface UserActivateProps {
     open: boolean;
@@ -46,8 +47,11 @@ export default function UserActivate({open, user, onClose}: UserActivateProps) {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         const formJson = Object.fromEntries((formData as any).entries());
-        const email = formJson.email;
-        console.log(email);
+
+        console.log('Form data = %o', formJson);
+
+        UserActivateAction(user!, roles, pickedDistrict);
+
         handleClose(true);
     };
 
