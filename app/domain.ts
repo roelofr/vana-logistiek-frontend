@@ -18,7 +18,8 @@ export enum TicketStatus {
     Created = 'Created',
     Assigned = 'Assigned',
     Updated = 'Updated',
-    Resolved = 'Resolved'
+    Resolved = 'Resolved',
+    Completed = 'Completed',
 }
 
 export enum TicketType {

@@ -31,7 +31,7 @@ export class ApiStore {
             ...(params.headers ?? {}),
             'Accept': 'application/json',
             'Authorization': `Bearer ${this.nonce}`,
-        })
+        });
 
         const requestUrl = ApiStore.apiUrl(path)
 
@@ -68,10 +68,10 @@ export class ApiStore {
         return this.fetch<T>(url, {method: 'GET'})
     }
 
-    async post<T>(url: string, body: unknown): Promise<ApiResponse<T>> {
+    async post<T>(url: string, body: unknown = null): Promise<ApiResponse<T>> {
         return this.fetch<T>(url, {
             method: 'POST',
-            body: JSON.stringify(body),
+            body: body ? JSON.stringify(body) : null,
             headers: {
                 'Content-Type': 'application/json',
             }

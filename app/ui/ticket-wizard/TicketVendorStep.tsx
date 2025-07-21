@@ -25,7 +25,7 @@ export default function TicketVendorStep({vendors, vendor, setVendor}: VendorSte
 
     return (
         <Box>
-            <h1>Set vendor</h1>
+            <h1>Wie is de standhouder?</h1>
 
             <Suspense fallback={<PickerSkeleton/>}>
                 <VendorPickerUi values={vendors} value={value} setValue={selected => doSetValue(selected)}/>

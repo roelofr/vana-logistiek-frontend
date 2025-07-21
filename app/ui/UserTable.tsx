@@ -44,54 +44,52 @@ function Row({user, activateUser, deactivateUser}: UserRowProps) {
     };
 
     return (
-        <React.Fragment>
-            <TableRow>
-                <TableCell component="th" scope="row">
-                    {user.name}
-                </TableCell>
-                <TableCell>
-                    <Stack direction="row" spacing={1}>
-                        {userRoles.map(role => <Chip key={role} label={role}/>)}
-                    </Stack>
-                </TableCell>
-                <TableCell>
-                    {user.district ? <DistrictBadge district={user.district}/> : <small><em>Niet ingesteld</em></small>}
-                </TableCell>
-                <TableCell>
-                    <IconButton
-                        aria-label="opties"
-                        id="long-button"
-                        aria-controls={open ? 'basic-menu' : undefined}
-                        aria-expanded={open ? 'true' : undefined}
-                        aria-haspopup="true"
-                        onClick={handleClick}
-                    >
-                        <MoreVertIcon/>
-                    </IconButton>
-                    <Menu
-                        id="basic-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        slotProps={{
-                            list: {
-                                'aria-labelledby': 'basic-button',
-                            },
-                        }}
-                    >
-                        <MenuItem disabled={user.active} onClick={() => {
-                            activateUser();
-                            handleClose()
-                        }}>Configureren</MenuItem>
+        <TableRow>
+            <TableCell component="th" scope="row">
+                {user.name}
+            </TableCell>
+            <TableCell>
+                <Stack direction="row" spacing={1}>
+                    {userRoles.map(role => <Chip key={role} label={role}/>)}
+                </Stack>
+            </TableCell>
+            <TableCell>
+                {user.district ? <DistrictBadge district={user.district}/> : <small><em>Niet ingesteld</em></small>}
+            </TableCell>
+            <TableCell>
+                <IconButton
+                    aria-label="opties"
+                    id="long-button"
+                    aria-controls={open ? 'basic-menu' : undefined}
+                    aria-expanded={open ? 'true' : undefined}
+                    aria-haspopup="true"
+                    onClick={handleClick}
+                >
+                    <MoreVertIcon/>
+                </IconButton>
+                <Menu
+                    id="basic-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    slotProps={{
+                        list: {
+                            'aria-labelledby': 'basic-button',
+                        },
+                    }}
+                >
+                    <MenuItem disabled={user.active} onClick={() => {
+                        activateUser();
+                        handleClose()
+                    }}>Configureren</MenuItem>
 
-                        <MenuItem disabled={!user.active} onClick={() => {
-                            deactivateUser();
-                            handleClose();
-                        }}>My account</MenuItem>
-                    </Menu>
-                </TableCell>
-            </TableRow>
-        </React.Fragment>
+                    <MenuItem disabled={!user.active} onClick={() => {
+                        deactivateUser();
+                        handleClose();
+                    }}>My account</MenuItem>
+                </Menu>
+            </TableCell>
+        </TableRow>
     );
 }
 

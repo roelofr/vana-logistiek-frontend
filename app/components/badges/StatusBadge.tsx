@@ -1,37 +1,41 @@
 import Chip, {ChipProps} from "@mui/material/Chip";
 import {TicketStatus} from "@/app/domain";
-
-import NewReleasesRoundedIcon from '@mui/icons-material/NewReleasesRounded';
-import FlagCircleRoundedIcon from '@mui/icons-material/FlagCircleRounded';
-import Person4RoundedIcon from '@mui/icons-material/Person4Rounded';
-import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
-
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from '@mui/icons-material/Edit';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import CheckIcon from '@mui/icons-material/Check';
+import ArchiveIcon from '@mui/icons-material/Archive';
+import WarningIcon from '@mui/icons-material/Warning';
 
 const statusProperties = (status: TicketStatus): Partial<ChipProps> => {
     switch (status) {
         case TicketStatus.Created:
             return {
                 color: 'primary',
-                icon: <NewReleasesRoundedIcon/>
+                icon: <AddIcon/>
             }
         case TicketStatus.Updated:
             return {
                 color: 'secondary',
-                icon: <FlagCircleRoundedIcon/>
+                icon: <EditIcon/>
             }
         case TicketStatus.Assigned:
             return {
                 color: 'success',
-                icon: <Person4RoundedIcon/>
+                icon: <AssignmentIndIcon/>
             }
         case TicketStatus.Resolved:
             return {
-                icon: <CheckCircleRoundedIcon/>
+                icon: <CheckIcon/>
+            }
+        case TicketStatus.Completed:
+            return {
+                icon: <ArchiveIcon/>
             }
         default:
             return {
                 color: 'error',
-                icon: <NewReleasesRoundedIcon/>
+                icon: <WarningIcon/>
             }
     }
 }

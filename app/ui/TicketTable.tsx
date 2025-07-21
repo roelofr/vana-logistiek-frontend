@@ -1,76 +1,90 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import {Ticket} from "@/app/domain";
+import {Ticket, TicketStatus} from "@/app/domain";
 import VendorBadge from "@/app/components/badges/VendorBadge";
 import StatusBadge from "@/app/components/badges/StatusBadge";
-import UserBadge from "@/app/components/badges/UserBadge";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import resolveTicket from "@/app/actions/resolveTicket";
 
-function Row(props: { ticket: Ticket }) {
-    const {ticket} = props;
-    const [open, setOpen] = React.useState(false);
+interface TicketRowProps {
+    ticket: Ticket;
+}
+
+function isResolved(ticket: Ticket) {
+    switch (ticket.ticketType) {
+        case TicketStatus.Resolved:
+        case TicketStatus.Completed:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+function Row({ticket}: TicketRowProps) {
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     return (
-        <React.Fragment>
-            <TableRow sx={{'& > *': {borderBottom: 'unset'}}}>
-                <TableCell>
-                    <IconButton
-                        aria-label="expand row"
-                        size="small"
-                        onClick={() => setOpen(!open)}
-                    >
-                        {open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
-                    </IconButton>
-                </TableCell>
-                <TableCell component="th" scope="row">
-                    {ticket.id}
-                </TableCell>
-                <TableCell>
-                    {ticket.description}
-                </TableCell>
-                <TableCell>
-                    <VendorBadge vendor={ticket.vendor!}/>
-                </TableCell>
-                <TableCell>
-                    <StatusBadge status={ticket.status}/>
-                </TableCell>
-            </TableRow>
-            <TableRow>
-                <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={6}>
-                    <Collapse in={open} timeout="auto" unmountOnExit>
-                        <Box sx={{margin: 1}}>
-                            <Typography variant="h6" gutterBottom component="div">
-                                Samenvatting
-                            </Typography>
-                            <p>
-                                This is still todo.
-                            </p>
+        <TableRow sx={{'& > *': {borderBottom: 'unset'}}}>
+            <TableCell component="th" scope="row">
+                {ticket.id}
+            </TableCell>
+            <TableCell>
+                {ticket.description}
+            </TableCell>
+            <TableCell>
+                <VendorBadge vendor={ticket.vendor!}/>
+            </TableCell>
+            <TableCell>
+                <StatusBadge status={ticket.status}/>
+            </TableCell>
+            <TableCell>
 
-                            <p>
-                                Created by
-                                <UserBadge user={ticket.creator!}/>
-                            </p>
-
-                            <p>
-                                Assigned to
-                                {ticket.assignee ? <UserBadge user={ticket.assignee}/> : "Nobody"}
-                            </p>
-                        </Box>
-                    </Collapse>
-                </TableCell>
-            </TableRow>
-        </React.Fragment>
+                <IconButton
+                    aria-label="opties"
+                    id="long-button"
+                    aria-controls={open ? 'basic-menu' : undefined}
+                    aria-expanded={open ? 'true' : undefined}
+                    aria-haspopup="true"
+                    onClick={handleClick}
+                >
+                    <MoreVertIcon/>
+                </IconButton>
+                <Menu
+                    id="basic-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    slotProps={{
+                        list: {
+                            'aria-labelledby': 'basic-button',
+                        },
+                    }}
+                >
+                    <MenuItem disabled={isResolved(ticket)} onClick={() => {
+                        resolveTicket(ticket);
+                        handleClose()
+                    }}>Ticket sluiten</MenuItem>
+                </Menu>
+            </TableCell>
+        </TableRow>
     );
 }
 
@@ -84,11 +98,11 @@ export default function TicketTable({tickets}: TicketTableArgs) {
             <Table aria-label="Tabel met tickets">
                 <TableHead>
                     <TableRow>
-                        <TableCell>&nbsp;</TableCell>
                         <TableCell>Nr</TableCell>
                         <TableCell>Omschrijving</TableCell>
                         <TableCell>Standhouder</TableCell>
                         <TableCell>Status</TableCell>
+                        <TableCell aria-label="Acties" />
                     </TableRow>
                 </TableHead>
                 <TableBody>

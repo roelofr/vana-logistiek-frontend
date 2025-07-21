@@ -7,6 +7,7 @@ import * as React from "react";
 import {createElement, useState} from "react";
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import {TextField} from "@mui/material";
 
 
 interface TypeStepProps {
@@ -31,7 +32,7 @@ export default function TicketTypeStep({type, setType, back}: TypeStepProps) {
 
     return (
         <Box>
-            <h1>Set type</h1>
+            <h1>Wat is het probleem?</h1>
 
             <ToggleButtonGroup
                 orientation="vertical"
@@ -39,13 +40,16 @@ export default function TicketTypeStep({type, setType, back}: TypeStepProps) {
                 exclusive
                 onChange={handleChange}
             >
-                ${TicketTypeDetails.values().map(detail => (
-                <ToggleButton value={detail.type} key={detail.type}>
-                    ${createElement(detail.icon)}
-                    ${detail.label}
-                </ToggleButton>
-            ))}
+                {TicketTypeDetails.values().map(detail => (
+                    <ToggleButton value={detail.type} key={detail.type}>
+                        {createElement(detail.icon)}
+                        {detail.label}
+                    </ToggleButton>
+                ))}
             </ToggleButtonGroup>
+
+            <TextField margin="normal" name="description" variant="outlined" label="Omschrijving"
+                       required/>
 
             <TicketWizardActionBar onSubmit={submit} onBack={back}/>
         </Box>
