@@ -7,17 +7,18 @@ export default function Dashboard() {
     return (
         <PageContainer title="LogistiekApp">
             <Typography variant="body1">
-                Beste lezer, welkom.<br/>
+                <br/>
+                Beste logistieker,<br/>
+                <br/>
+                Je bent fantastisch bezig, ik houd van jullie allemaal, ga zo Door en vergeet niet te eten.<br/>
+                <br />
+                Beste lezer, niet-logistieker,<br/>
                 <br/>
                 Dit is een app voor het <strong>beste</strong> team van de opbouw.<br/>
                 Hoor je niet bij Logistiek? Dan zie je niet zo heel erg veel op deze site.<br/>
                 Maar niet getreurd; wij wel!<br/>
                 <br/>
-                Rechtsbovenin zit de confettiknop. Ik hoop dat je er bij van wordt.<br/>
-                <br/>
-                Beste logistieker,<br/>
-                <br/>
-                Je bent fantastisch bezig, ik houd van jullie allemaal, ga zo Door en vergeet niet te eten.<br/>
+                Rechtsbovenin zit de confetti-knop. Ik hoop dat je er bij van wordt.<br/>
                 <br/>
                 Kusjes,<br/>
                 Tessa
