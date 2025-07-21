@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import {use, useCallback, useEffect, useState} from 'react';
+import {use, useCallback, useState} from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -22,14 +22,16 @@ import {Alert} from "@mui/material";
 import Stack from "@mui/material/Stack";
 import UserActivate from "@/app/components/modals/UserActivate";
 import {useRouter} from "next/navigation";
+import UserSetName from "@/app/components/modals/UserSetName";
 
 interface UserRowProps {
     user: User;
+    setUserName: () => void;
     activateUser: () => void;
     deactivateUser: () => void;
 }
 
-function Row({user, activateUser, deactivateUser}: UserRowProps) {
+function Row({user, setUserName, activateUser, deactivateUser}: UserRowProps) {
     const userRoles = (user.roles ?? []).map(row => row.replace(/^role\./, ''));
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -85,6 +87,11 @@ function Row({user, activateUser, deactivateUser}: UserRowProps) {
                         handleClose()
                     }}>Configureren</MenuItem>
 
+                    <MenuItem onClick={() => {
+                        setUserName();
+                        handleClose()
+                    }}>Naam wijzigen</MenuItem>
+
                     <MenuItem disabled={true} onClick={() => {
                         deactivateUser();
                         handleClose()
@@ -114,34 +121,35 @@ interface UserTableArgs {
 export default function UserTable({users}: UserTableArgs) {
     const router = useRouter();
     const data = use(users);
-    const [activateOpen, setActivateOpen] = useState(false);
-    const [deactivateOpen, setDeactivateOpen] = useState(false);
+    const [currentOpen, setCurrentOpen] = useState<string | null>(null);
     const [actionUser, setActionUser] = useState<User | null>(null);
 
     const doActivateUser = useCallback((user: User) => {
         setActionUser(user);
-        setActivateOpen(true);
-    }, [setActionUser, setActivateOpen]);
-
-    const doActivateClose = useCallback((applied: boolean) => {
-        setActivateOpen(false);
-        if (applied)
-            router.refresh();
-    }, [setActivateOpen, router]);
+        setCurrentOpen('activate');
+    }, [setActionUser, setCurrentOpen]);
 
     const doDeativateUser = useCallback((user: User) => {
         setActionUser(user);
-        setDeactivateOpen(true);
-    }, [setActionUser, setDeactivateOpen]);
+        setCurrentOpen('deactivate');
+    }, [setActionUser, setCurrentOpen]);
 
-    useEffect(() => {
-        if (deactivateOpen)
-            console.log('deactivateOpen is open')
-    }, [deactivateOpen]);
+    const doSetUserName = useCallback((user: User) => {
+        setActionUser(user);
+        setCurrentOpen('name');
+    }, [setActionUser, setCurrentOpen]);
+
+    const doActionClose = useCallback((applied: boolean) => {
+        setCurrentOpen(null);
+        if (applied)
+            router.refresh();
+    }, [setCurrentOpen, router]);
+
 
     return (
         <React.Fragment>
-            <UserActivate onClose={doActivateClose} user={actionUser} open={activateOpen}/>
+            <UserActivate onClose={doActionClose} user={actionUser} open={currentOpen == 'activate'}/>
+            <UserSetName onClose={doActionClose} user={actionUser} open={currentOpen == 'name'}/>
 
             <TableContainer component={Paper}>
                 <Table aria-label="Tabel met gebruikers">
@@ -158,6 +166,7 @@ export default function UserTable({users}: UserTableArgs) {
                                 <Row
                                     key={user.id}
                                     user={user}
+                                    setUserName={() => doSetUserName(user)}
                                     activateUser={() => doActivateUser(user)}
                                     deactivateUser={() => doDeativateUser(user)}
                                 />
