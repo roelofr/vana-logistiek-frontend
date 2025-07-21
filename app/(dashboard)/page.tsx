@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {PageContainer} from '@toolpad/core/PageContainer';
-import AppSpeedDial from "@/app/components/AppSpeedDial";
 import Typography from "@mui/material/Typography";
 import Divider from '@mui/material/Divider';
 
@@ -33,8 +32,6 @@ export default function Dashboard() {
                 Kusjes,<br/>
                 Roelof
             </Typography>
-
-            <AppSpeedDial/>
         </PageContainer>
     );
 }
