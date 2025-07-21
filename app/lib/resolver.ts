@@ -1,8 +1,6 @@
-const tinyCache: Map<RelationType, Map<number, RelationRef>> = new Map();
+import {DataModel} from "@toolpad/core/Crud";
 
-interface RelationRef {
-    id: number;
-}
+const tinyCache: Map<RelationType, Map<number, DataModel>> = new Map();
 
 export enum RelationType {
     District,
@@ -10,7 +8,7 @@ export enum RelationType {
     Vendor,
 }
 
-export default function resolveRelation<T extends RelationRef>(name: RelationType, property: T | number | null): T | null {
+export default function resolveRelation<T extends DataModel>(name: RelationType, property: T | number | null): T | null {
     if (property === null)
         return null;
 
@@ -22,7 +20,7 @@ export default function resolveRelation<T extends RelationRef>(name: RelationTyp
     if (typeof property == 'number')
         return (values.get(property) ?? null) as T | null;
 
-    values.set(property.id, property);
+    values.set(property.id as number, property);
 
     return property;
 }

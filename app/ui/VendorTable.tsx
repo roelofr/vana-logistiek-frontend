@@ -15,7 +15,8 @@ import DistrictBadge from "@/app/components/badges/DistrictBadge";
 import resolveRelation, {RelationType} from "@/app/lib/resolver";
 
 function Row({vendor}: { vendor: Vendor }) {
-    const vendorDistrict = resolveRelation(RelationType.District, vendor.district)
+    const vendorDistrict = resolveRelation(RelationType.District, vendor.district ?? null)
+
     return (
         <React.Fragment>
             <TableRow>
