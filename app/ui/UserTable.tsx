@@ -43,6 +43,8 @@ function Row({user, activateUser, deactivateUser}: UserRowProps) {
         setAnchorEl(null);
     };
 
+    const userIsActive = user.active && user.roles?.length > 0
+
     return (
         <TableRow>
             <TableCell component="th" scope="row">
@@ -78,15 +80,15 @@ function Row({user, activateUser, deactivateUser}: UserRowProps) {
                         },
                     }}
                 >
-                    <MenuItem disabled={user.active} onClick={() => {
+                    <MenuItem disabled={userIsActive} onClick={() => {
                         activateUser();
                         handleClose()
                     }}>Configureren</MenuItem>
 
-                    <MenuItem disabled={!user.active} onClick={() => {
+                    <MenuItem disabled={true} onClick={() => {
                         deactivateUser();
-                        handleClose();
-                    }}>My account</MenuItem>
+                        handleClose()
+                    }}>Uitschakelen</MenuItem>
                 </Menu>
             </TableCell>
         </TableRow>
