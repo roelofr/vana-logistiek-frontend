@@ -43,7 +43,7 @@ function Row({user, activateUser, deactivateUser}: UserRowProps) {
         setAnchorEl(null);
     };
 
-    const userIsActive = user.active && user.roles?.length > 0
+    const userIsActive = user.active && (user.roles ?? []).length > 0
 
     return (
         <TableRow>
