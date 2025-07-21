@@ -18,7 +18,7 @@ export default function Dashboard() {
                 Hoor je niet bij Logistiek? Dan zie je niet zo heel erg veel op deze site.<br/>
                 Maar niet getreurd; wij wel!<br/>
                 <br/>
-                Rechtsbovenin zit de confetti-knop. Ik hoop dat je er bij van wordt.<br/>
+                Rechtsbovenin zit de confetti-knop. Ik hoop dat je er blij van wordt.<br/>
                 <br/>
                 Kusjes,<br/>
                 Tessa

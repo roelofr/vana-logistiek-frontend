@@ -12,8 +12,10 @@ import Paper from '@mui/material/Paper';
 import {Vendor} from "@/app/domain";
 import {ApiResponse} from "@/app/stores/apiStore";
 import DistrictBadge from "@/app/components/badges/DistrictBadge";
+import resolveRelation, {RelationType} from "@/app/lib/resolver";
 
 function Row({vendor}: { vendor: Vendor }) {
+    const vendorDistrict = resolveRelation(RelationType.District, vendor.district)
     return (
         <React.Fragment>
             <TableRow>
@@ -24,7 +26,7 @@ function Row({vendor}: { vendor: Vendor }) {
                     {vendor.name}
                 </TableCell>
                 <TableCell>
-                    {vendor.district ? <DistrictBadge district={vendor.district}/> : <small><em>Onbekend</em></small>}
+                    {vendorDistrict ? <DistrictBadge district={vendorDistrict}/> : <small><em>Onbekend</em></small>}
                 </TableCell>
             </TableRow>
         </React.Fragment>
