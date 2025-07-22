@@ -7,8 +7,8 @@ import {addConfettiListener, removeConfettiListener} from "@/app/lib/confetti";
 export default function AppConfetti() {
     const [confettiCount, setConfettiCount] = React.useState<number>(0);
 
-    const startConfetti = React.useCallback(() => {
-        setConfettiCount((currentCount) => currentCount + 500)
+    const startConfetti = React.useCallback((event: CustomEvent<number>) => {
+        setConfettiCount((currentCount) => currentCount + (event.detail ?? 500))
     }, [setConfettiCount]);
 
     React.useEffect(() => {

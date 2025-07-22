@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import CreateTicket from "@/app/actions/CreateTicket";
 import CircularProgress from '@mui/material/CircularProgress';
 import {useRouter} from "next/navigation";
+import {fireConfetti} from "@/app/lib/confetti";
 
 
 interface SummaryProps {
@@ -36,6 +37,8 @@ export default function TicketSummaryStep({vendor, type, data, back}: SummaryPro
 
         try {
             const ticket = await CreateTicket(type, vendor.id, data.title, data)
+
+            fireConfetti(950);
 
             await router.push(`/tickets/${ticket.id}`);
         } catch (error) {
