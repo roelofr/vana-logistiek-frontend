@@ -14,6 +14,7 @@ import VendorBadge from "@/app/components/badges/VendorBadge";
 import StatusBadge from "@/app/components/badges/StatusBadge";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import resolveTicket from "@/app/actions/resolveTicket";
+import Link from 'next/link'
 
 interface TicketRowProps {
     ticket: Ticket;
@@ -41,13 +42,17 @@ function Row({ticket}: TicketRowProps) {
         setAnchorEl(null);
     };
 
+    const ticketLink = `/tickets/${ticket.id}`
+
     return (
         <TableRow sx={{'& > *': {borderBottom: 'unset'}}}>
             <TableCell component="th" scope="row">
                 {ticket.id}
             </TableCell>
             <TableCell>
-                {ticket.description}
+                <Link href={ticketLink}>
+                    {ticket.description}
+                </Link>
             </TableCell>
             <TableCell>
                 <VendorBadge vendor={ticket.vendor!}/>
@@ -102,7 +107,7 @@ export default function TicketTable({tickets}: TicketTableArgs) {
                         <TableCell>Omschrijving</TableCell>
                         <TableCell>Standhouder</TableCell>
                         <TableCell>Status</TableCell>
-                        <TableCell aria-label="Acties" />
+                        <TableCell aria-label="Acties"/>
                     </TableRow>
                 </TableHead>
                 <TableBody>
