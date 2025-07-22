@@ -1,10 +1,14 @@
 'use client';
 
+import {useCallback, useState} from 'react';
 import {TicketType, Vendor} from "@/app/domain";
 import TicketWizardActionBar from "@/app/ui/ticket-wizard/TicketWizardActionBar";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import CreateTicket from "@/app/actions/CreateTicket";
+import CircularProgress from '@mui/material/CircularProgress';
+import {useRouter} from "next/navigation";
 
 
 interface SummaryProps {
@@ -12,14 +16,38 @@ interface SummaryProps {
     type: TicketType;
     data: Record<string, unknown> & TicketDetails;
     back: () => void;
-    submit: () => void;
 }
 
-export default function TicketSummaryStep({vendor, type, data, back, submit}: SummaryProps) {
+function LoadingBox() {
+    return (
+        <Box sx={{display: 'flex', alignItems: 'end'}}>
+            <CircularProgress/>
+        </Box>
+    )
+}
+
+export default function TicketSummaryStep({vendor, type, data, back}: SummaryProps) {
     const description = data.details ?? '–';
+    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
+
+    const submit = useCallback(async () => {
+        setIsLoading(true);
+
+        try {
+            const ticket = await CreateTicket(type, vendor.id, data.title, data)
+
+            await router.push(`/tickets/${ticket.id}`);
+        } catch (error) {
+            console.error("Ticket creation error is %o", error);
+            alert("Ticket aanmaken mislukt!");
+        } finally {
+            setIsLoading(false);
+        }
+    }, [vendor, type, data, router, setIsLoading]);
+
     return (
         <Box>
-
             <Grid container spacing={2}>
                 <Grid size={12}>
                     <Typography variant="h2">Dit ga je aanmaken...</Typography>
@@ -53,7 +81,7 @@ export default function TicketSummaryStep({vendor, type, data, back, submit}: Su
                 </Grid>
             </Grid>
 
-            <TicketWizardActionBar onSubmit={submit} onBack={back} lastStep={true}/>
+            {isLoading ? <LoadingBox/> : <TicketWizardActionBar onSubmit={submit} onBack={back} lastStep={true}/>}
         </Box>
     )
 }

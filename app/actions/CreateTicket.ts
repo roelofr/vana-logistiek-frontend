@@ -4,13 +4,14 @@ import {Ticket, TicketType} from "@/app/domain";
 import {ApiStore} from "@/app/stores/apiStore";
 import {auth} from "@/auth";
 
-export default async function createTicket(type: TicketType, vendorId: number, description: string) {
+export default async function CreateTicket(type: TicketType, vendorId: number, description: string, details: Record<string, unknown>) {
     const api = new ApiStore(await auth())
 
     const resp = await api.post<Ticket>('/ticket', {
         type,
         vendorId,
-        description
+        description,
+        data: details,
     })
 
     if (!resp.ok) {

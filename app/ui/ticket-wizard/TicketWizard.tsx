@@ -65,11 +65,11 @@ export default function TicketWizard({vendors}: TicketWizardProps) {
             return <TicketVendorStep vendors={vendors} vendor={vendor} setVendor={setVendorAndContinue}/>
 
         if (step == Steps.Details)
-            return <TicketDetailsStep details={data} setDetails={setDetailsAndContinue} back={() => setStep(Steps.Vendor)}/>
+            return <TicketDetailsStep details={data} setDetails={setDetailsAndContinue}
+                                      back={() => setStep(Steps.Vendor)}/>
 
         if (step >= Steps.Details)
-            return <TicketSummaryStep vendor={vendor!} type={type!} data={data} back={() => setStep(Steps.Details)}
-                                      submit={() => alert('ok')}/>
+            return <TicketSummaryStep vendor={vendor!} type={type!} data={data} back={() => setStep(Steps.Details)}/>
     }
 
     return (
