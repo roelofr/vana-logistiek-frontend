@@ -3,9 +3,8 @@
 import {useState} from 'react';
 import {TicketType, Vendor} from "@/app/domain";
 import TicketVendorStep from "@/app/ui/ticket-wizard/TicketVendorStep";
-import TicketTypeStep from "@/app/ui/ticket-wizard/TicketTypeStep";
+import TicketDetailsStep from "@/app/ui/ticket-wizard/TicketDetailsStep";
 import TicketSummaryStep from "@/app/ui/ticket-wizard/TicketSummaryStep";
-import TicketGenericDataStep from "@/app/ui/ticket-wizard/TicketGenericDataStep";
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -15,22 +14,21 @@ import {ApiResponse} from "@/app/stores/apiStore";
 
 const steps = [
     {
-        label: 'Type',
-        description: 'Geef het type op van het ticket.',
-    },
-    {
         label: 'Standhouder',
-        description: `Selecteer de standhouder.`,
+        description: 'Geef de standhouder aan.',
     },
     {
         label: 'Details',
         description: `Geef de details op.`,
     },
+    {
+        label: 'Samenvatting',
+        description: `Controleer en verzend.`,
+    },
 ];
 
 enum Steps {
     Vendor,
-    Type,
     Details,
     Summary
 }
@@ -42,21 +40,23 @@ interface TicketWizardProps {
 export default function TicketWizard({vendors}: TicketWizardProps) {
     const [step, setStep] = useState(0);
     const [vendor, setVendor] = useState<Vendor | null>(null);
-    const [type, setType] = useState<TicketType>(TicketType.Generic);
-    const [data, setData] = useState<Record<string, unknown>>({});
+    const [data, setData] = useState<Record<string, unknown> & TicketDetails>({
+        title: '',
+        details: null
+    });
+
+    const type = TicketType.Generic;
 
     const setVendorAndContinue = (vendor: Vendor | null) => {
         setVendor(vendor)
         if (vendor)
-            setStep(Steps.Type)
+            setStep(Steps.Details)
     }
-    const setTypeAndContinue = (type: TicketType) => {
-        setType(type)
-        setStep(Steps.Details)
-    }
-
-    const setDataAndContinue = (data: Record<string, unknown>) => {
-        setData(data)
+    const setDetailsAndContinue = (details: TicketDetails) => {
+        setData({
+            ...data,
+            ...details,
+        })
         setStep(Steps.Summary)
     }
 
@@ -64,21 +64,12 @@ export default function TicketWizard({vendors}: TicketWizardProps) {
         if (step == Steps.Vendor)
             return <TicketVendorStep vendors={vendors} vendor={vendor} setVendor={setVendorAndContinue}/>
 
-        if (step == Steps.Type)
-            return <TicketTypeStep type={type} setType={setTypeAndContinue} back={() => setStep(1)}/>
+        if (step == Steps.Details)
+            return <TicketDetailsStep details={data} setDetails={setDetailsAndContinue} back={() => setStep(Steps.Vendor)}/>
 
-        if (step >= Steps.Summary)
-            return <TicketSummaryStep vendor={vendor!} type={type!} data={data} back={() => setStep(2)}
+        if (step >= Steps.Details)
+            return <TicketSummaryStep vendor={vendor!} type={type!} data={data} back={() => setStep(Steps.Details)}
                                       submit={() => alert('ok')}/>
-
-        switch (type) {
-            case TicketType.Generic:
-                return <TicketGenericDataStep data={data}
-                                              setData={setDataAndContinue}
-                                              back={() => setStep(2)}/>
-            default:
-                return <h1>Fuck!</h1>
-        }
     }
 
     return (

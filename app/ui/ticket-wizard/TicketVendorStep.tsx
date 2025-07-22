@@ -7,6 +7,7 @@ import {Suspense, useCallback, useState} from "react";
 import {ApiResponse} from "@/app/stores/apiStore";
 import PickerSkeleton from "@/app/ui/pickers/PickerSkeleton";
 import {VendorPickerUi} from "@/app/ui/pickers/VendorPickerUi";
+import Typography from "@mui/material/Typography";
 
 interface VendorStepProps {
     vendors: Promise<ApiResponse<Vendor[]>>;
@@ -25,7 +26,7 @@ export default function TicketVendorStep({vendors, vendor, setVendor}: VendorSte
 
     return (
         <Box>
-            <h1>Wie is de standhouder?</h1>
+            <Typography variant="h2">Wie is de standhouder?</Typography>
 
             <Suspense fallback={<PickerSkeleton/>}>
                 <VendorPickerUi values={vendors} value={value} setValue={selected => doSetValue(selected)}/>

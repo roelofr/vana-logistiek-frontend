@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 
 interface ActionBarProps {
     onBack?: () => void;
-    onSubmit: () => void;
+    onSubmit?: () => void;
     firstStep?: boolean;
     lastStep?: boolean;
 }
@@ -28,7 +28,7 @@ export default function TicketWizardActionBar({
             </Button>
 
             <Box sx={{flex: '1 1 auto'}}/>
-            <Button onClick={onSubmit}>
+            <Button onClick={onSubmit} type={onSubmit ? 'button' : 'submit'}>
                 {lastStep ? 'Afronden' : 'Volgende'}
             </Button>
         </Box>

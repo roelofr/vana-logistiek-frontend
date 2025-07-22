@@ -1,43 +1,57 @@
 'use client';
 
-import Box from "@mui/material/Box";
 import {TicketType, Vendor} from "@/app/domain";
 import TicketWizardActionBar from "@/app/ui/ticket-wizard/TicketWizardActionBar";
-import {Fragment} from "react";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 
 interface SummaryProps {
     vendor: Vendor;
     type: TicketType;
-    data: Record<string, unknown>;
+    data: Record<string, unknown> & TicketDetails;
     back: () => void;
     submit: () => void;
 }
 
 export default function TicketSummaryStep({vendor, type, data, back, submit}: SummaryProps) {
+    const description = data.details ?? '–';
     return (
         <Box>
-            <h1>Summary</h1>
 
-            <dl>
-                <dt>Vendor</dt>
-                <dd>${vendor.name}</dd>
+            <Grid container spacing={2}>
+                <Grid size={12}>
+                    <Typography variant="h2">Dit ga je aanmaken...</Typography>
+                </Grid>
+                <Grid size={4}>
+                    Standhouder
+                </Grid>
+                <Grid size={8}>
+                    {vendor.number} - {vendor.name}
+                </Grid>
 
-                <dt>Type</dt>
-                <dd>${type}</dd>
+                <Grid size={4}>
+                    Type
+                </Grid>
+                <Grid size={8}>
+                    {type}
+                </Grid>
 
-                <dt>Data</dt>
-                <dd>
-                    <dl>
-                        ${Object.entries(data).map(([key, value]) => (
-                        <Fragment key={key}>
-                            <dt>${key}</dt>
-                            <dd>${value as string}</dd>
-                        </Fragment>
-                    ))}
-                    </dl>
-                </dd>
-            </dl>
+                <Grid size={4}>
+                    Titel
+                </Grid>
+                <Grid size={8}>
+                    {data.title as string}
+                </Grid>
+
+                <Grid size={4}>
+                    Omschrijving
+                </Grid>
+                <Grid size={8}>
+                    {description}
+                </Grid>
+            </Grid>
 
             <TicketWizardActionBar onSubmit={submit} onBack={back} lastStep={true}/>
         </Box>
