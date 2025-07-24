@@ -13,7 +13,7 @@ import {Ticket, TicketStatus} from "@/app/domain";
 import VendorBadge from "@/app/components/badges/VendorBadge";
 import StatusBadge from "@/app/components/badges/StatusBadge";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import resolveTicket from "@/app/actions/resolveTicket";
+import ResolveTicket from "@/app/actions/ResolveTicket";
 import Link from 'next/link'
 
 interface TicketRowProps {
@@ -84,7 +84,7 @@ function Row({ticket}: TicketRowProps) {
                     }}
                 >
                     <MenuItem disabled={isResolved(ticket)} onClick={() => {
-                        resolveTicket(ticket);
+                        ResolveTicket(ticket);
                         handleClose()
                     }}>Ticket sluiten</MenuItem>
                 </Menu>

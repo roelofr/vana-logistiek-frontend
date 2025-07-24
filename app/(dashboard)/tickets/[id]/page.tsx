@@ -2,19 +2,19 @@
 
 import {ApiStore} from "@/app/stores/apiStore";
 import {auth} from "@/auth";
-import {Ticket, TicketAttachment, User} from "@/app/domain";
+import {Ticket, TicketAttachment} from "@/app/domain";
 import Typography from "@mui/material/Typography";
 import PageContainerWithToolbar from "@/app/components/PageContainerWithToolbar";
 import TicketViewMenu from "@/app/ui/TicketViewMenu";
 import TicketTimeline from "@/app/components/tickets/TicketTimeline";
 import {EntityType} from "@/app/lib/resolver";
 
-interface UrlParams {
+export interface TicketPageUrlParams {
     id: number;
 }
 
 interface PageParams {
-    params: Promise<UrlParams>
+    params: Promise<TicketPageUrlParams>
 }
 
 export default async function Page({params}: PageParams) {
@@ -25,21 +25,19 @@ export default async function Page({params}: PageParams) {
 
     const ticketPromise = api.getData<Ticket>(`/ticket/${id}`);
     const attachmentsPromise = api.getResolved<TicketAttachment>(EntityType.TicketAttachment, `/ticket/${id}/attachment`);
-    const userPromise = api.getResolved<User>(EntityType.User, '/users');
 
-    const [ticket, attachments, users] = await Promise.all([
+    const [ticket, attachments] = await Promise.all([
         ticketPromise,
         attachmentsPromise,
-        userPromise
     ]);
 
     console.log('Ticket = %o, attachments = %o', ticket, attachments);
 
-    const ticketDescription = ticket.data ? ticket.data.description as string : null;
+    const ticketDescription = ticket.data ? ticket.data.details as string : null;
 
     return (
         <PageContainerWithToolbar title={`${ticket.description} #${ticket.id}`}
-                                  toolbar={<TicketViewMenu users={users} ticket={ticket}/>}>
+                                  toolbar={<TicketViewMenu ticket={ticket}/>}>
             <Typography variant="body1" gutterBottom>
                 Hieronder staan de details van ticket {ticket.id}.
             </Typography>

@@ -6,8 +6,8 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {fireConfetti} from "@/app/lib/confetti";
-import {Ticket, User} from "@/app/domain";
-import TicketAssign from "@/app/components/modals/TicketAssign";
+import {Ticket} from "@/app/domain";
+import {redirect} from "next/navigation";
 
 enum OpenModal {
     None,
@@ -18,12 +18,11 @@ enum OpenModal {
 
 interface TicketViewMenuProps {
     ticket: Ticket;
-    users: User[];
 }
 
-export default function TicketViewMenu({users, ticket}: TicketViewMenuProps) {
+export default function TicketViewMenu({ticket}: TicketViewMenuProps) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [openModal, setOpenModal] = React.useState<OpenModal>(OpenModal.None);
+    // const [openModal, setOpenModal] = React.useState<OpenModal>(OpenModal.None);
     const open = Boolean(anchorEl);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -77,13 +76,10 @@ export default function TicketViewMenu({users, ticket}: TicketViewMenuProps) {
                 }}
             >
                 <MenuItem disabled>Ticket #{ticket.id}</MenuItem>
-                <MenuItem onClick={() => handleActionClose(OpenModal.Assign)}>Toewijzen</MenuItem>
+                <MenuItem onClick={() => redirect(`/tickets/${ticket.id}/assign`)}>Toewijzen</MenuItem>
                 <MenuItem onClick={() => handleActionClose(undefined)}>Afronden</MenuItem>
                 <MenuItem onClick={() => handleActionClose(undefined)}>Sluiten (alleen CP)</MenuItem>
             </Menu>
-
-            <TicketAssign users={users} open={openModal == OpenModal.Assign} ticket={ticket}
-                          onClose={changed => handleMenuClose(changed)}/>
         </React.Fragment>
     )
 }
