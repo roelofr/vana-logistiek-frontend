@@ -1,4 +1,5 @@
 import {Session} from "next-auth";
+import {EntityType, resolveEntity} from "@/app/lib/resolver";
 
 const DEFAULT_HOST = new URL('https://example.com/api')
 
@@ -76,6 +77,20 @@ export class ApiStore {
                 'Content-Type': 'application/json',
             }
         })
+    }
+
+    async getData<T>(url: string): Promise<T> {
+        return this.get<T>(url)
+            .then(response => {
+                if (!response.ok)
+                    throw new Error(`HTTP call failed: ${response.error}`)
+                return response.data
+            });
+    }
+
+    async getResolved<T>(type: EntityType, url: string): Promise<T[]> {
+        return this.getData<T[]>(url)
+            .then(data => data.map(row => resolveEntity(type, row)));
     }
 }
 

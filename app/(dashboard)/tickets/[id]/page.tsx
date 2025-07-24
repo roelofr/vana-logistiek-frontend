@@ -2,14 +2,12 @@
 
 import {ApiStore} from "@/app/stores/apiStore";
 import {auth} from "@/auth";
-import {Suspense} from 'react';
-import {Ticket} from "@/app/domain";
-import AppSpeedDial from "@/app/components/AppSpeedDial";
+import {Ticket, TicketAttachment, User} from "@/app/domain";
 import Typography from "@mui/material/Typography";
 import PageContainerWithToolbar from "@/app/components/PageContainerWithToolbar";
-import TicketView from "@/app/ui/TicketView";
 import TicketViewMenu from "@/app/ui/TicketViewMenu";
-
+import TicketTimeline from "@/app/components/tickets/TicketTimeline";
+import {EntityType} from "@/app/lib/resolver";
 
 interface UrlParams {
     id: number;
@@ -22,22 +20,35 @@ interface PageParams {
 export default async function Page({params}: PageParams) {
     const {id} = await params;
 
-    // Lazy load the ticket, eventually.
-    const ticket = auth()
-        .then(session => new ApiStore(session))
-        .then(api => api.get<Ticket>(`/ticket/${id}`));
+    const session = await auth();
+    const api = new ApiStore(session);
+
+    const ticketPromise = api.getData<Ticket>(`/ticket/${id}`);
+    const attachmentsPromise = api.getResolved<TicketAttachment>(EntityType.TicketAttachment, `/ticket/${id}/attachment`);
+    const userPromise = api.getResolved<User>(EntityType.User, '/users');
+
+    const [ticket, attachments, users] = await Promise.all([
+        ticketPromise,
+        attachmentsPromise,
+        userPromise
+    ]);
+
+    console.log('Ticket = %o, attachments = %o', ticket, attachments);
+
+    const ticketDescription = ticket.data ? ticket.data.description as string : null;
 
     return (
-        <PageContainerWithToolbar title={`Ticket ${id}`} toolbar={<TicketViewMenu id={id}/>}>
+        <PageContainerWithToolbar title={`${ticket.description} #${ticket.id}`}
+                                  toolbar={<TicketViewMenu users={users} ticket={ticket}/>}>
             <Typography variant="body1" gutterBottom>
-                Hieronder staan de details van het ticket.
+                Hieronder staan de details van ticket {ticket.id}.
             </Typography>
 
-            <Suspense fallback={<div>Loading...</div>}>
-                <TicketView ticket={ticket}/>
-            </Suspense>
+            <Typography variant="body1" gutterBottom>
+                {ticketDescription ?? <em>Geen omschrijving</em>}
+            </Typography>
 
-            <AppSpeedDial/>
+            <TicketTimeline attachments={attachments}/>
         </PageContainerWithToolbar>
     )
 }

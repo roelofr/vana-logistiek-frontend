@@ -1,18 +1,29 @@
 'use client';
 
-import React from 'react';
+import React, {useCallback} from 'react';
 import Button from "@mui/material/Button";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import {fireConfetti} from "@/app/lib/confetti";
+import {Ticket, User} from "@/app/domain";
+import TicketAssign from "@/app/components/modals/TicketAssign";
 
-interface TicketViewMenuProps {
-    id: number;
+enum OpenModal {
+    None,
+    Assign,
+    Resolve,
+    Close
 }
 
-export default function TicketViewMenu({id}: TicketViewMenuProps) {
+interface TicketViewMenuProps {
+    ticket: Ticket;
+    users: User[];
+}
+
+export default function TicketViewMenu({users, ticket}: TicketViewMenuProps) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [openModal, setOpenModal] = React.useState<OpenModal>(OpenModal.None);
     const open = Boolean(anchorEl);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -23,10 +34,22 @@ export default function TicketViewMenu({id}: TicketViewMenuProps) {
         setAnchorEl(null);
     };
 
-    const handleActionClose = () => {
+    const handleActionClose = useCallback((modal: OpenModal | undefined) => {
         handleClose();
-        fireConfetti(50)
-    }
+        if (modal)
+            setOpenModal(modal)
+        else
+            fireConfetti(50)
+    }, [setOpenModal])
+
+    const handleMenuClose = useCallback((succesful: boolean) => {
+        setOpenModal(OpenModal.None)
+        if (succesful)
+            fireConfetti(300);
+    }, [setOpenModal]);
+
+    if (!ticket)
+        return null;
 
     return (
         <React.Fragment>
@@ -53,11 +76,14 @@ export default function TicketViewMenu({id}: TicketViewMenuProps) {
                     },
                 }}
             >
-                <MenuItem disabled>Ticket #{id}</MenuItem>
-                <MenuItem onClick={handleActionClose}>Toewijzen</MenuItem>
-                <MenuItem onClick={handleActionClose}>Afronden</MenuItem>
-                <MenuItem onClick={handleActionClose}>Sluiten (alleen CP)</MenuItem>
+                <MenuItem disabled>Ticket #{ticket.id}</MenuItem>
+                <MenuItem onClick={() => handleActionClose(OpenModal.Assign)}>Toewijzen</MenuItem>
+                <MenuItem onClick={() => handleActionClose(undefined)}>Afronden</MenuItem>
+                <MenuItem onClick={() => handleActionClose(undefined)}>Sluiten (alleen CP)</MenuItem>
             </Menu>
+
+            <TicketAssign users={users} open={openModal == OpenModal.Assign} ticket={ticket}
+                          onClose={changed => handleMenuClose(changed)}/>
         </React.Fragment>
     )
 }

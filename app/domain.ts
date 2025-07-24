@@ -49,6 +49,7 @@ export interface Ticket extends DataModel {
     creator?: User
     assignee?: User
     attachments?: TicketAttachment[]
+    data?: Record<string, unknown>;
 }
 
 export interface TicketAttachment extends DataModel {
