@@ -11,12 +11,13 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import {FormEvent} from "react";
 
 interface AssignPageProps {
     params: Promise<TicketPageUrlParams>
 }
 
-async function handleFormSubmit(ticket: Ticket, users: User[], event: SubmitEvent) {
+async function handleFormSubmit(ticket: Ticket, users: User[], event: FormEvent<HTMLFormElement>) {
     'use client';
 
     const data = new FormData(event.target as HTMLFormElement);
@@ -58,7 +59,7 @@ export default async function AssignPage({params}: AssignPageProps) {
                 Kies hieronder aan wie je ticket #{ticketId} wil toewijzen.
             </Typography>
 
-            <form onsubmit={event => handleFormSubmit(ticket, users, event)}>
+            <form onSubmit={event => handleFormSubmit(ticket, users, event)}>
                 <FormControl fullWidth>
                     <InputLabel id="assign-user-label">Verantwoordelijke</InputLabel>
                     <Select

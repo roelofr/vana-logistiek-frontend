@@ -22,7 +22,7 @@ interface TicketViewMenuProps {
 
 export default function TicketViewMenu({ticket}: TicketViewMenuProps) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    // const [openModal, setOpenModal] = React.useState<OpenModal>(OpenModal.None);
+    const [openModal, setOpenModal] = React.useState<OpenModal>(OpenModal.None);
     const open = Boolean(anchorEl);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
