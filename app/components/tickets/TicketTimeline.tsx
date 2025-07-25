@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import React, {useCallback, useMemo} from 'react';
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
@@ -114,7 +114,11 @@ function AttachmentDetail({attachment}: AttachmentComponentProps) {
     }
 }
 
-function AttachmentRow({attachment}: AttachmentComponentProps) {
+interface AttachmentRowProps extends AttachmentComponentProps {
+    isLast: boolean
+}
+
+function AttachmentRow({attachment, isLast}: AttachmentRowProps) {
     return (
         <TimelineItem key={attachment.id}>
             <TimelineOppositeContent color="textSecondary">
@@ -122,7 +126,7 @@ function AttachmentRow({attachment}: AttachmentComponentProps) {
             </TimelineOppositeContent>
             <TimelineSeparator>
                 <TimelineDot/>
-                <TimelineConnector/>
+                {isLast ? null : <TimelineConnector/>}
             </TimelineSeparator>
             <TimelineContent>
                 <AttachmentDetail attachment={attachment}/>
@@ -132,6 +136,8 @@ function AttachmentRow({attachment}: AttachmentComponentProps) {
 }
 
 export default function TicketTimeline({attachments}: TicketTimelineProps) {
+    const totalLoopCount = useMemo(() => attachments.length, [attachments]);
+    const isLast = useCallback((index: number) => totalLoopCount == (index + 1), [totalLoopCount]);
     return (
         <Timeline
             sx={{
@@ -140,7 +146,8 @@ export default function TicketTimeline({attachments}: TicketTimelineProps) {
                 },
             }}
         >
-            {attachments.map(attachment => <AttachmentRow key={attachment.id} attachment={attachment}/>)}
+            {attachments.map((attachment, loop) => <AttachmentRow key={attachment.id} attachment={attachment}
+                                                                  isLast={isLast(loop)}/>)}
         </Timeline>
     );
 }
