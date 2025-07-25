@@ -47,6 +47,9 @@ export default async function RootLayout({children}: Readonly<{ children: ReactN
 
     return (
         <html lang="nl" data-toolpad-color-scheme="light">
+        <head>
+            <title>Penis LogistiekApp</title>
+        </head>
         <body>
         <SessionProvider session={session}>
             <AppRouterCacheProvider options={{enableCssLayer: true}}>
