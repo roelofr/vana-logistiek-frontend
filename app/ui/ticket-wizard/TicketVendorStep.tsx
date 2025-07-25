@@ -25,11 +25,13 @@ export default function TicketVendorStep({vendors, vendor, setVendor}: VendorSte
     const submit = useCallback(() => value && setVendor(value), [setVendor, value]);
 
     return (
-        <Box>
+        <Box sx={{display: 'flex', flexDirection: 'column'}}>
             <Typography variant="h2">Wie is de standhouder?</Typography>
 
             <Suspense fallback={<PickerSkeleton/>}>
-                <VendorPickerUi values={vendors} value={value} setValue={selected => doSetValue(selected)}/>
+                <Box sx={{mt: 2}}>
+                    <VendorPickerUi values={vendors} value={value} setValue={selected => doSetValue(selected)}/>
+                </Box>
             </Suspense>
 
             <TicketWizardActionBar onSubmit={submit} firstStep={true}/>

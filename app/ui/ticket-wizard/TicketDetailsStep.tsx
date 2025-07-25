@@ -1,10 +1,10 @@
 'use client';
 
-import Box from "@mui/material/Box";
 import TicketWizardActionBar from "@/app/ui/ticket-wizard/TicketWizardActionBar";
 import * as React from "react";
 import {TextField} from "@mui/material";
 import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
 
 
 interface TypeStepProps {
@@ -34,22 +34,32 @@ export default function TicketDetailsStep({details, setDetails, back}: TypeStepP
 
     return (
         <form onSubmit={handleSubmit}>
-            <Box sx={{display: 'flex', flexDirection: 'column'}}>
-                <Typography variant="h2">Wat is het probleem?</Typography>
+            <Stack direction="column" spacing={2}>
+                <Typography variant="h2">Hier klagen a.u.b.</Typography>
 
-                <TextField margin="normal" name="title" variant="outlined" label="Titel"
+                <TextField margin="normal"
+                           name="title"
+                           variant="filled"
+                           label="Samenvatting"
+                           helperText="Bijvoorbeeld: Bijbestelling, Gatorteam, TNT, etc..."
                            value={title}
                            onChange={e => setTitle(e.target.value)}
                            required/>
 
-
-                <TextField margin="normal" name="description" variant="outlined" label="Omschrijving"
+                <TextField margin="normal"
+                           name="description"
+                           label="Omschrijving"
+                           variant="filled"
+                           helperText="Bijvoorbeeld: 5x Tyfec polsbandjes, 1x parkeerpas"
                            value={description}
                            onChange={e => setDescription(e.target.value)}
-                           multiline/>
+                           minRows={4}
+                           multiline
+                           fullWidth
+                />
 
                 <TicketWizardActionBar onBack={back}/>
-            </Box>
+            </Stack>
         </form>
     )
 }

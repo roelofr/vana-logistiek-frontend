@@ -19,16 +19,21 @@ export default function TicketWizardActionBar({
     return (
         <Box sx={{display: 'flex', flexDirection: 'row', pt: 2}}>
             <Button
-                color="inherit"
+                variant="outlined"
                 disabled={firstStep}
                 onClick={onBack}
                 sx={{mr: 1}}
             >
-                Back
+                Vorige
             </Button>
 
             <Box sx={{flex: '1 1 auto'}}/>
-            <Button onClick={onSubmit} type={onSubmit ? 'button' : 'submit'}>
+
+            <Button
+                variant="outlined"
+                onClick={onSubmit}
+                type={onSubmit ? 'button' : 'submit'}
+            >
                 {lastStep ? 'Afronden' : 'Volgende'}
             </Button>
         </Box>
