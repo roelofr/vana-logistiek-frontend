@@ -11,7 +11,7 @@ export default function VendorBadge({vendor}: VendorBadgeArgs) {
 
     return (
         <Chip
-            label={vendor.name}
+            label={`${vendor.number} - ${vendor.name}`}
             variant="outlined"
         />
     );

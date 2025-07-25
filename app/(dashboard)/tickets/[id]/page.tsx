@@ -4,10 +4,17 @@ import {ApiStore} from "@/app/stores/apiStore";
 import {auth} from "@/auth";
 import {Ticket, TicketAttachment} from "@/app/domain";
 import Typography from "@mui/material/Typography";
-import PageContainerWithToolbar from "@/app/components/PageContainerWithToolbar";
-import TicketViewMenu from "@/app/ui/TicketViewMenu";
+import Stack from "@mui/material/Stack";
 import TicketTimeline from "@/app/components/tickets/TicketTimeline";
 import {EntityType} from "@/app/lib/resolver";
+import {PageContainer} from '@toolpad/core/PageContainer';
+import TicketActions from "@/app/components/tickets/TicketActions";
+import TicketComment from "@/app/components/tickets/TicketComment";
+import Well from "@/app/components/Well";
+import VendorBadge from "@/app/components/badges/VendorBadge";
+import UserBadge from "@/app/components/badges/UserBadge";
+import StatusBadge from "@/app/components/badges/StatusBadge";
+import DistrictBadge from "@/app/components/badges/DistrictBadge";
 
 export interface TicketPageUrlParams {
     id: number;
@@ -36,17 +43,26 @@ export default async function Page({params}: PageParams) {
     const ticketDescription = ticket.data ? ticket.data.details as string : null;
 
     return (
-        <PageContainerWithToolbar title={`${ticket.description} #${ticket.id}`}
-                                  toolbar={<TicketViewMenu ticket={ticket}/>}>
-            <Typography variant="body1" gutterBottom>
-                Hieronder staan de details van ticket {ticket.id}.
-            </Typography>
+        <PageContainer title={`#${ticket.id} - ${ticket.description}`}>
+            <Stack direction="row" spacing={2} sx={{mb: 2}}>
+                <VendorBadge vendor={ticket.vendor!}/>
+                <StatusBadge status={ticket.status}/>
+                <UserBadge user={ticket.creator!}/>
+                <DistrictBadge district={ticket.vendor?.district ?? null}/>
+            </Stack>
 
-            <Typography variant="body1" gutterBottom>
-                {ticketDescription ?? <em>Geen omschrijving</em>}
-            </Typography>
+            <Well>
+                <Typography variant="body1">
+                    {ticketDescription ?? <em>Geen omschrijving</em>}
+                </Typography>
+            </Well>
+
+            <TicketComment ticket={ticket}/>
+
+            <TicketActions ticket={ticket}/>
 
             <TicketTimeline attachments={attachments}/>
-        </PageContainerWithToolbar>
+
+        </PageContainer>
     )
 }
