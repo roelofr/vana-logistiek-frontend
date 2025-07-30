@@ -53,7 +53,7 @@ export default function TicketSummaryStep({vendor, type, data, back}: SummaryPro
         <Box>
             <Grid container spacing={2}>
                 <Grid size={12}>
-                    <Typography variant="h2">Dit ga je schuttinggooien</Typography>
+                    <Typography variant="h2">Samenvatting</Typography>
                 </Grid>
                 <Grid size={4}>
                     Standhouder
