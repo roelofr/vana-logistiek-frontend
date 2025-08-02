@@ -82,7 +82,7 @@ function Row({user, setUserName, activateUser, deactivateUser}: UserRowProps) {
                         },
                     }}
                 >
-                    <MenuItem disabled={userIsActive} onClick={() => {
+                    <MenuItem onClick={() => {
                         activateUser();
                         handleClose()
                     }}>Configureren</MenuItem>
