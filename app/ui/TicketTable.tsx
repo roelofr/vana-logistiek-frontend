@@ -1,12 +1,9 @@
 import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
+import {DataGrid, GridColDef} from '@mui/x-data-grid';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import {Ticket} from "@/app/domain";
+import {Ticket, Vendor} from "@/app/domain";
 import VendorBadge from "@/app/components/badges/VendorBadge";
 import StatusBadge from "@/app/components/badges/StatusBadge";
 import Link from 'next/link'
@@ -14,6 +11,27 @@ import Link from 'next/link'
 interface TicketRowProps {
     ticket: Ticket;
 }
+
+const tableColums: GridColDef[] = [
+    {field: 'id', headerName: 'Nr', minWidth: 50, maxWidth: 150},
+    {field: 'description', headerName: 'Omschrijving', minWidth: 300, maxWidth: 400},
+    {
+        field: 'vendor',
+        headerName: 'Standhouder',
+        minWidth: 200,
+        sortComparator: (v1, v2) => (v1 as Vendor).numberNumeric - (v2 as Vendor).numberNumeric,
+        renderCell: params => <VendorBadge vendor={params.value}/>
+    },
+    {
+        sortable: false,
+        filterable: true,
+        field: 'status',
+        headerName: 'Status',
+        width: 150,
+        renderCell: params => <StatusBadge status={params.value}/>
+    },
+];
+
 
 function Row({ticket}: TicketRowProps) {
     const ticketLink = `/tickets/${ticket.id}`
@@ -44,22 +62,8 @@ interface TicketTableArgs {
 
 export default function TicketTable({tickets}: TicketTableArgs) {
     return (
-        <TableContainer component={Paper}>
-            <Table aria-label="Tabel met tickets">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Nr</TableCell>
-                        <TableCell>Omschrijving</TableCell>
-                        <TableCell>Standhouder</TableCell>
-                        <TableCell>Status</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {tickets.map((ticket) => (
-                        <Row key={ticket.id} ticket={ticket}/>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <Paper style={{width: '100%'}}>
+            <DataGrid rows={tickets} columns={tableColums} disableColumnSelector={true}/>
+        </Paper>
     );
 }
