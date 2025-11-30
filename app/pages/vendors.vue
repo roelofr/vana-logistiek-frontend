@@ -21,7 +21,7 @@ const columnFilters = ref([{
 const columnVisibility = ref()
 const rowSelection = ref({ 1: true })
 
-const { data, status } = await useFetch<User[]>('/api/customers', {
+const { data, status } = await useFetch<User[]>('/api/vendors', {
   lazy: true
 })
 
@@ -29,7 +29,7 @@ function getRowItems(row: Row<User>) {
   return [
     {
       type: 'label',
-      label: 'Actions'
+      label: 'Acties'
     },
     {
       label: 'Copy customer ID',
@@ -191,7 +191,7 @@ watch(() => statusFilter.value, (newVal) => {
   }
 })
 
-const email = computed({
+const filter = computed({
   get: (): string => {
     return (table.value?.tableApi?.getColumn('email')?.getFilterValue() as string) || ''
   },
@@ -207,9 +207,9 @@ const pagination = ref({
 </script>
 
 <template>
-  <UDashboardPanel id="customers">
+  <UDashboardPanel id="vendors">
     <template #header>
-      <UDashboardNavbar title="Customers">
+      <UDashboardNavbar title="Standhouders">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
@@ -223,10 +223,10 @@ const pagination = ref({
     <template #body>
       <div class="flex flex-wrap items-center justify-between gap-1.5">
         <UInput
-          v-model="email"
+          v-model="filter"
           class="max-w-sm"
           icon="i-lucide-search"
-          placeholder="Filter emails..."
+          placeholder="Filter op naam of nummer..."
         />
 
         <div class="flex flex-wrap items-center gap-1.5">
