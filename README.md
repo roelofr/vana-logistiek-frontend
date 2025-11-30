@@ -4,6 +4,7 @@ A Nuxt app that renders information recieved by the Vana Logistiek application (
 and continuously iterating on that version.
 
 ## Powered by Nuxt
+
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
 ## Features
