@@ -6,13 +6,13 @@ import type { Period, Range } from '~/types'
 const { isNotificationsSlideoverOpen } = useDashboard()
 
 const items = [[{
-  label: 'New mail',
+  label: 'Nieuw ticket',
   icon: 'i-lucide-send',
-  to: '/inbox'
+  to: '/tickets/new'
 }, {
-  label: 'New customer',
-  icon: 'i-lucide-user-plus',
-  to: '/customers'
+  label: 'Nieuwe standhouder',
+  icon: 'i-lucide-store',
+  to: '/vendors/new'
 }]] satisfies DropdownMenuItem[][]
 
 const range = shallowRef<Range>({

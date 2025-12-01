@@ -12,7 +12,10 @@ const tabItems = [{
 }]
 const selectedTab = ref('all')
 
-const { data: mails } = await useFetch<Mail[]>('/api/mails', { default: () => [] })
+const { data: mails, pending } = await useFetch<Mail[]>('/api/mails', {
+  default: () => [],
+  lazy: true
+})
 
 // Filter mails based on the selected tab
 const filteredMails = computed(() => {
@@ -60,7 +63,7 @@ const isMobile = breakpoints.smaller('lg')
         <UDashboardSidebarCollapse />
       </template>
       <template #trailing>
-        <UBadge :label="filteredMails.length" variant="subtle" />
+        <UBadge v-if="!isLoading" :label="filteredMails.length" variant="subtle" />
       </template>
 
       <template #right>
@@ -72,7 +75,7 @@ const isMobile = breakpoints.smaller('lg')
         />
       </template>
     </UDashboardNavbar>
-    <InboxList v-model="selectedMail" :mails="filteredMails" />
+    <InboxList v-model="selectedMail" :mails="filteredMails" :is-loading="pending" />
   </UDashboardPanel>
 
   <InboxMail v-if="selectedMail" :mail="selectedMail" @close="selectedMail = null" />

@@ -7,24 +7,22 @@ useHead({
   meta: [
     { charset: 'utf-8' },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-    { key: 'theme-color', name: 'theme-color', content: color }
+    { name: 'theme-color', content: color }
   ],
   link: [
-    { rel: 'icon', href: '/favicon.ico' }
+    { rel: 'icon', href: '/favicon.ico' },
+    { rel: 'icon', href: '/logo.svg', type: 'image/svg' }
   ],
-  htmlAttrs: {
-    lang: 'en'
-  }
+  htmlAttrs: { lang: 'nl' }
 })
 
 const title = 'Penis LogistiekApp'
-const description = 'De app voor Team Logistiek.'
+const description = 'De app voor Team Logistiek'
 
 useSeoMeta({
   title,
   description,
-  robots: 'noindex, nofollow',
-  ogLocale: 'nl-NL',
+  robots: 'noindex, nofollow'
 })
 </script>
 

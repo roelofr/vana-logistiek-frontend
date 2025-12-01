@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import type {NavigationMenuItem} from '@nuxt/ui'
-
-const route = useRoute()
-const toast = useToast()
+import type { NavigationMenuItem } from '@nuxt/ui'
 
 const open = ref(false)
 const close = () => {
@@ -15,20 +12,20 @@ const links = [
       label: 'Start',
       icon: 'i-lucide-house',
       to: '/',
-      onSelect: close,
+      onSelect: close
     },
     {
       label: 'Tickets',
       icon: 'i-lucide-inbox',
-      to: '/inbox',
+      to: '/tickets',
       badge: '4',
-      onSelect: close,
+      onSelect: close
     },
     {
       label: 'Standhouders',
-      icon: 'i-lucide-users',
+      icon: 'i-lucide-store',
       to: '/vendors',
-      onSelect: close,
+      onSelect: close
     },
     {
       label: 'Instellingen',
@@ -87,11 +84,12 @@ const groups = computed(() => [
       :ui="{ footer: 'lg:border-t lg:border-default' }"
     >
       <template #header="{ collapsed }">
-        <TeamsMenu :collapsed="collapsed"/>
+        <Logo v-if="!collapsed" class="h-5 w-auto shrink-0" />
+        <UIcon v-else name="i-simple-icons-nuxtdotjs" class="size-5 text-primary mx-auto" />
       </template>
 
       <template #default="{ collapsed }">
-        <UDashboardSearchButton label="Zoeken..." :collapsed="collapsed" class="bg-transparent ring-default"/>
+        <UDashboardSearchButton label="Zoeken..." :collapsed="collapsed" class="bg-transparent ring-default" />
 
         <UNavigationMenu
           :collapsed="collapsed"
@@ -111,16 +109,17 @@ const groups = computed(() => [
       </template>
 
       <template #footer="{ collapsed }">
-        <UserMenu :collapsed="collapsed"/>
+        <UserMenu :collapsed="collapsed" />
       </template>
     </UDashboardSidebar>
 
     <UDashboardSearch
       placeholder="Typ een commando of zoekopdracht..."
-      :groups="groups"/>
+      :groups="groups"
+    />
 
-    <slot/>
+    <slot />
 
-    <NotificationsSlideover/>
+    <NotificationsSlideover />
   </UDashboardGroup>
 </template>
