@@ -4,7 +4,7 @@ const tickets = [
     title: 'Bijbestelling',
     vendor: {
       id: 1,
-      name: 'Spooky Stuff',
+      name: 'Spooky Stuff'
     },
     messages: [
       {

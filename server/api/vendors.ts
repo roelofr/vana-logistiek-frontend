@@ -183,7 +183,7 @@ const customers: User[] = [{
 }]
 
 export default eventHandler(async () => {
-  const resp = await new Promise(resolve => {
+  const resp = await new Promise((resolve) => {
     setTimeout(() => resolve(customers), Math.floor(2_000 + Math.random() * 4_000))
   })
   return resp
