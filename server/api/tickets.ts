@@ -21,5 +21,5 @@ const tickets = [
 ]
 
 export default eventHandler(async () => {
-  return members
+  return tickets
 })
