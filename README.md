@@ -1,6 +1,6 @@
 # Vana Logistiek Front-end
 
-A Nuxt app that renders information recieved by the Vana Logistiek application (Quarkus). Used since Castlefest 2025,
+A Nuxt app that renders information received by the Vana Logistiek application (Quarkus). Used since Castlefest 2025,
 and continuously iterating on that version.
 
 ## Powered by Nuxt
