@@ -5,7 +5,6 @@
     "./app.d.ts"
   ],
   "references": [
-    { "path": "./app.d.ts" },
     { "path": "./.nuxt/tsconfig.app.json" },
     { "path": "./.nuxt/tsconfig.server.json" },
     { "path": "./.nuxt/tsconfig.shared.json" },
