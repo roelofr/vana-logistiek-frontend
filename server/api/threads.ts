@@ -1,7 +1,7 @@
 import { sub } from 'date-fns'
 import { randomDelay } from '~~/server/api/helpers/delay'
 
-const mails = [{
+const threads = [{
   id: 1,
   from: {
     name: 'Alex Smith',
@@ -687,4 +687,4 @@ Emergency: (555) 987-6544`,
   date: sub(new Date(), { months: 2 }).toISOString()
 }]
 
-export default eventHandler(async () => randomDelay(mails, 4_000))
+export default eventHandler(async () => randomDelay(threads, 4_000))

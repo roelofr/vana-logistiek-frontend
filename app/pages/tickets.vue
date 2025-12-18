@@ -12,18 +12,18 @@ const tabItems = [{
 }]
 const selectedTab = ref('all')
 
-const { data: mails, pending } = await useFetch<Mail[]>('/api/mails', {
+const { data: threads, pending } = await useFetch<Mail[]>('/api/threads', {
   default: () => [],
   lazy: true
 })
 
-// Filter mails based on the selected tab
+// Filter threads based on the selected tab
 const filteredMails = computed(() => {
   if (selectedTab.value === 'unread') {
-    return mails.value.filter(mail => !!mail.unread)
+    return threads.value.filter(mail => !!mail.unread)
   }
 
-  return mails.value
+  return threads.value
 })
 
 const selectedMail = ref<Mail | null>()
@@ -39,7 +39,7 @@ const isMailPanelOpen = computed({
   }
 })
 
-// Reset selected mail if it's not in the filtered mails
+// Reset selected mail if it's not in the filtered threads
 watch(filteredMails, () => {
   if (!filteredMails.value.find(mail => mail.id === selectedMail.value?.id)) {
     selectedMail.value = null
@@ -75,7 +75,7 @@ const isMobile = breakpoints.smaller('lg')
         />
       </template>
     </UDashboardNavbar>
-    <InboxList v-model="selectedMail" :mails="filteredMails" :is-loading="pending" />
+    <InboxList v-model="selectedMail" :threads="filteredMails" :is-loading="pending" />
   </UDashboardPanel>
 
   <InboxMail v-if="selectedMail" :mail="selectedMail" @close="selectedMail = null" />
