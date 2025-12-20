@@ -1,16 +1,44 @@
 import { sub } from 'date-fns'
 import { randomDelay } from '~~/server/api/helpers/delay'
 
-const threads = [{
+let vendorId = 1
+const vendorById = new Map<number, Vendor>()
+
+const createVendor = (name: string | number): Vendor => {
+  if (typeof name === 'number')
+    return vendorById.get(name)
+
+  const vendor: Vendor = {
+    id: vendorId++,
+    name: name,
+    number: `${100 + (vendorId - 1)}`
+  }
+
+  vendorById.set(vendor.id, vendor)
+
+  return vendor
+}
+
+const vendors = [
+  createVendor('Stevie Wondershop'),
+  createVendor('Mooie Mannen'),
+  createVendor('Constructieve Maliën'),
+  createVendor('Wicked Women'),
+  createVendor('Vegan Vengeance'),
+  createVendor('Magic Without'),
+  createVendor('Magic World'),
+  createVendor('Wings of Magic'),
+  createVendor('Magic Feeling'),
+  createVendor('World of Magic'),
+  createVendor('Crazy Cat'),
+  createVendor('Beaf Jerky'),
+  createVendor('Lana\'s Kraamemporium')
+]
+
+const threads: Thread[] = [{
   id: 1,
-  from: {
-    name: 'Alex Smith',
-    email: 'alex.smith@example.com',
-    avatar: {
-      src: 'https://i.pravatar.cc/128?u=1'
-    }
-  },
-  subject: 'Meeting Schedule: Q1 Marketing Strategy Review',
+  vendor: vendors[1],
+  subject: 'Bijbestellin',
   body: `Dear Team,
 
 I hope this email finds you well. Just a quick reminder about our Q1 Marketing Strategy meeting scheduled for tomorrow at 10 AM EST in Conference Room A.

@@ -19,12 +19,12 @@ export default defineNuxtConfig({
     }
   },
 
-  compatibilityDate: '2024-07-11',
+  compatibilityDate: '2025-12-20',
 
   eslint: {
     config: {
       stylistic: {
-        commaDangle: 'never',
+        commaDangle: 'always',
         braceStyle: '1tbs'
       }
     }
