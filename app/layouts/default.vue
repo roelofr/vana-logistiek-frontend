@@ -15,10 +15,10 @@ const links = [
       onSelect: close
     },
     {
-      label: 'Tickets',
+      label: 'Meldingen',
       icon: 'i-lucide-inbox',
-      to: '/tickets',
-      badge: '4',
+      to: '/threads',
+      // badge: '4',
       onSelect: close
     },
     {
