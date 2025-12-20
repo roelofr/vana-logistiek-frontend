@@ -35,7 +35,7 @@ const period = ref<Period>('daily')
             <UButton
               color="neutral"
               variant="ghost"
-              square
+              rounded
               @click="isNotificationsSlideoverOpen = true"
             >
               <UChip color="error" inset>
