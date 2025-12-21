@@ -8,11 +8,17 @@ interface User {
   email: string
 }
 
+interface District {
+  name: string
+  colour: string
+  team: TeamRef
+}
+
 interface Vendor {
   id: number
-  team_id: TeamRef
   number: string
-  name: string
+  name: string,
+  district: DistrctRef
 }
 
 /**
@@ -65,3 +71,4 @@ type ObjectRef = { id: number }
 type UserRef = User | ObjectRef
 type TeamRef = Team | ObjectRef
 type ThreadRef = Thread | ObjectRef
+type DistrctRef = District | ObjectRef
