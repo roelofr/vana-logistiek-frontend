@@ -5,14 +5,14 @@ export default defineAppConfig({
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     ],
     link: [
-      { rel: 'icon', href: '/logo.svg', type: 'image/svg' }
+      { rel: 'icon', href: '/logo.svg', type: 'image/svg' },
     ],
-    htmlAttrs: { lang: 'nl' }
+    htmlAttrs: { lang: 'nl' },
   },
   ui: {
     colors: {
       primary: 'pink',
-      neutral: 'zinc'
-    }
-  }
+      neutral: 'zinc',
+    },
+  },
 })

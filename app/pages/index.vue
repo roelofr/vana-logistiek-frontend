@@ -8,16 +8,16 @@ const { isNotificationsSlideoverOpen } = useDashboard()
 const items = [[{
   label: 'Nieuw ticket',
   icon: 'i-lucide-send',
-  to: '/tickets/new'
+  to: '/tickets/new',
 }, {
   label: 'Nieuwe standhouder',
   icon: 'i-lucide-store',
-  to: '/vendors/new'
+  to: '/vendors/new',
 }]] satisfies DropdownMenuItem[][]
 
 const range = shallowRef<Range>({
   start: sub(new Date(), { days: 14 }),
-  end: new Date()
+  end: new Date(),
 })
 const period = ref<Period>('daily')
 </script>

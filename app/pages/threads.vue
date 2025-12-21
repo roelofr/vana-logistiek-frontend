@@ -5,16 +5,16 @@ import type { Mail } from '~/types'
 
 const tabItems = [{
   label: 'All',
-  value: 'all'
+  value: 'all',
 }, {
   label: 'Unread',
-  value: 'unread'
+  value: 'unread',
 }]
 const selectedTab = ref('all')
 
 const { data: threads, pending } = await useFetch<Mail[]>('/api/threads', {
   default: () => [],
-  lazy: true
+  lazy: true,
 })
 
 // Filter threads based on the selected tab
@@ -36,7 +36,7 @@ const isMailPanelOpen = computed({
     if (!value) {
       selectedMail.value = null
     }
-  }
+  },
 })
 
 // Reset selected mail if it's not in the filtered threads

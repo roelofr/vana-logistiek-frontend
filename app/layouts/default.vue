@@ -12,20 +12,20 @@ const links = [
       label: 'Start',
       icon: 'i-lucide-house',
       to: '/',
-      onSelect: close
+      onSelect: close,
     },
     {
       label: 'Meldingen',
       icon: 'i-lucide-inbox',
       to: '/threads',
       // badge: '4',
-      onSelect: close
+      onSelect: close,
     },
     {
       label: 'Standhouders',
       icon: 'i-lucide-store',
       to: '/vendors',
-      onSelect: close
+      onSelect: close,
     },
     {
       label: 'Instellingen',
@@ -38,32 +38,32 @@ const links = [
           label: 'Profiel',
           to: '/settings',
           exact: true,
-          onSelect: close
+          onSelect: close,
         },
         {
           label: 'Gebruikers',
           to: '/settings/users',
-          onSelect: close
-        }
-      ]
-    }
+          onSelect: close,
+        },
+      ],
+    },
   ],
   [
     {
       label: 'Emotional Support',
       icon: 'i-lucide-info',
       to: 'https://pornhub.com/',
-      target: '_blank'
-    }
-  ]
+      target: '_blank',
+    },
+  ],
 ] satisfies NavigationMenuItem[][]
 
 const groups = computed(() => [
   {
     id: 'links',
     label: 'Snel naar...',
-    items: links.flat()
-  }
+    items: links.flat(),
+  },
 ])
 </script>
 

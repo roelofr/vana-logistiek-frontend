@@ -6,12 +6,12 @@ const links = [[
     label: 'Profiel',
     icon: 'i-lucide-user',
     to: '/settings',
-    exact: true
+    exact: true,
   }, {
     label: 'Gebruikers',
     icon: 'i-lucide-users',
-    to: '/settings/users'
-  }
+    to: '/settings/users',
+  },
 ]] satisfies NavigationMenuItem[][]
 </script>
 

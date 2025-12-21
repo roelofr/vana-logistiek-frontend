@@ -4,19 +4,19 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/ui',
     '@nuxt/hints',
-    '@vueuse/nuxt'
+    '@vueuse/nuxt',
   ],
 
   devtools: {
-    enabled: true
+    enabled: true,
   },
 
   css: ['~/assets/css/main.css'],
 
   routeRules: {
     '/api/**': {
-      cors: true
-    }
+      cors: true,
+    },
   },
 
   compatibilityDate: '2025-12-20',
@@ -24,9 +24,9 @@ export default defineNuxtConfig({
   eslint: {
     config: {
       stylistic: {
-        commaDangle: 'always',
-        braceStyle: '1tbs'
-      }
-    }
-  }
+        commaDangle: 'always-multiline',
+        braceStyle: '1tbs',
+      },
+    },
+  },
 })

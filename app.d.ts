@@ -17,7 +17,7 @@ interface District {
 interface Vendor {
   id: number
   number: string
-  name: string,
+  name: string
   district: DistrctRef
 }
 
