@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
+const accessToken = useAccessToken()
+
 const open = ref(false)
 const close = () => {
   open.value = false
@@ -65,6 +67,10 @@ const groups = computed(() => [
     items: links.flat(),
   },
 ])
+
+const promptAccessToken = () => {
+  accessToken.value = prompt('Enter new token', accessToken.value)
+}
 </script>
 
 <template>
@@ -92,7 +98,6 @@ const groups = computed(() => [
           tooltip
           popover
         />
-
         <UNavigationMenu
           :collapsed="collapsed"
           :items="links[1]"
@@ -100,6 +105,12 @@ const groups = computed(() => [
           tooltip
           class="mt-auto"
         />
+
+        <DevOnly>
+          <UButton @click="promptAccessToken()">
+            Set token
+          </UButton>
+        </DevOnly>
       </template>
 
       <template #footer="{ collapsed }">

@@ -71,6 +71,13 @@ defineShortcuts({
         </div>
       </div>
     </template>
+    <template v-else-if="threads.length == 0">
+      <UEmpty
+        icon="i-lucide-inbox"
+        title="Geen meldingen gevonden"
+        description="Het lijkt er op dat er nog geen meldingen zijn, lekker bezig!"
+      />
+    </template>
     <template v-else>
       <div
         v-for="(mail, index) in threads"

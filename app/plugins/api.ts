@@ -1,24 +1,35 @@
-export default defineNuxtPlugin((_nuxtApp) => {
-  const apiUrl = useAppConfig().apiUrl ?? 'https://logistiek.myvana.dev'
-  const authHeader = useRequestHeader('Authorization')
-  const authCookie = useCookie('token')
-  const accessToken = authHeader ?? authCookie.value
+const validationRoute = new URL(`https://example.com/not-an-api/`)
+const isValidUrl = (url: string) => {
+  const route = new URL(url, validationRoute)
+  if (route.origin !== validationRoute.origin)
+    return false
+
+  return route.pathname.startsWith('/api/')
+}
+
+const resolveRequestUri = (request: string | Request) => typeof request == 'string' ? request : request.url
+
+export default defineNuxtPlugin((nuxtApp) => {
+  const appConfig = nuxtApp.$config
+  const apiUrl = appConfig?.apiUrl ?? appConfig?.public?.apiUrl ?? 'https://logistiek.myvana.dev'
+  const authHeader = useAccessToken()
 
   const api = $fetch.create({
-    baseURL: apiUrl as string,
+    baseURL: apiUrl,
     onRequest({ request, options }) {
-      const requestUri = typeof request == 'string' ? request : request.url
-      if (requestUri.startsWith('/api/'))
+      const requestUri = resolveRequestUri(request)
+
+      if (!isValidUrl(requestUri))
         throw new Error('Call to $api with non-relative URI or URL that does not start with /api/.')
 
-      console.log('API call to %s', requestUri)
+      const token = authHeader.value
+      if (token)
+        options.headers.set('Authorization', `Bearer ${token}`)
 
-      if (accessToken)
-        options.headers.set('Authorization', `Bearer ${accessToken}`)
+      console.log('Making request to URL %s, using authorization? %o', new URL(requestUri, apiUrl).toString(), options.headers.has('Authorization'))
     },
   })
 
-  // Expose to useNuxtApp().$api
   return {
     provide: {
       api,

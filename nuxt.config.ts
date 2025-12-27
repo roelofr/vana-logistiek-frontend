@@ -13,6 +13,13 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  runtimeConfig: {
+    apiUrl: 'https://logistiek.myvana.dev',
+    public: {
+      apiUrl: 'https://logistiek.myvana.dev',
+    },
+  },
+
   routeRules: {
     '/api/**': {
       cors: true,
