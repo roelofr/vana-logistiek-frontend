@@ -3,7 +3,7 @@ import { format, isToday } from 'date-fns'
 import type { Mail } from '~/types'
 
 const props = defineProps<{
-  mails: Mail[]
+  threads: Mail[]
   isLoading: boolean
 }>()
 
@@ -23,21 +23,21 @@ watch(selectedMail, () => {
 
 defineShortcuts({
   arrowdown: () => {
-    const index = props.mails.findIndex(mail => mail.id === selectedMail.value?.id)
+    const index = props.threads.findIndex(mail => mail.id === selectedMail.value?.id)
 
     if (index === -1) {
-      selectedMail.value = props.mails[0]
-    } else if (index < props.mails.length - 1) {
-      selectedMail.value = props.mails[index + 1]
+      selectedMail.value = props.threads[0]
+    } else if (index < props.threads.length - 1) {
+      selectedMail.value = props.threads[index + 1]
     }
   },
   arrowup: () => {
-    const index = props.mails.findIndex(mail => mail.id === selectedMail.value?.id)
+    const index = props.threads.findIndex(mail => mail.id === selectedMail.value?.id)
 
     if (index === -1) {
-      selectedMail.value = props.mails[props.mails.length - 1]
+      selectedMail.value = props.threads[props.threads.length - 1]
     } else if (index > 0) {
-      selectedMail.value = props.mails[index - 1]
+      selectedMail.value = props.threads[index - 1]
     }
   },
 })
@@ -73,7 +73,7 @@ defineShortcuts({
     </template>
     <template v-else>
       <div
-        v-for="(mail, index) in mails"
+        v-for="(mail, index) in threads"
         :key="index"
         :ref="el => { mailsRefs[mail.id] = el as Element }"
       >

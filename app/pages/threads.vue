@@ -12,8 +12,11 @@ const tabItems = [{
 }]
 const selectedTab = ref('all')
 
-const { data: threads, pending } = await useFetch<Mail[]>('/api/threads', {
-  default: () => [],
+const { data: threads, pending } = await useApi<Mail[]>(() => '/api/threads', {
+  default: () => [] as Mail[],
+  params: {
+    filter: () => selectedTab.value === 'all' ? '' : selectedTab.value,
+  },
   lazy: true,
 })
 
@@ -45,6 +48,8 @@ watch(filteredMails, () => {
     selectedMail.value = null
   }
 })
+
+const isLoading = computed(() => pending.value)
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isMobile = breakpoints.smaller('lg')

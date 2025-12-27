@@ -1,4 +1,10 @@
 export default defineAppConfig({
+  runtimeConfig: {
+    apiUrl: 'https://logistiek.myvana.dev',
+    public: {
+      apiUrl: 'https://logistiek.myvana.dev',
+    },
+  },
   head: {
     meta: [
       { charset: 'utf-8' },
