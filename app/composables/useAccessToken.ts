@@ -6,7 +6,7 @@ const _useAccessToken = () => {
 
   return computed({
     get: () => {
-      if (authHeader && authHeader.toLowerCase().startsWith('Bearer ')) {
+      if (authHeader && authHeader.toLowerCase().startsWith('bearer ')) {
         console.log('Using Authorization header for API authentication')
         return authHeader.substring('Bearer'.length).trimStart()
       }
