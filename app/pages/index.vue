@@ -1,25 +1,11 @@
 <script setup lang="ts">
-import { sub } from 'date-fns'
 import type { DropdownMenuItem } from '@nuxt/ui'
-import type { Period, Range } from '~/types'
-
-const { isNotificationsSlideoverOpen } = useDashboard()
 
 const items = [[{
-  label: 'Nieuw ticket',
+  label: 'Nieuwe melding',
   icon: 'i-lucide-send',
-  to: '/tickets/new',
-}, {
-  label: 'Nieuwe standhouder',
-  icon: 'i-lucide-store',
-  to: '/vendors/new',
+  to: '/threads/create',
 }]] satisfies DropdownMenuItem[][]
-
-const range = shallowRef<Range>({
-  start: sub(new Date(), { days: 14 }),
-  end: new Date(),
-})
-const period = ref<Period>('daily')
 </script>
 
 <template>
@@ -31,39 +17,22 @@ const period = ref<Period>('daily')
         </template>
 
         <template #right>
-          <UTooltip text="Notifications" :shortcuts="['N']">
-            <UButton
-              color="neutral"
-              variant="ghost"
-              rounded
-              @click="isNotificationsSlideoverOpen = true"
-            >
-              <UChip color="error" inset>
-                <UIcon name="i-lucide-bell" class="size-5 shrink-0" />
-              </UChip>
-            </UButton>
-          </UTooltip>
-
           <UDropdownMenu :items="items">
             <UButton icon="i-lucide-plus" size="md" class="rounded-full" />
           </UDropdownMenu>
         </template>
       </UDashboardNavbar>
-
-      <UDashboardToolbar>
-        <template #left>
-          <!-- NOTE: The `-ms-1` class is used to align with the `DashboardSidebarCollapse` button here. -->
-          <HomeDateRangePicker v-model="range" class="-ms-1" />
-
-          <HomePeriodSelect v-model="period" :range="range" />
-        </template>
-      </UDashboardToolbar>
     </template>
 
     <template #body>
-      <HomeStats :period="period" :range="range" />
-      <HomeChart :period="period" :range="range" />
-      <HomeSales :period="period" :range="range" />
+      <UEmpty
+        title="Nope, nog niks"
+        description="Dit blok is nog leeg, we bedenken er vast wel iets voor."
+      >
+        <template #leading>
+          <UIcon name="i-lucide-swords" :size="64" />
+        </template>
+      </UEmpty>
     </template>
   </UDashboardPanel>
 </template>
