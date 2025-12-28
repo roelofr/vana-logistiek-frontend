@@ -2,6 +2,8 @@ import type { AvatarProps } from '@nuxt/ui'
 
 export type SaleStatus = 'paid' | 'failed' | 'refunded'
 
+export type LoadingType = 'full' | 'partial' | null
+
 export interface User {
   id: number
   name: string
