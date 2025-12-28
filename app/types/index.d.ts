@@ -1,6 +1,5 @@
 import type { AvatarProps } from '@nuxt/ui'
 
-export type UserStatus = 'subscribed' | 'unsubscribed' | 'bounced'
 export type SaleStatus = 'paid' | 'failed' | 'refunded'
 
 export interface User {
@@ -8,7 +7,6 @@ export interface User {
   name: string
   email: string
   avatar?: AvatarProps
-  status: UserStatus
   location: string
 }
 

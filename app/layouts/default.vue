@@ -69,7 +69,7 @@ const groups = computed(() => [
 ])
 
 const promptAccessToken = () => {
-  accessToken.value = prompt('Enter new token', accessToken.value)
+  accessToken.value = prompt('Enter new token', accessToken.value ?? undefined)
 }
 </script>
 

@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
+import type { User } from '~/types'
 
 defineProps<{
   collapsed?: boolean
 }>()
 
-const { pending: userPending, data: user } = useApi<User>('/api/user/me', {
+const { pending: userPending, data: user, status: userStatus } = useApi<User>('/api/user/me', {
   lazy: true,
 })
+
+const menuDisabled = computed(() => userPending.value || userStatus.value !== 'success')
 
 const items = computed<DropdownMenuItem[][]>(() => ([[
   {
@@ -31,7 +34,7 @@ const items = computed<DropdownMenuItem[][]>(() => ([[
     :items="items"
     :content="{ align: 'center', collisionPadding: 12 }"
     :ui="{ content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)' }"
-    :disabled="userPending"
+    :disabled="menuDisabled"
   >
     <UButton
       v-bind="{
@@ -50,7 +53,8 @@ const items = computed<DropdownMenuItem[][]>(() => ([[
         <USkeleton class="h-6 w-6 rounded-full" />
         <USkeleton class="h-4 w-[70%]" />
       </div>
-      <span v-else>{{ user.name }}</span>
+      <span v-else-if="menuDisabled">Sam Smith</span>
+      <span v-else>{{ user?.name }}</span>
     </UButton>
 
     <template #chip-leading="{ item }">

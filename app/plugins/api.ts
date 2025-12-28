@@ -1,38 +1,31 @@
-const validationRoute = new URL(`https://example.com/not-an-api/`)
-const isValidUrl = (url: string) => {
-  const route = new URL(url, validationRoute)
-  if (route.origin !== validationRoute.origin)
-    return false
+const validationRoute = `https://${crypto.randomUUID()}.example.com/not-an-api/`
+const validationOrigin = new URL(validationRoute).origin
 
-  return route.pathname.startsWith('/api/')
-}
+export default defineNuxtPlugin((_) => {
+  const config = useRuntimeConfig()
+  const accessToken = useAccessToken()
 
-const resolveRequestUri = (request: string | Request) => typeof request == 'string' ? request : request.url
+  const isValidApiUrl = (request: string | Request): boolean => {
+    const requestUri = typeof request == 'string' ? request : request.url
 
-export default defineNuxtPlugin((nuxtApp) => {
-  const appConfig = nuxtApp.$config
-  const apiUrl = appConfig?.apiUrl ?? appConfig?.public?.apiUrl ?? 'https://logistiek.myvana.dev'
-  const authHeader = useAccessToken()
+    const route = new URL(requestUri, validationRoute)
+    if (route.origin !== validationOrigin)
+      return false
 
-  const api = $fetch.create({
-    baseURL: apiUrl,
+    return route.pathname.startsWith('/api/')
+  }
+
+  const $api = $fetch.create({
+    baseURL: config.apiUrl as string ?? 'https://logistiek.myvana.dev',
     onRequest({ request, options }) {
-      const requestUri = resolveRequestUri(request)
-
-      if (!isValidUrl(requestUri))
-        throw new Error('Call to $api with non-relative URI or URL that does not start with /api/.')
-
-      const token = authHeader.value
-      if (token)
-        options.headers.set('Authorization', `Bearer ${token}`)
-
-      console.log('Making request to URL %s, using authorization? %o', new URL(requestUri, apiUrl).toString(), options.headers.has('Authorization'))
+      if (isValidApiUrl(request) && accessToken.value)
+        options.headers.set('Authorization', `Bearer ${accessToken.value}`)
     },
   })
 
   return {
     provide: {
-      api,
+      api: $api,
     },
   }
 })
