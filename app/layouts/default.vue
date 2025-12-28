@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-const accessToken = useAccessToken()
-
 const open = ref(false)
 const close = () => {
   open.value = false
@@ -67,10 +65,6 @@ const groups = computed(() => [
     items: links.flat(),
   },
 ])
-
-const promptAccessToken = () => {
-  accessToken.value = prompt('Enter new token', accessToken.value ?? undefined)
-}
 </script>
 
 <template>
@@ -107,9 +101,7 @@ const promptAccessToken = () => {
         />
 
         <DevOnly>
-          <UButton @click="promptAccessToken()">
-            Set token
-          </UButton>
+          <SetAccessToken />
         </DevOnly>
       </template>
 

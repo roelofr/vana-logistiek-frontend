@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
-import type { User } from '~/types'
+import { useUser } from '~/composables/useUser'
 
 defineProps<{
   collapsed?: boolean
 }>()
 
-const { pending: userPending, data: user, status: userStatus } = useApi<User>('/api/user/me', {
-  lazy: true,
-})
+const { data: user, status: userStatus, pending: userPending } = useUser({ lazy: true })
 
-const menuDisabled = computed(() => userPending.value || userStatus.value !== 'success')
+const userError = computed(() => userStatus.value == 'error')
+const menuDisabled = computed(() => (userPending.value || userError.value))
 
 const items = computed<DropdownMenuItem[][]>(() => ([[
   {
@@ -53,7 +52,21 @@ const items = computed<DropdownMenuItem[][]>(() => ([[
         <USkeleton class="h-6 w-6 rounded-full" />
         <USkeleton class="h-4 w-[70%]" />
       </div>
-      <span v-else-if="menuDisabled">Sam Smith</span>
+      <UPopover v-else-if="menuDisabled">
+        <UButton
+          color="neutral"
+          variant="ghost"
+          block
+          :square="collapsed"
+          class="data-[state=open]:bg-elevated"
+        >
+          Sam Smith
+        </UButton>
+
+        <template #content>
+          <pre><code>{{ JSON.stringify(user, undefined, 4) }}</code></pre>
+        </template>
+      </UPopover>
       <span v-else>{{ user?.name }}</span>
     </UButton>
 

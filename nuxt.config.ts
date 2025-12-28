@@ -7,6 +7,15 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
   ],
 
+  $development: {
+    runtimeConfig: {
+      apiUrl: 'http://localhost:8080',
+      public: {
+        apiUrl: 'http://localhost:8080',
+      },
+    },
+  },
+
   devtools: {
     enabled: true,
   },

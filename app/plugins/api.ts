@@ -16,9 +16,14 @@ export default defineNuxtPlugin((_) => {
   }
 
   const $api = $fetch.create({
-    baseURL: config.apiUrl as string ?? 'https://logistiek.myvana.dev',
+    baseURL: config.apiUrl as string ?? config.public?.apiUrl as string ?? 'https://logistiek.myvana.dev',
     onRequest({ request, options }) {
-      if (isValidApiUrl(request) && accessToken.value)
+      if (!isValidApiUrl(request))
+        return
+
+      options.headers.set('Accept', 'application/json, image/*, text/*;q=0.9, */*;q=0.8')
+
+      if (accessToken.value)
         options.headers.set('Authorization', `Bearer ${accessToken.value}`)
     },
   })
