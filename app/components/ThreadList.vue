@@ -12,14 +12,17 @@ const mailsRefs = ref<Element[]>([])
 const selectedMail = defineModel<Mail | null>()
 
 watch(selectedMail, () => {
-  if (!selectedMail.value) {
+  if (!selectedMail.value)
     return
-  }
+
   const ref = mailsRefs.value[selectedMail.value.id]
-  if (ref) {
+  if (ref)
     ref.scrollIntoView({ block: 'nearest' })
-  }
 })
+
+const selectMail = (mail) => {
+  //
+}
 
 defineShortcuts({
   arrowdown: () => {
@@ -87,6 +90,7 @@ defineShortcuts({
           :key="index"
           :ref="el => { mailsRefs[mail.id] = el as Element }"
           :href="`threads/${mail.id}`"
+          @click.prevent="selectMail(mail)"
         >
           <div
             class="p-4 sm:px-6 text-sm cursor-pointer border-l-2 transition-colors"

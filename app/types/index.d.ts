@@ -12,6 +12,14 @@ export interface User {
   location: string
 }
 
+export interface Thread {
+  id: number
+  unread?: boolean
+  from: Only<'id' | 'name', User>
+  vendor: Only<'id' | 'name', Vendor>
+  subject: string
+}
+
 export interface Mail {
   id: number
   unread?: boolean

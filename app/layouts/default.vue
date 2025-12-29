@@ -85,6 +85,10 @@ const groups = computed(() => [
       <template #default="{ collapsed }">
         <UDashboardSearchButton label="Zoeken..." :collapsed="collapsed" class="bg-transparent ring-default" />
 
+        <UButton href="/threads/create">
+          Nieuwe melding
+        </UButton>
+
         <UNavigationMenu
           :collapsed="collapsed"
           :items="links[0]"
