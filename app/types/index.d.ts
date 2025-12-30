@@ -12,6 +12,19 @@ export interface User {
   location: string
 }
 
+export interface District {
+  id: number
+  name: string
+  colour?: string
+}
+
+export interface Vendor {
+  id: number
+  name: string
+  number: string
+  district?: Only<'id' | 'name', District>
+}
+
 export interface Thread {
   id: number
   unread?: boolean

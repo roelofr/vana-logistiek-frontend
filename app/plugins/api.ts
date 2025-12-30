@@ -4,6 +4,8 @@ const validationOrigin = new URL(validationRoute).origin
 export default defineNuxtPlugin((_) => {
   const config = useRuntimeConfig()
   const accessToken = useAccessToken()
+  const toast = useToast()
+  const toastRef = ref<string | number | null>(null)
 
   const isValidApiUrl = (request: string | Request): boolean => {
     const requestUri = typeof request == 'string' ? request : request.url
@@ -25,6 +27,22 @@ export default defineNuxtPlugin((_) => {
 
       if (accessToken.value)
         options.headers.set('Authorization', `Bearer ${accessToken.value}`)
+    },
+    onResponse(res) {
+      if (res.response.status < 300 && toastRef.value)
+        toast.remove(toastRef.value)
+    },
+    onResponseError(response) {
+      if (toastRef.value == null && response.response.status === 401) {
+        toastRef.value = toast.add({
+          type: 'foreground',
+          color: 'error',
+          icon: 'i-lucide-user-x',
+          title: 'Sessie verlopen',
+          description: 'Je sessie is verlopen, herlaad de pagina om opnieuw in te loggen.',
+          duration: -1,
+        }).id
+      }
     },
   })
 
