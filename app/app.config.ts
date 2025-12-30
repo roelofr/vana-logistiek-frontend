@@ -1,3 +1,9 @@
+const inputUi = {
+  slots: {
+    root: ['w-full', 'max-w-lg'],
+  },
+}
+
 export default defineAppConfig({
   head: {
     meta: [
@@ -10,6 +16,9 @@ export default defineAppConfig({
     htmlAttrs: { lang: 'nl' },
   },
   ui: {
+    input: inputUi,
+    inputMenu: inputUi,
+    inputTags: inputUi,
     colors: {
       primary: 'pink',
       neutral: 'zinc',

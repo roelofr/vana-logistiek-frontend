@@ -1,6 +1,8 @@
 const validationRoute = `https://${crypto.randomUUID()}.example.com/not-an-api/`
 const validationOrigin = new URL(validationRoute).origin
 
+const apiAuthErrorToast = 'vana-api-auth-error'
+
 export default defineNuxtPlugin((_) => {
   const config = useRuntimeConfig()
   const accessToken = useAccessToken()
@@ -35,12 +37,19 @@ export default defineNuxtPlugin((_) => {
     onResponseError(response) {
       if (toastRef.value == null && response.response.status === 401) {
         toastRef.value = toast.add({
+          id: apiAuthErrorToast,
           type: 'foreground',
           color: 'error',
           icon: 'i-lucide-user-x',
           title: 'Sessie verlopen',
           description: 'Je sessie is verlopen, herlaad de pagina om opnieuw in te loggen.',
           duration: -1,
+          actions: [
+            {
+              label: 'Pagina herladen',
+              href: document.location.href,
+            },
+          ],
         }).id
       }
     },

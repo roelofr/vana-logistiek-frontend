@@ -23,7 +23,6 @@ export function expand<T extends object>(input: T[], selectors: (keyof T)[]): T[
 
       const rowValue = row[key]
       if (rowValue && typeof rowValue === 'number') {
-        console.log('Row #%d needs cache index %o', index, rowValue)
         // @ts-expect-error TS2322 Key is a trusted cache
         row[key] = localCache.get(rowValue as number)!
         return row
@@ -31,7 +30,6 @@ export function expand<T extends object>(input: T[], selectors: (keyof T)[]): T[
 
       if (rowValue) {
         const cacheable = rowValue as unknown as KeyLike
-        console.log('Row #%d wrote cache index %o', index, cacheable.id)
         localCache.set((cacheable).id, cacheable)
       }
 

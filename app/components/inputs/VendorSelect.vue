@@ -8,12 +8,14 @@ const { data: apiVendors, status: apiStatus, execute: fetchVendors } = useApi<Ve
 })
 
 type InputVendorItem = InputMenuItem & {
+  id: number
   search: string
   district: string
   number: string
 }
 
 const toNuxtUiList = (vendor: Vendor): InputVendorItem => ({
+  id: vendor.id,
   type: 'item',
   label: vendor.name,
   search: `${vendor.number} ${vendor.name}`,
@@ -22,14 +24,25 @@ const toNuxtUiList = (vendor: Vendor): InputVendorItem => ({
   number: vendor.number,
 })
 
-const vendor = defineModel<Vendor>()
+const vendor = defineModel<Vendor | null>({ required: true })
 const vendors = computed(() => apiVendors.value ? expand(apiVendors.value, ['district']) : [])
 const vendorsMapped = computed(() => vendors.value?.map(toNuxtUiList) ?? [])
 const vendorIndexed = computed(() => new Map(vendors.value?.map(v => [v.id, v])))
 
-const uiModel = computed({
-  get: () => vendor.value ? toNuxtUiList(vendor.value) : undefined,
-  set: (value: number | null) => !value ? null : vendorIndexed.value?.get(value) ?? null,
+const uiVendor = computed<InputVendorItem | undefined>({
+  get() {
+    return vendor.value ? toNuxtUiList(vendor.value) : undefined
+  },
+  set(value) {
+    if (!value) {
+      vendor.value = null
+      return
+    }
+
+    vendor.value = (vendorIndexed.value!).get(value.id) ?? null
+    if (vendor.value == null)
+      console.error('Could not find %o in %o', value.id, vendorIndexed.value)
+  },
 })
 
 function fetchVendorsOnInitialOpen() {
@@ -42,7 +55,7 @@ function fetchVendorsOnInitialOpen() {
 
 <template>
   <UInputMenu
-    v-model="uiModel"
+    v-model="uiVendor"
     placeholder="Selecteer standhouder"
     icon="i-lucide-store"
     :filter-fields="['search']"
@@ -51,7 +64,6 @@ function fetchVendorsOnInitialOpen() {
     :loading="apiStatus == 'pending'"
     open-on-focus
     virtualize
-    size="lg"
     @update:open="fetchVendorsOnInitialOpen"
   >
     <template #trailing="{ modelValue }">
