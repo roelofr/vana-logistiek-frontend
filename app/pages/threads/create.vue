@@ -2,15 +2,34 @@
 import type { Vendor } from '~/types'
 import type { FormSubmitEvent } from '@nuxt/ui'
 
-const vendor = ref<Vendor | undefined>(undefined)
+import * as z from 'zod'
+
+const schema = z.object({
+  vendor: z.looseObject({
+    id: z.number(),
+    name: z.string(),
+    number: z.string(),
+  } satisfies Vendor, 'Standhouder is verplicht'),
+  description: z.string('Omschrijving is verplicht')
+    .min(4, 'Omschrijving moet minimaal 4 tekens zijn'),
+})
+
+type Schema = z.output<typeof schema>
+
+const state = reactive<Partial<Schema>>({
+  vendor: undefined,
+  description: undefined,
+})
 
 const toast = useToast()
-const createVendor = (event: FormSubmitEvent<any>): void => {
+const onSubmit = (event: FormSubmitEvent<Schema>): void => {
   event?.preventDefault()
+
+  console.log('Data is %o', event.data)
 
   toast.add({
     title: 'Thread created!',
-    description: `A new thread was created for <strong>${vendor.value?.name}</strong>`,
+    description: `A new thread was created.`,
   })
 }
 </script>
@@ -22,10 +41,29 @@ const createVendor = (event: FormSubmitEvent<any>): void => {
     </template>
 
     <template #body>
-      <UForm @submit="createVendor">
-        <UFormField name="vendor" label="Vendor">
-          <InputsVendorSelect v-model="vendor" />
+      <UForm
+        :schema="schema"
+        :state="state"
+        class="space-y-4"
+        @submit="onSubmit"
+      >
+        <UFormField name="vendor" label="Standhouder">
+          <InputsVendorSelect v-model="state.vendor" />
         </UFormField>
+
+        <UFormField name="description" label="Omschrijving">
+          <UInput name="description" label="Omschrijving" />
+        </UFormField>
+
+        <UButton type="submit">
+          Submit
+        </UButton>
+
+        <DevOnly>
+          <UCard>
+            <pre><code>{{ JSON.stringify(state, undefined, 2) }}</code></pre>
+          </UCard>
+        </DevOnly>
       </UForm>
     </template>
   </UDashboardPanel>
