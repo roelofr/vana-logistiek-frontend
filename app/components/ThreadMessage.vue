@@ -84,23 +84,21 @@ function onSubmit() {
     <div class="flex flex-col sm:flex-row justify-between gap-1 p-4 sm:px-6 border-b border-default">
       <div class="flex items-start gap-4 sm:my-1.5">
         <UAvatar
-          v-bind="mail.from.avatar"
-          :alt="mail.from.name"
           size="3xl"
         />
 
         <div class="min-w-0">
           <p class="font-semibold text-highlighted">
-            {{ mail.from.name }}
+            John Doe
           </p>
           <p class="text-muted">
-            {{ mail.from.email }}
+            example@example.com
           </p>
         </div>
       </div>
 
       <p class="max-sm:pl-16 text-muted text-sm sm:mt-2">
-        {{ format(new Date(mail.date), 'dd MMM HH:mm') }}
+        {{ format(new Date(), 'dd MMM HH:mm') }}
       </p>
     </div>
 
@@ -116,7 +114,7 @@ function onSubmit() {
           <UIcon name="i-lucide-reply" class="size-5" />
 
           <span class="text-sm truncate">
-            Reply to {{ mail.from.name }} ({{ mail.from.email }})
+            Reply to John Doe
           </span>
         </template>
 

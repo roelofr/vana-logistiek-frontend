@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { format, isToday } from 'date-fns'
 import type { LoadingType, Mail } from '~/types'
 
 const props = defineProps<{
@@ -85,11 +84,10 @@ defineShortcuts({
         />
       </template>
       <template v-else>
-        <NuxtLink
+        <div
           v-for="(mail, index) in threads"
           :key="index"
           :ref="el => { mailsRefs[mail.id] = el as Element }"
-          :href="`threads/${mail.id}`"
           @click.prevent="selectMail(mail)"
         >
           <div
@@ -104,14 +102,16 @@ defineShortcuts({
           >
             <div class="flex items-center justify-between" :class="[mail.unread && 'font-semibold']">
               <div class="flex items-center gap-3">
-                {{ mail.from.name }}
+                {{ mail.from?.name ?? 'John Doe' }}
 
                 <UChip v-if="mail.unread" />
               </div>
 
+              <!--
               <span>{{
                 isToday(new Date(mail.date)) ? format(new Date(mail.date), 'HH:mm') : format(new Date(mail.date), 'dd MMM')
               }}</span>
+              -->
             </div>
             <p class="truncate" :class="[mail.unread && 'font-semibold']">
               {{ mail.subject }}
@@ -120,7 +120,7 @@ defineShortcuts({
               {{ mail.body }}
             </p>
           </div>
-        </NuxtLink>
+        </div>
       </template>
     </template>
   </div>
