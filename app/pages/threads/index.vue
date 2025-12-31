@@ -24,7 +24,7 @@ const selectedTab = ref('all')
 
 const { data: threads, pending } = await useApi<Thread[]>(() => '/api/threads', {
   default: () => [] as Thread[],
-  lazy: true,
+  lazy: route.params?.id == null,
 })
 
 // Filter threads based on the selected tab
