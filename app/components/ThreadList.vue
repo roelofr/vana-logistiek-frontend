@@ -1,48 +1,57 @@
 <script setup lang="ts">
-import type { LoadingType, Mail } from '~/types'
+import { format, isToday } from 'date-fns'
+import type { LoadingType, Thread } from '~/types'
 
 const props = defineProps<{
-  threads: Mail[]
+  threads: Thread[]
   loadingType: LoadingType
 }>()
 
-const mailsRefs = ref<Element[]>([])
+const threadRefs = ref<Element[]>([])
 
-const selectedMail = defineModel<Mail | null>()
+const selectedThread = defineModel<Thread | null>()
 
-watch(selectedMail, () => {
-  if (!selectedMail.value)
+watch(selectedThread, () => {
+  if (!selectedThread.value)
     return
 
-  const ref = mailsRefs.value[selectedMail.value.id]
+  const ref = threadRefs.value[selectedThread.value.id]
   if (ref)
     ref.scrollIntoView({ block: 'nearest' })
 })
 
-const selectMail = (mail) => {
+const selectThread = (_thread) => {
   //
 }
 
 defineShortcuts({
   arrowdown: () => {
-    const index = props.threads.findIndex(mail => mail.id === selectedMail.value?.id)
+    const index = props.threads.findIndex(mail => mail.id === selectedThread.value?.id)
 
     if (index === -1) {
-      selectedMail.value = props.threads[0]
+      selectedThread.value = props.threads[0]
     } else if (index < props.threads.length - 1) {
-      selectedMail.value = props.threads[index + 1]
+      selectedThread.value = props.threads[index + 1]
     }
   },
   arrowup: () => {
-    const index = props.threads.findIndex(mail => mail.id === selectedMail.value?.id)
+    const index = props.threads.findIndex(mail => mail.id === selectedThread.value?.id)
 
     if (index === -1) {
-      selectedMail.value = props.threads[props.threads.length - 1]
+      selectedThread.value = props.threads[props.threads.length - 1]
     } else if (index > 0) {
-      selectedMail.value = props.threads[index - 1]
+      selectedThread.value = props.threads[index - 1]
     }
   },
 })
+
+const threadDate = (thread: Thread): string => {
+  const date = new Date(thread.updatedAt)
+
+  return isToday(date)
+    ? format(new Date(thread.updatedAt), 'HH:mm')
+    : format(new Date(thread.updatedAt), 'dd MMM')
+}
 </script>
 
 <template>
@@ -85,39 +94,32 @@ defineShortcuts({
       </template>
       <template v-else>
         <div
-          v-for="(mail, index) in threads"
+          v-for="(thread, index) in threads"
           :key="index"
-          :ref="el => { mailsRefs[mail.id] = el as Element }"
-          @click.prevent="selectMail(mail)"
+          :ref="el => { threadRefs[thread.id] = el as Element }"
+          @click.prevent="selectThread(thread)"
         >
           <div
             class="p-4 sm:px-6 text-sm cursor-pointer border-l-2 transition-colors"
             :class="[
-              mail.unread ? 'text-highlighted' : 'text-toned',
-              selectedMail && selectedMail.id === mail.id
+              thread.read ? 'text-toned' : 'text-highlighted',
+              selectedThread && selectedThread.id === thread.id
                 ? 'border-primary bg-primary/10'
                 : 'border-(--ui-bg) hover:border-primary hover:bg-primary/5',
             ]"
-            @click="selectedMail = mail"
+            @click="selectedThread = thread"
           >
-            <div class="flex items-center justify-between" :class="[mail.unread && 'font-semibold']">
+            <div class="flex items-center justify-between" :class="[thread.read || 'font-semibold']">
               <div class="flex items-center gap-3">
-                {{ mail.from?.name ?? 'John Doe' }}
-
-                <UChip v-if="mail.unread" />
+                <span class="text-muted">{{ thread.vendor.number }}</span>
+                <span>{{ thread.vendor.name }}</span>
+                <UChip v-if="!thread.read" />
               </div>
 
-              <!--
-              <span>{{
-                isToday(new Date(mail.date)) ? format(new Date(mail.date), 'HH:mm') : format(new Date(mail.date), 'dd MMM')
-              }}</span>
-              -->
+              <span>{{ threadDate(thread) }}</span>
             </div>
-            <p class="truncate" :class="[mail.unread && 'font-semibold']">
-              {{ mail.subject }}
-            </p>
-            <p class="text-dimmed line-clamp-1">
-              {{ mail.body }}
+            <p class="truncate" :class="[thread.read || 'font-semibold']">
+              {{ thread.subject }}
             </p>
           </div>
         </div>

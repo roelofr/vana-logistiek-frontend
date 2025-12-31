@@ -72,9 +72,9 @@ function doClearToken() {
             You can retrieve an access token from the
             <ULink
               target="_blank"
-              href="http://localhost:8080/api/q/dev-ui/quarkus-oidc/openid-connect-dev-console"
+              href="http://localhost:8080/api/users/me/token"
               external
-            >OpenID Connect Dev Console
+            ><code>/users/me/token</code> API
             </ULink>
           </template>
           <UTextarea v-model="state.token" autoresize />

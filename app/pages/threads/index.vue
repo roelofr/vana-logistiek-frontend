@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { breakpointsTailwind } from '@vueuse/core'
-import type { LoadingType, Mail } from '~/types'
+import type { LoadingType, Thread } from '~/types'
 
 const tabItems = [{
   label: 'All',
@@ -10,76 +10,47 @@ const tabItems = [{
   label: 'Unread',
   value: 'unread',
 }]
-const selectedTab = ref('all')
 
-const { data, pending } = await useApi<Mail[]>(() => '/api/threads', {
-  default: () => [] as Mail[],
-  params: {
-    filter: () => selectedTab.value === 'all' ? '' : selectedTab.value,
-  },
+const selectedTab = ref('all')
+const { data: user } = useUser()
+
+const { data: threads, pending } = await useApi<Thread[]>(() => '/api/threads', {
+  default: () => [] as Thread[],
   lazy: true,
 })
 
-const dummyMail = {
-  id: 4,
-  unread: false,
-  from: {
-    id: 1,
-    name: 'Sam Smith',
-    email: 'sam.smith@example.com',
-    location: 'Servicegebied',
-  },
-  subject: 'Ik wil mijn geld terug',
-  body: 'Woorden',
-  date: new Date().toISOString(),
-} as Mail
-
-const threads = computed<Mail[]>(() => {
-  if (data.value.length > 0) {
-    return data.value
-  }
-
-  return [dummyMail]
-})
-
 // Filter threads based on the selected tab
-const filteredMails = computed(() => {
+const filteredThreads = computed(() => {
+  if (!threads.value)
+    return []
+
   if (selectedTab.value === 'unread') {
-    return threads.value.filter(mail => !!mail.unread)
+    return threads.value.filter((thread) => {
+      return !thread.read
+        && (thread.user?.id == user.value?.id || thread.team?.id == user.value?.team?.id)
+    })
   }
 
   return threads.value
 })
 
-const selectedMail = ref<Mail | null>()
+const selectedThread = ref<Thread | null>()
 
-const route = useRoute()
-watch(route.params, () => {
-  const wantedId = route.params.thread
-  if (wantedId == undefined || !/^\d+/.test(wantedId)) {
-    selectedMail.value = null
-    return
-  }
-
-  const wantedIdNumber = parseInt(wantedId, 10)
-  selectedMail.value = threads.value.find(mail => mail.id == wantedIdNumber)
-})
-
-const isMailPanelOpen = computed({
+const isPanelOpen = computed({
   get() {
-    return !!selectedMail.value
+    return !!selectedThread.value
   },
   set(value: boolean) {
     if (!value) {
-      selectedMail.value = null
+      selectedThread.value = null
     }
   },
 })
 
 // Reset selected mail if it's not in the filtered threads
-watch(filteredMails, () => {
-  if (!filteredMails.value.find(mail => mail.id === selectedMail.value?.id)) {
-    selectedMail.value = null
+watch(filteredThreads, () => {
+  if (!filteredThreads.value.find(thread => thread.id === selectedThread.value?.id)) {
+    selectedThread.value = null
   }
 })
 
@@ -114,7 +85,7 @@ const isMobile = breakpoints.smaller('lg')
         <UDashboardSidebarCollapse />
       </template>
       <template #trailing>
-        <UBadge v-if="!isLoading" :label="filteredMails.length" variant="subtle" />
+        <UBadge v-if="!isLoading" :label="filteredThreads.length" variant="subtle" />
       </template>
 
       <template #right>
@@ -126,16 +97,16 @@ const isMobile = breakpoints.smaller('lg')
         />
       </template>
     </UDashboardNavbar>
-    <ThreadList v-model="selectedMail" :threads="filteredMails" :loading-type="loadingType" />
+    <ThreadList v-model="selectedThread" :threads="filteredThreads" :loading-type="loadingType" />
   </UDashboardPanel>
 
-  <ThreadMessage v-if="selectedMail" :mail="selectedMail" @close="selectedMail = null" />
-  <ThreadEmpty v-else />
+  <ThreadMessage v-if="selectedThread" :thread="selectedThread" @close="selectedThread = null" />
+  <ThreadEmpty v-else-if="!isMobile" />
 
   <ClientOnly>
-    <USlideover v-if="isMobile" v-model:open="isMailPanelOpen">
+    <USlideover v-if="isMobile" v-model:open="isPanelOpen">
       <template #content>
-        <ThreadMessage v-if="selectedMail" :mail="selectedMail" @close="selectedMail = null" />
+        <ThreadMessage v-if="selectedThread" :thread="selectedThread" @close="selectedThread = null" />
       </template>
     </USlideover>
   </ClientOnly>

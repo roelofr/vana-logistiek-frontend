@@ -11,6 +11,9 @@ type KeyLike = {
 }
 
 export function expand<T extends object>(input: T[], selectors: (keyof T)[]): T[] {
+  if (!input)
+    return []
+
   let outData = input
 
   for (const key of selectors) {

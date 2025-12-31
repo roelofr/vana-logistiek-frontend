@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { format } from 'date-fns'
-import type { Mail } from '~/types'
+import type { Thread } from '~/types'
+import type { UIMessage } from 'ai'
+import { expand } from '~/utils'
+import { UTextarea } from '#components'
 
-defineProps<{
-  mail: Mail
-}>()
+const { $api } = useNuxtApp()
+
+const { thread } = defineProps<{ thread: Thread }>()
 
 const emits = defineEmits(['close'])
 
@@ -27,27 +30,69 @@ const toast = useToast()
 const reply = ref('')
 const loading = ref(false)
 
-function onSubmit() {
-  loading.value = true
+const {
+  data: updates,
+  status: updatesStatus,
+  refresh: updatesRefresh,
+} = useApi<UIMessage[]>(() => `/api/threads/${thread.id}/updates`, {
+  lazy: true,
+  watch: [thread],
+})
 
-  setTimeout(() => {
-    reply.value = ''
+const updatesExpanded = computed(() => expand(updates.value, ['user', 'team']))
 
-    toast.add({
-      title: 'Email sent',
-      description: 'Your email has been sent successfully',
-      icon: 'i-lucide-check-circle',
-      color: 'success',
+watch(() => thread, () => {
+  reply.value = ''
+  loading.value = false
+}, {
+  immediate: false,
+})
+
+async function sendMessage() {
+  try {
+    loading.value = true
+
+    await $api(`/api/threads/${thread.id}/message`, {
+      method: 'post',
+      body: {
+        message: reply.value,
+      },
     })
 
+    toast.add({
+      color: 'success',
+      title: 'Opgeslagen',
+    })
+
+    reply.value = ''
+    updatesRefresh()
+  } catch (error) {
+    console.error('Fout bij plaatsen comment: %o', error)
+    toast.add({
+      color: 'error',
+      title: 'Toevoegen van opmerking mislukt!',
+    })
+  } finally {
     loading.value = false
-  }, 1000)
+  }
 }
+
+const replyField = useTemplateRef<UTextarea>('reply-field')
+
+defineShortcuts({
+  meta_enter: {
+    usingInput: 'reply-field',
+    handler: async () => {
+      await sendMessage()
+      replyField.value.focus()
+    },
+  },
+})
 </script>
 
 <template>
   <UDashboardPanel id="inbox-2">
-    <UDashboardNavbar :title="mail.subject" :toggle="false">
+    <UDashboardNavbar :title="thread.subject" :toggle="false">
       <template #leading>
         <UButton
           icon="i-lucide-x"
@@ -83,29 +128,39 @@ function onSubmit() {
 
     <div class="flex flex-col sm:flex-row justify-between gap-1 p-4 sm:px-6 border-b border-default">
       <div class="flex items-start gap-4 sm:my-1.5">
-        <UAvatar
-          size="3xl"
-        />
-
         <div class="min-w-0">
           <p class="font-semibold text-highlighted">
-            John Doe
+            {{ thread.vendor.name }}
           </p>
-          <p class="text-muted">
-            example@example.com
-          </p>
+          <div class="text-muted flex flex-row items-center gap-2">
+            <VendorNumber :vendor="thread.vendor" />
+            <p>{{ thread.vendor.district.name }}</p>
+          </div>
         </div>
       </div>
 
       <p class="max-sm:pl-16 text-muted text-sm sm:mt-2">
-        {{ format(new Date(), 'dd MMM HH:mm') }}
+        {{ format(new Date(thread.createdAt), 'dd MMM HH:mm') }}
       </p>
     </div>
 
-    <div class="flex-1 p-4 sm:p-6 overflow-y-auto">
-      <p class="whitespace-pre-wrap">
-        {{ mail.body }}
-      </p>
+    <div class="flex-1 p-4 sm:p-6">
+      <ThreadsThreadUpdates v-if="updatesStatus == 'success'" :updates="updatesExpanded" />
+      <UAlert
+        v-else-if="updatesStatus == 'error'"
+        color="error"
+        variant="soft"
+        title="Laden mislukt"
+        description="De berichten konden niet worden geladen, probeer het later opnieuw."
+        icon="i-lucide-triangle-alert"
+      />
+      <div
+        v-else
+        class="my-4 flex flex-row items-center justify-center gap-2 text-dimmed"
+      >
+        <UIcon name="i-lucide-loader" class="animate-spin" size="20" />
+        <span>Berichten worden opgehaald...</span>
+      </div>
     </div>
 
     <div class="pb-4 px-4 sm:px-6 shrink-0">
@@ -114,22 +169,24 @@ function onSubmit() {
           <UIcon name="i-lucide-reply" class="size-5" />
 
           <span class="text-sm truncate">
-            Reply to John Doe
+            Reageren op deze melding
           </span>
         </template>
 
-        <form @submit.prevent="onSubmit">
+        <form @submit.prevent="sendMessage">
           <UTextarea
+            ref="reply-field"
             v-model="reply"
+            name="reply-field"
             color="neutral"
             variant="none"
             required
             autoresize
-            placeholder="Write your reply..."
-            :rows="4"
+            :rows="1"
+            placeholder="Typ een gevatte reactie, of wat doms..."
             :disabled="loading"
             class="w-full"
-            :ui="{ base: 'p-0 resize-none' }"
+            :ui="{ base: 'p-0 pb-4 resize-none' }"
           />
 
           <div class="flex items-center justify-between">
@@ -143,15 +200,10 @@ function onSubmit() {
 
             <div class="flex items-center justify-end gap-2">
               <UButton
-                color="neutral"
-                variant="ghost"
-                label="Save draft"
-              />
-              <UButton
                 type="submit"
                 color="neutral"
                 :loading="loading"
-                label="Send"
+                label="Versturen"
                 icon="i-lucide-send"
               />
             </div>
