@@ -5,6 +5,7 @@ import * as z from 'zod'
 import type { Thread } from '~/types'
 
 const { $api } = useNuxtApp()
+const router = useRouter()
 
 const schema = z.object({
   vendor: z.looseObject({
@@ -37,8 +38,9 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
     toast.add({
       color: 'success',
       title: 'Melding aangemaakt',
-      description: `Melding ${data.id} is succesvol aangemaakt.`,
     })
+
+    await router.push(`/threads/${data.id}`)
   } catch (e) {
     console.error('Aanmaken melding mislukt: %o', e)
   }
