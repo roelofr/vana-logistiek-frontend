@@ -10,7 +10,7 @@ type KeyLike = {
   id: number
 }
 
-export function expand<T extends object>(input: T[], selectors: (keyof T)[]): T[] {
+export function expand<T extends object>(input: T[] | undefined, selectors: (keyof T)[]): T[] {
   if (!input)
     return []
 

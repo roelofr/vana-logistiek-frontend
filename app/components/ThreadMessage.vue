@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { format } from 'date-fns'
-import type { Thread } from '~/types'
-import type { UIMessage } from 'ai'
+import type { Thread, ThreadUpdate } from '~/types'
 import { expand } from '~/utils'
 import { UTextarea } from '#components'
 
@@ -34,7 +33,7 @@ const {
   data: updates,
   status: updatesStatus,
   refresh: updatesRefresh,
-} = useApi<UIMessage[]>(() => `/api/threads/${thread.id}/updates`, {
+} = useApi<ThreadUpdate[]>(() => `/api/threads/${thread.id}/updates`, {
   lazy: true,
   watch: [thread],
 })
@@ -92,7 +91,7 @@ defineShortcuts({
 
 <template>
   <UDashboardPanel id="inbox-2">
-    <UDashboardNavbar :title="thread.subject" :toggle="false">
+    <UDashboardNavbar :title="`Melding ${thread.id}`" :toggle="false">
       <template #leading>
         <UButton
           class="-ms-1.5"
@@ -125,6 +124,12 @@ defineShortcuts({
         </UDropdownMenu>
       </template>
     </UDashboardNavbar>
+
+    <div class="p-4 sm:px-6 border-b border-default">
+      <h1 class="font-semibold text-lg">
+        {{ thread.subject }}
+      </h1>
+    </div>
 
     <div class="flex flex-col sm:flex-row justify-between gap-1 p-4 sm:px-6 border-b border-default">
       <div class="flex items-start gap-4 sm:my-1.5">
