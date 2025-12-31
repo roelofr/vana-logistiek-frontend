@@ -76,15 +76,10 @@ async function sendMessage() {
   }
 }
 
-const replyField = useTemplateRef<UTextarea>('reply-field')
-
 defineShortcuts({
   meta_enter: {
     usingInput: 'reply-field',
-    handler: async () => {
-      await sendMessage()
-      replyField.value.focus()
-    },
+    handler: sendMessage,
   },
 })
 </script>
@@ -144,7 +139,7 @@ defineShortcuts({
         </div>
       </div>
 
-      <p class="max-sm:pl-16 text-muted text-sm sm:mt-2">
+      <p class="text-muted text-sm sm:mt-2">
         {{ format(new Date(thread.createdAt), 'dd MMM HH:mm') }}
       </p>
     </div>

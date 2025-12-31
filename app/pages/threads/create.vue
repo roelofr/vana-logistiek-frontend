@@ -14,7 +14,9 @@ const schema = z.object({
     number: z.string(),
   }, 'Standhouder is verplicht'),
   subject: z.string('Onderwerp is verplicht')
-    .min(4, 'Onderwerp moet minimaal 4 tekens zijn'),
+    .min(4, 'Onderwerp moet minimaal 4 tekens zijn')
+    .max(30, 'Onderwerp moet maximaal 30 tekens zijn'),
+  message: z.nullable(),
 })
 
 type Schema = z.output<typeof schema>
@@ -22,6 +24,7 @@ type Schema = z.output<typeof schema>
 const state = reactive<Partial<Schema>>({
   vendor: undefined,
   subject: undefined,
+  message: undefined,
 })
 
 const toast = useToast()
@@ -30,8 +33,9 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
     const data = await $api<Thread>('/api/threads', {
       method: 'post',
       body: {
-        subject: state.subject,
         vendorId: state.vendor!.id,
+        subject: state.subject,
+        message: state.message,
       },
     })
 
@@ -67,15 +71,39 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
             class="space-y-4"
             @submit="onSubmit"
           >
-            <UFormField label="Standhouder" name="vendor">
+            <UFormField
+              label="Standhouder"
+              name="vendor"
+              required
+            >
               <InputsVendorSelect v-model="state.vendor" name="vendor" size="xl" />
             </UFormField>
 
-            <UFormField label="Onderwerp" name="subject">
+            <UFormField
+              label="Onderwerp"
+              name="subject"
+              required
+              description="Snelle omschrijving, 4-30 tekens."
+            >
               <UInput
                 v-model="state.subject"
                 label="Onderwerp"
                 name="subject"
+                size="xl"
+              />
+            </UFormField>
+
+            <UFormField
+              label="Bericht"
+              name="message"
+              description="Plaats direct een eerste bericht in de conversatie. Hoeft niet, mag wel."
+            >
+              <UTextarea
+                v-model="state.message"
+                label="Bericht"
+                name="message"
+                :rows="3"
+                autocapitalize="sentences"
                 size="xl"
               />
             </UFormField>

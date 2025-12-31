@@ -19,6 +19,7 @@ export default defineAppConfig({
     input: inputUi,
     inputMenu: inputUi,
     inputTags: inputUi,
+    textarea: inputUi,
     colors: {
       primary: 'pink',
       neutral: 'zinc',

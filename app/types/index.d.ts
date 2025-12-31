@@ -6,6 +6,8 @@ export interface Team {
   id: number
   name: string
   system: boolean
+  icon: string
+  colour: string
 }
 
 export interface User {
