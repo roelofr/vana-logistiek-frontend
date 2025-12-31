@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui',
+    '@nuxt/icon',
     '@nuxt/hints',
     '@vueuse/nuxt',
   ],
@@ -43,6 +44,12 @@ export default defineNuxtConfig({
         commaDangle: 'always-multiline',
         braceStyle: '1tbs',
       },
+    },
+  },
+
+  icon: {
+    serverBundle: {
+      collections: ['lucide'],
     },
   },
 })
