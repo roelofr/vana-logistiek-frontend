@@ -48,6 +48,9 @@ export default defineNuxtConfig({
   },
 
   icon: {
+    // Force use of non-/api-route, as they are rewritten to Quarkus by the load balancer.
+    localApiEndpoint: '/resources/dynamic/icons',
+
     serverBundle: {
       collections: ['lucide'],
     },
