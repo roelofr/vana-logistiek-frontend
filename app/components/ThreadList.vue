@@ -7,6 +7,10 @@ const props = defineProps<{
   loadingType: LoadingType
 }>()
 
+const emit = defineEmits<{
+  open: [thread: Thread]
+}>()
+
 const threadRefs = ref<Element[]>([])
 
 const selectedThread = defineModel<Thread | null>()
@@ -19,10 +23,6 @@ watch(selectedThread, () => {
   if (ref)
     ref.scrollIntoView({ block: 'nearest' })
 })
-
-const selectThread = (_thread) => {
-  //
-}
 
 defineShortcuts({
   arrowdown: () => {
@@ -97,17 +97,18 @@ const threadDate = (thread: Thread): string => {
           v-for="(thread, index) in threads"
           :key="index"
           :ref="el => { threadRefs[thread.id] = el as Element }"
-          @click.prevent="selectThread(thread)"
         >
-          <div
+          <NuxtLink
+            as="div"
             :class="[
               thread.read ? 'text-toned' : 'text-highlighted',
               selectedThread && selectedThread.id === thread.id
                 ? 'border-primary bg-primary/10'
                 : 'border-(--ui-bg) hover:border-primary hover:bg-primary/5',
             ]"
-            class="p-4 sm:px-6 text-sm cursor-pointer border-l-2 transition-colors"
-            @click="selectedThread = thread"
+            class="block p-4 sm:px-6 text-sm cursor-pointer border-l-2 transition-colors"
+            :href="`/threads/${thread.id}`"
+            @click.prevent="emit('open', thread)"
           >
             <div :class="[thread.read || 'font-semibold']" class="flex items-center justify-between">
               <div class="flex items-center gap-3">
@@ -121,7 +122,7 @@ const threadDate = (thread: Thread): string => {
             <p :class="[thread.read || 'font-semibold']" class="truncate">
               {{ thread.subject }}
             </p>
-          </div>
+          </NuxtLink>
         </div>
       </template>
     </template>

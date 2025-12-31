@@ -3,6 +3,15 @@ import { computed, ref, watch } from 'vue'
 import { breakpointsTailwind } from '@vueuse/core'
 import type { LoadingType, Thread } from '~/types'
 
+const { data: user } = useUser()
+const route = useRoute()
+const toast = useToast()
+const router = useRouter()
+
+definePageMeta({
+  keepalive: true,
+})
+
 const tabItems = [{
   label: 'All',
   value: 'all',
@@ -12,7 +21,6 @@ const tabItems = [{
 }]
 
 const selectedTab = ref('all')
-const { data: user } = useUser()
 
 const { data: threads, pending } = await useApi<Thread[]>(() => '/api/threads', {
   default: () => [] as Thread[],
@@ -34,7 +42,38 @@ const filteredThreads = computed(() => {
   return threads.value
 })
 
+const openThread = (thread: Thread) => {
+  router.push(`/threads/${thread.id}`)
+  selectedThread.value = thread
+}
+
+const closeThread = () => {
+  router.push('/threads')
+  selectedThread.value = null
+}
+
 const selectedThread = ref<Thread | null>()
+watch([route, threads], () => {
+  if (!route.params.id || !(route.params.id as string).match(/^\d{1,4}$/)) {
+    selectedThread.value = null
+    return
+  }
+
+  // Still loading?
+  if (!threads.value)
+    return
+
+  const wantedId = parseInt(route.params.id as string, 10)
+  const foundId = threads.value?.find(t => t.id === wantedId)
+  if (foundId)
+    selectedThread.value = foundId
+  else
+    toast.add({
+      color: 'warning',
+      title: 'Melding niet gevonden',
+      description: 'De gevraagde melding is niet beschikbaar',
+    })
+})
 
 const isPanelOpen = computed({
   get() {
@@ -45,13 +84,6 @@ const isPanelOpen = computed({
       selectedThread.value = null
     }
   },
-})
-
-// Reset selected mail if it's not in the filtered threads
-watch(filteredThreads, () => {
-  if (!filteredThreads.value.find(thread => thread.id === selectedThread.value?.id)) {
-    selectedThread.value = null
-  }
 })
 
 const isLoading = computed(() => pending.value)
@@ -97,16 +129,21 @@ const isMobile = breakpoints.smaller('lg')
         />
       </template>
     </UDashboardNavbar>
-    <ThreadList v-model="selectedThread" :loading-type="loadingType" :threads="filteredThreads" />
+    <ThreadList
+      v-model="selectedThread"
+      :loading-type="loadingType"
+      :threads="filteredThreads"
+      @open="openThread"
+    />
   </UDashboardPanel>
 
-  <ThreadMessage v-if="selectedThread" :thread="selectedThread" @close="selectedThread = null" />
+  <ThreadMessage v-if="selectedThread" :thread="selectedThread" @close="closeThread" />
   <ThreadEmpty v-else-if="!isMobile" />
 
   <ClientOnly>
     <USlideover v-if="isMobile" v-model:open="isPanelOpen">
       <template #content>
-        <ThreadMessage v-if="selectedThread" :thread="selectedThread" @close="selectedThread = null" />
+        <ThreadMessage v-if="selectedThread" :thread="selectedThread" @close="closeThread" />
       </template>
     </USlideover>
   </ClientOnly>

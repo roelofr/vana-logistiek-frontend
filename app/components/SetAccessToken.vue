@@ -28,22 +28,24 @@ async function onSubmit(_event: FormSubmitEvent<Schema>) {
 
   toast.add({
     title: 'Access Token Updated',
-    description: 'You may need to reload the page for everything to update properly.',
     color: 'success',
   })
+
+  await refreshNuxtData()
 
   close()
 }
 
-function doClearToken() {
+async function doClearToken() {
   accessToken.value = null
   state.token = null
 
   toast.add({
     title: 'Access Token Cleared',
-    description: 'You may need to reload the page for everything to update properly.',
     color: 'success',
   })
+
+  await refreshNuxtData()
 
   close()
 }
