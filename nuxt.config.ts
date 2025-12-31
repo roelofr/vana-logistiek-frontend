@@ -51,5 +51,41 @@ export default defineNuxtConfig({
     serverBundle: {
       collections: ['lucide'],
     },
+
+    clientBundle: {
+      icons: [
+        // Team icons
+        'lucide:radio-tower',
+        'lucide:tower-control',
+        'lucide:truck',
+        'lucide:van',
+        'lucide:shield-half',
+        'lucide:binoculars',
+
+        // Type of actions
+        'lucide:inbox',
+        'lucide:forward',
+        'lucide:archive-x',
+        'lucide:shredder',
+        'lucide:check',
+        'lucide:mail-check',
+
+        // Type of vendors
+        'lucide:store',
+        'lucide:ferris-wheel',
+        'lucide:barrel',
+        'lucide:castle',
+        'lucide:library-big',
+        'lucide:theater',
+        'lucide:lectern',
+
+      ],
+
+      // scan all components in the project and include icons
+      scan: true,
+
+      // guard for uncompressed bundle size, will fail the build if exceeds
+      sizeLimitKb: 256,
+    },
   },
 })
