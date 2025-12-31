@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { Member } from '~/types'
 
 const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [] })
@@ -15,27 +15,30 @@ const filteredMembers = computed(() => {
 <template>
   <div>
     <UPageCard
-      title="Members"
-      description="Invite new members by email address."
-      variant="naked"
-      orientation="horizontal"
       class="mb-4"
+      description="Invite new members by email address."
+      orientation="horizontal"
+      title="Members"
+      variant="naked"
     >
       <UButton
-        label="Invite people"
-        color="neutral"
         class="w-fit lg:ms-auto"
+        color="neutral"
+        label="Invite people"
       />
     </UPageCard>
 
-    <UPageCard variant="subtle" :ui="{ container: 'p-0 sm:p-0 gap-y-0', wrapper: 'items-stretch', header: 'p-4 mb-0 border-b border-default' }">
+    <UPageCard
+      :ui="{ container: 'p-0 sm:p-0 gap-y-0', wrapper: 'items-stretch', header: 'p-4 mb-0 border-b border-default' }"
+      variant="subtle"
+    >
       <template #header>
         <UInput
           v-model="q"
-          icon="i-lucide-search"
-          placeholder="Search members"
           autofocus
           class="w-full"
+          icon="i-lucide-search"
+          placeholder="Search members"
         />
       </template>
 

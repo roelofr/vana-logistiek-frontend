@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import * as z from 'zod'
 import type { FormError } from '@nuxt/ui'
 
@@ -25,8 +25,8 @@ const validate = (state: Partial<PasswordSchema>): FormError[] => {
 
 <template>
   <UPageCard
-    title="Password"
     description="Confirm your current password before setting a new one."
+    title="Password"
     variant="subtle"
   >
     <UForm
@@ -38,32 +38,32 @@ const validate = (state: Partial<PasswordSchema>): FormError[] => {
       <UFormField name="current">
         <UInput
           v-model="password.current"
-          type="password"
-          placeholder="Current password"
           class="w-full"
+          placeholder="Current password"
+          type="password"
         />
       </UFormField>
 
       <UFormField name="new">
         <UInput
           v-model="password.new"
-          type="password"
-          placeholder="New password"
           class="w-full"
+          placeholder="New password"
+          type="password"
         />
       </UFormField>
 
-      <UButton label="Update" class="w-fit" type="submit" />
+      <UButton class="w-fit" label="Update" type="submit" />
     </UForm>
   </UPageCard>
 
   <UPageCard
-    title="Account"
-    description="No longer want to use our service? You can delete your account here. This action is not reversible. All information related to this account will be deleted permanently."
     class="bg-gradient-to-tl from-error/10 from-5% to-default"
+    description="No longer want to use our service? You can delete your account here. This action is not reversible. All information related to this account will be deleted permanently."
+    title="Account"
   >
     <template #footer>
-      <UButton label="Delete account" color="error" />
+      <UButton color="error" label="Delete account" />
     </template>
   </UPageCard>
 </template>

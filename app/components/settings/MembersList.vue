@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { DropdownMenuItem } from '@nuxt/ui'
 import type { Member } from '~/types'
 
@@ -17,7 +17,7 @@ const items = [{
 </script>
 
 <template>
-  <ul role="list" class="divide-y divide-default">
+  <ul class="divide-y divide-default" role="list">
     <li
       v-for="(member, index) in members"
       :key="index"
@@ -25,8 +25,8 @@ const items = [{
     >
       <div class="flex items-center gap-3 min-w-0">
         <UAvatar
-          v-bind="member.avatar"
           size="md"
+          v-bind="member.avatar"
         />
 
         <div class="text-sm min-w-0">
@@ -41,16 +41,16 @@ const items = [{
 
       <div class="flex items-center gap-3">
         <USelect
-          :model-value="member.role"
           :items="['member', 'owner']"
-          color="neutral"
+          :model-value="member.role"
           :ui="{ value: 'capitalize', item: 'capitalize' }"
+          color="neutral"
         />
 
-        <UDropdownMenu :items="items" :content="{ align: 'end' }">
+        <UDropdownMenu :content="{ align: 'end' }" :items="items">
           <UButton
-            icon="i-lucide-ellipsis-vertical"
             color="neutral"
+            icon="i-lucide-ellipsis-vertical"
             variant="ghost"
           />
         </UDropdownMenu>

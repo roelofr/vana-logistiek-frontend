@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { Vendor } from '~/types'
 import type { InputMenuItem } from '@nuxt/ui'
 import { expand } from '~/utils'
@@ -56,23 +56,23 @@ function fetchVendorsOnInitialOpen() {
 <template>
   <UInputMenu
     v-model="uiVendor"
-    placeholder="Selecteer standhouder"
-    icon="i-lucide-store"
     :filter-fields="['search']"
     :items="vendorsMapped"
-    :ui="{ content: 'min-w-fit' }"
     :loading="apiStatus == 'pending'"
+    :ui="{ content: 'min-w-fit' }"
+    icon="i-lucide-store"
     open-on-focus
+    placeholder="Selecteer standhouder"
     virtualize
     @update:open="fetchVendorsOnInitialOpen"
   >
     <template #trailing="{ modelValue }">
       <span v-if="modelValue" class="text-muted pr-1">{{ modelValue.number }}</span>
-      <UIcon name="i-lucide-chevron-down" size="calc(var(--spacing) * 5)" class="text-dimmed" />
+      <UIcon class="text-dimmed" name="i-lucide-chevron-down" size="calc(var(--spacing) * 5)" />
     </template>
     <template #item-description="{ item }">
       <div class="flex flex-row items-center gap-2">
-        <UBadge variant="outline" size="sm" color="neutral">
+        <UBadge color="neutral" size="sm" variant="outline">
           {{ item.number }}
         </UBadge>
         <span class="text-muted text-sm">

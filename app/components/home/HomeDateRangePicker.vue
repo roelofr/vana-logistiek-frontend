@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { DateFormatter, getLocalTimeZone, CalendarDate, today } from '@internationalized/date'
+<script lang="ts" setup>
+import { CalendarDate, DateFormatter, getLocalTimeZone, today } from '@internationalized/date'
 import type { Range } from '~/types'
 
 const df = new DateFormatter('en-US', {
@@ -80,10 +80,10 @@ const selectRange = (range: { days?: number, months?: number, years?: number }) 
 <template>
   <UPopover :content="{ align: 'start' }" :modal="true">
     <UButton
-      color="neutral"
-      variant="ghost"
-      icon="i-lucide-calendar"
       class="data-[state=open]:bg-elevated group"
+      color="neutral"
+      icon="i-lucide-calendar"
+      variant="ghost"
     >
       <span class="truncate">
         <template v-if="selected.start">
@@ -100,7 +100,10 @@ const selectRange = (range: { days?: number, months?: number, years?: number }) 
       </span>
 
       <template #trailing>
-        <UIcon name="i-lucide-chevron-down" class="shrink-0 text-dimmed size-5 group-data-[state=open]:rotate-180 transition-transform duration-200" />
+        <UIcon
+          class="shrink-0 text-dimmed size-5 group-data-[state=open]:rotate-180 transition-transform duration-200"
+          name="i-lucide-chevron-down"
+        />
       </template>
     </UButton>
 
@@ -110,20 +113,20 @@ const selectRange = (range: { days?: number, months?: number, years?: number }) 
           <UButton
             v-for="(range, index) in ranges"
             :key="index"
-            :label="range.label"
-            color="neutral"
-            variant="ghost"
-            class="rounded-none px-4"
             :class="[isRangeSelected(range) ? 'bg-elevated' : 'hover:bg-elevated/50']"
+            :label="range.label"
+            class="rounded-none px-4"
+            color="neutral"
             truncate
+            variant="ghost"
             @click="selectRange(range)"
           />
         </div>
 
         <UCalendar
           v-model="calendarRange"
-          class="p-2"
           :number-of-months="2"
+          class="p-2"
           range
         />
       </div>

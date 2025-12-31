@@ -27,11 +27,11 @@ const { update } = defineProps<{
         </UAvatarGroup>
       </div>
       <div
-        class="text-pretty min-w-0 *:first:mt-0 *:last:mb-0 bg-elevated/50 px-4 py-3 rounded-lg min-h-12"
         :class="{
           'bg-primary text-inverted': update.me,
           'bg-elevated/50': !update.me,
         }"
+        class="text-pretty min-w-0 *:first:mt-0 *:last:mb-0 bg-elevated/50 px-4 py-3 rounded-lg min-h-12"
       >
         {{ update.message }}
       </div>

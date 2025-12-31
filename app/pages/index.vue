@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { DropdownMenuItem } from '@nuxt/ui'
 
 const items = [[{
@@ -11,14 +11,14 @@ const items = [[{
 <template>
   <UDashboardPanel id="home">
     <template #header>
-      <UDashboardNavbar title="Home" :ui="{ right: 'gap-3' }">
+      <UDashboardNavbar :ui="{ right: 'gap-3' }" title="Home">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
 
         <template #right>
           <UDropdownMenu :items="items">
-            <UButton icon="i-lucide-plus" size="md" class="rounded-full" />
+            <UButton class="rounded-full" icon="i-lucide-plus" size="md" />
           </UDropdownMenu>
         </template>
       </UDashboardNavbar>
@@ -26,11 +26,11 @@ const items = [[{
 
     <template #body>
       <UEmpty
-        title="Nope, nog niks"
         description="Dit blok is nog leeg, we bedenken er vast wel iets voor."
+        title="Nope, nog niks"
       >
         <template #leading>
-          <UIcon name="i-lucide-swords" :size="64" />
+          <UIcon :size="64" name="i-lucide-swords" />
         </template>
       </UEmpty>
     </template>

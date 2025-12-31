@@ -1,6 +1,6 @@
-<script setup lang="ts">
-import { eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval, format } from 'date-fns'
-import { VisXYContainer, VisLine, VisAxis, VisArea, VisCrosshair, VisTooltip } from '@unovis/vue'
+<script lang="ts" setup>
+import { eachDayOfInterval, eachMonthOfInterval, eachWeekOfInterval, format } from 'date-fns'
+import { VisArea, VisAxis, VisCrosshair, VisLine, VisTooltip, VisXYContainer } from '@unovis/vue'
 import type { Period, Range } from '~/types'
 
 const cardRef = useTemplateRef<HTMLElement | null>('cardRef')
@@ -37,7 +37,11 @@ const y = (d: DataRecord) => d.amount
 
 const total = computed(() => data.value.reduce((acc: number, { amount }) => acc + amount, 0))
 
-const formatNumber = new Intl.NumberFormat('en', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format
+const formatNumber = new Intl.NumberFormat('en', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+}).format
 
 const formatDate = (date: Date): string => {
   return ({
@@ -74,8 +78,8 @@ const template = (d: DataRecord) => `${formatDate(d.date)}: ${formatNumber(d.amo
     <VisXYContainer
       :data="data"
       :padding="{ top: 40 }"
-      class="h-96"
       :width="width"
+      class="h-96"
     >
       <VisLine
         :x="x"
@@ -83,21 +87,21 @@ const template = (d: DataRecord) => `${formatDate(d.date)}: ${formatNumber(d.amo
         color="var(--ui-primary)"
       />
       <VisArea
+        :opacity="0.1"
         :x="x"
         :y="y"
         color="var(--ui-primary)"
-        :opacity="0.1"
       />
 
       <VisAxis
-        type="x"
-        :x="x"
         :tick-format="xTicks"
+        :x="x"
+        type="x"
       />
 
       <VisCrosshair
-        color="var(--ui-primary)"
         :template="template"
+        color="var(--ui-primary)"
       />
 
       <VisTooltip />

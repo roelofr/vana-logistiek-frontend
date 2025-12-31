@@ -1,6 +1,5 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { TableColumn } from '@nuxt/ui'
-import { upperFirst } from 'scule'
 import type { Row } from '@tanstack/table-core'
 import { getPaginationRowModel } from '@tanstack/table-core'
 import type { User } from '~/types'
@@ -233,10 +232,10 @@ const pagination = ref({
           <CustomersDeleteModal :count="table?.tableApi?.getFilteredSelectedRowModel().rows.length">
             <UButton
               v-if="table?.tableApi?.getFilteredSelectedRowModel().rows.length"
-              label="Delete"
               color="error"
-              variant="subtle"
               icon="i-lucide-trash"
+              label="Delete"
+              variant="subtle"
             >
               <template #trailing>
                 <UKbd>
@@ -255,10 +254,11 @@ const pagination = ref({
               { label: 'Bounced', value: 'bounced' },
             ]"
             :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }"
-            placeholder="Filter status"
             class="min-w-28"
+            placeholder="Filter status"
           />
           <UDropdownMenu
+            :content="{ align: 'end' }"
             :items="
               table?.tableApi
                 ?.getAllColumns()
@@ -275,13 +275,12 @@ const pagination = ref({
                   },
                 }))
             "
-            :content="{ align: 'end' }"
           >
             <UButton
-              label="Display"
               color="neutral"
-              variant="outline"
+              label="Display"
               trailing-icon="i-lucide-settings-2"
+              variant="outline"
             />
           </UDropdownMenu>
         </div>
@@ -291,15 +290,14 @@ const pagination = ref({
         ref="table"
         v-model:column-filters="columnFilters"
         v-model:column-visibility="columnVisibility"
-        v-model:row-selection="rowSelection"
         v-model:pagination="pagination"
+        v-model:row-selection="rowSelection"
+        :columns="columns"
+        :data="data"
+        :loading="status === 'pending'"
         :pagination-options="{
           getPaginationRowModel: getPaginationRowModel(),
         }"
-        class="shrink-0"
-        :data="data"
-        :columns="columns"
-        :loading="status === 'pending'"
         :ui="{
           base: 'table-fixed border-separate border-spacing-0',
           thead: '[&>tr]:bg-elevated/50 [&>tr]:after:content-none',
@@ -308,6 +306,7 @@ const pagination = ref({
           td: 'border-b border-default',
           separator: 'h-0',
         }"
+        class="shrink-0"
       />
 
       <div class="flex items-center justify-between gap-3 border-t border-default pt-4 mt-auto">

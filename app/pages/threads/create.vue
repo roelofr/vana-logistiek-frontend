@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { FormSubmitEvent } from '@nuxt/ui'
 
 import * as z from 'zod'
@@ -54,8 +54,8 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
     <template #body>
       <div class="w-full max-w-lg mx-auto">
         <UPageHeader
-          title="Nieuwe melding"
           subject="Maak snel een melding aan, dan pakt de CP het verder op :)"
+          title="Nieuwe melding"
         />
 
         <UPageBody>
@@ -65,15 +65,15 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
             class="space-y-4"
             @submit="onSubmit"
           >
-            <UFormField name="vendor" label="Standhouder">
-              <InputsVendorSelect v-model="state.vendor" size="xl" name="vendor" />
+            <UFormField label="Standhouder" name="vendor">
+              <InputsVendorSelect v-model="state.vendor" name="vendor" size="xl" />
             </UFormField>
 
-            <UFormField name="subject" label="Onderwerp">
+            <UFormField label="Onderwerp" name="subject">
               <UInput
                 v-model="state.subject"
-                name="subject"
                 label="Onderwerp"
+                name="subject"
                 size="xl"
               />
             </UFormField>

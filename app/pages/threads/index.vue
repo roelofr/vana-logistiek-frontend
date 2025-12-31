@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 import { breakpointsTailwind } from '@vueuse/core'
 import type { LoadingType, Thread } from '~/types'
@@ -76,8 +76,8 @@ const isMobile = breakpoints.smaller('lg')
   <UDashboardPanel
     id="inbox-1"
     :default-size="25"
-    :min-size="20"
     :max-size="30"
+    :min-size="20"
     resizable
   >
     <UDashboardNavbar title="Inbox">
@@ -91,13 +91,13 @@ const isMobile = breakpoints.smaller('lg')
       <template #right>
         <UTabs
           v-model="selectedTab"
-          :items="tabItems"
           :content="false"
+          :items="tabItems"
           size="xs"
         />
       </template>
     </UDashboardNavbar>
-    <ThreadList v-model="selectedThread" :threads="filteredThreads" :loading-type="loadingType" />
+    <ThreadList v-model="selectedThread" :loading-type="loadingType" :threads="filteredThreads" />
   </UDashboardPanel>
 
   <ThreadMessage v-if="selectedThread" :thread="selectedThread" @close="selectedThread = null" />

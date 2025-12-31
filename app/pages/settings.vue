@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { NavigationMenuItem } from '@nuxt/ui'
 
 const links = [[
@@ -26,7 +26,7 @@ const links = [[
 
       <UDashboardToolbar>
         <!-- NOTE: The `-mx-1` class is used to align with the `DashboardSidebarCollapse` button here. -->
-        <UNavigationMenu :items="links" highlight class="-mx-1 flex-1" />
+        <UNavigationMenu :items="links" class="-mx-1 flex-1" highlight />
       </UDashboardToolbar>
     </template>
 

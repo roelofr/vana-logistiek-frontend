@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type ThreadUpdate from '~/components/threads/ThreadUpdate.vue'
 
 const { updates } = defineProps<{

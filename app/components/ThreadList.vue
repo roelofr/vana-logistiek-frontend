@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { format, isToday } from 'date-fns'
 import type { LoadingType, Thread } from '~/types'
 
@@ -55,7 +55,7 @@ const threadDate = (thread: Thread): string => {
 </script>
 
 <template>
-  <div class="divide-y divide-default" :class="[loadingType == 'full' ? 'overflow-y-hidden' : 'overflow-y-auto']">
+  <div :class="[loadingType == 'full' ? 'overflow-y-hidden' : 'overflow-y-auto']" class="divide-y divide-default">
     <template v-if="loadingType == 'full'">
       <div
         v-for="index in Array(30)"
@@ -86,10 +86,10 @@ const threadDate = (thread: Thread): string => {
       <UProgress v-show="loadingType == 'partial'" size="xs" />
       <template v-if="threads.length == 0">
         <UEmpty
-          variant="naked"
+          description="Het lijkt er op dat er nog geen meldingen zijn, lekker bezig!"
           icon="i-lucide-inbox"
           title="Geen meldingen gevonden"
-          description="Het lijkt er op dat er nog geen meldingen zijn, lekker bezig!"
+          variant="naked"
         />
       </template>
       <template v-else>
@@ -100,16 +100,16 @@ const threadDate = (thread: Thread): string => {
           @click.prevent="selectThread(thread)"
         >
           <div
-            class="p-4 sm:px-6 text-sm cursor-pointer border-l-2 transition-colors"
             :class="[
               thread.read ? 'text-toned' : 'text-highlighted',
               selectedThread && selectedThread.id === thread.id
                 ? 'border-primary bg-primary/10'
                 : 'border-(--ui-bg) hover:border-primary hover:bg-primary/5',
             ]"
+            class="p-4 sm:px-6 text-sm cursor-pointer border-l-2 transition-colors"
             @click="selectedThread = thread"
           >
-            <div class="flex items-center justify-between" :class="[thread.read || 'font-semibold']">
+            <div :class="[thread.read || 'font-semibold']" class="flex items-center justify-between">
               <div class="flex items-center gap-3">
                 <span class="text-muted">{{ thread.vendor.number }}</span>
                 <span>{{ thread.vendor.name }}</span>
@@ -118,7 +118,7 @@ const threadDate = (thread: Thread): string => {
 
               <span>{{ threadDate(thread) }}</span>
             </div>
-            <p class="truncate" :class="[thread.read || 'font-semibold']">
+            <p :class="[thread.read || 'font-semibold']" class="truncate">
               {{ thread.subject }}
             </p>
           </div>

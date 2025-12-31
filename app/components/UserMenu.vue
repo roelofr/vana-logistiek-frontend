@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { DropdownMenuItem } from '@nuxt/ui'
 import { useUser } from '~/composables/useUser'
 
@@ -30,23 +30,23 @@ const items = computed<DropdownMenuItem[][]>(() => ([[
 
 <template>
   <UDropdownMenu
-    :items="items"
     :content="{ align: 'center', collisionPadding: 12 }"
-    :ui="{ content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)' }"
     :disabled="menuDisabled"
+    :items="items"
+    :ui="{ content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)' }"
   >
     <UButton
-      v-bind="{
-        trailingIcon: (collapsed || userPending) ? undefined : 'i-lucide-chevrons-up-down',
-      }"
-      color="neutral"
-      variant="ghost"
-      block
       :square="collapsed"
-      class="data-[state=open]:bg-elevated"
       :ui="{
         trailingIcon: 'text-dimmed',
       }"
+      block
+      class="data-[state=open]:bg-elevated"
+      color="neutral"
+      v-bind="{
+        trailingIcon: (collapsed || userPending) ? undefined : 'i-lucide-chevrons-up-down',
+      }"
+      variant="ghost"
     >
       <div v-if="userPending" class="flex flex-row items-center gap-4 w-full">
         <USkeleton class="h-6 w-6 rounded-full" />
@@ -54,11 +54,11 @@ const items = computed<DropdownMenuItem[][]>(() => ([[
       </div>
       <UPopover v-else-if="menuDisabled">
         <UButton
+          :square="collapsed"
+          block
+          class="data-[state=open]:bg-elevated"
           color="neutral"
           variant="ghost"
-          block
-          :square="collapsed"
-          class="data-[state=open]:bg-elevated"
         >
           Sam Smith
         </UButton>
@@ -73,11 +73,11 @@ const items = computed<DropdownMenuItem[][]>(() => ([[
     <template #chip-leading="{ item }">
       <div class="inline-flex items-center justify-center shrink-0 size-5">
         <span
-          class="rounded-full ring ring-bg bg-(--chip-light) dark:bg-(--chip-dark) size-2"
           :style="{
             '--chip-light': `var(--color-${(item as any).chip}-500)`,
             '--chip-dark': `var(--color-${(item as any).chip}-400)`,
           }"
+          class="rounded-full ring ring-bg bg-(--chip-light) dark:bg-(--chip-dark) size-2"
         />
       </div>
     </template>

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { NavigationMenuItem } from '@nuxt/ui'
 
 const open = ref(false)
@@ -72,18 +72,18 @@ const groups = computed(() => [
     <UDashboardSidebar
       id="default"
       v-model:open="open"
+      :ui="{ footer: 'lg:border-t lg:border-default' }"
+      class="bg-elevated/25"
       collapsible
       resizable
-      class="bg-elevated/25"
-      :ui="{ footer: 'lg:border-t lg:border-default' }"
     >
       <template #header="{ collapsed }">
         <Logo v-if="!collapsed" class="h-5 w-auto shrink-0" />
-        <UIcon v-else name="i-simple-icons-nuxtdotjs" class="size-5 text-primary mx-auto" />
+        <UIcon v-else class="size-5 text-primary mx-auto" name="i-simple-icons-nuxtdotjs" />
       </template>
 
       <template #default="{ collapsed }">
-        <UDashboardSearchButton label="Zoeken..." :collapsed="collapsed" class="bg-transparent ring-default" />
+        <UDashboardSearchButton :collapsed="collapsed" class="bg-transparent ring-default" label="Zoeken..." />
 
         <UButton href="/threads/create">
           Nieuwe melding
@@ -93,15 +93,15 @@ const groups = computed(() => [
           :collapsed="collapsed"
           :items="links[0]"
           orientation="vertical"
-          tooltip
           popover
+          tooltip
         />
         <UNavigationMenu
           :collapsed="collapsed"
           :items="links[1]"
+          class="mt-auto"
           orientation="vertical"
           tooltip
-          class="mt-auto"
         />
 
         <DevOnly>
@@ -115,8 +115,8 @@ const groups = computed(() => [
     </UDashboardSidebar>
 
     <UDashboardSearch
-      placeholder="Typ een commando of zoekopdracht..."
       :groups="groups"
+      placeholder="Typ een commando of zoekopdracht..."
     />
 
     <slot />

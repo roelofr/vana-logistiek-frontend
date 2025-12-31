@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { format } from 'date-fns'
 import type { Thread } from '~/types'
 import type { UIMessage } from 'ai'
@@ -95,10 +95,10 @@ defineShortcuts({
     <UDashboardNavbar :title="thread.subject" :toggle="false">
       <template #leading>
         <UButton
-          icon="i-lucide-x"
-          color="neutral"
-          variant="ghost"
           class="-ms-1.5"
+          color="neutral"
+          icon="i-lucide-x"
+          variant="ghost"
           @click="emits('close')"
         />
       </template>
@@ -106,20 +106,20 @@ defineShortcuts({
       <template #right>
         <UTooltip text="Archive">
           <UButton
-            icon="i-lucide-inbox"
             color="neutral"
+            icon="i-lucide-inbox"
             variant="ghost"
           />
         </UTooltip>
 
         <UTooltip text="Reply">
-          <UButton icon="i-lucide-reply" color="neutral" variant="ghost" />
+          <UButton color="neutral" icon="i-lucide-reply" variant="ghost" />
         </UTooltip>
 
         <UDropdownMenu :items="dropdownItems">
           <UButton
-            icon="i-lucide-ellipsis-vertical"
             color="neutral"
+            icon="i-lucide-ellipsis-vertical"
             variant="ghost"
           />
         </UDropdownMenu>
@@ -149,24 +149,24 @@ defineShortcuts({
       <UAlert
         v-else-if="updatesStatus == 'error'"
         color="error"
-        variant="soft"
-        title="Laden mislukt"
         description="De berichten konden niet worden geladen, probeer het later opnieuw."
         icon="i-lucide-triangle-alert"
+        title="Laden mislukt"
+        variant="soft"
       />
       <div
         v-else
         class="my-4 flex flex-row items-center justify-center gap-2 text-dimmed"
       >
-        <UIcon name="i-lucide-loader" class="animate-spin" size="20" />
+        <UIcon class="animate-spin" name="i-lucide-loader" size="20" />
         <span>Berichten worden opgehaald...</span>
       </div>
     </div>
 
     <div class="pb-4 px-4 sm:px-6 shrink-0">
-      <UCard variant="subtle" class="mt-auto" :ui="{ header: 'flex items-center gap-1.5 text-dimmed' }">
+      <UCard :ui="{ header: 'flex items-center gap-1.5 text-dimmed' }" class="mt-auto" variant="subtle">
         <template #header>
-          <UIcon name="i-lucide-reply" class="size-5" />
+          <UIcon class="size-5" name="i-lucide-reply" />
 
           <span class="text-sm truncate">
             Reageren op deze melding
@@ -177,34 +177,34 @@ defineShortcuts({
           <UTextarea
             ref="reply-field"
             v-model="reply"
-            name="reply-field"
-            color="neutral"
-            variant="none"
-            required
-            autoresize
-            :rows="1"
-            placeholder="Typ een gevatte reactie, of wat doms..."
             :disabled="loading"
-            class="w-full"
+            :rows="1"
             :ui="{ base: 'p-0 pb-4 resize-none' }"
+            autoresize
+            class="w-full"
+            color="neutral"
+            name="reply-field"
+            placeholder="Typ een gevatte reactie, of wat doms..."
+            required
+            variant="none"
           />
 
           <div class="flex items-center justify-between">
             <UTooltip text="Attach file">
               <UButton
                 color="neutral"
-                variant="ghost"
                 icon="i-lucide-paperclip"
+                variant="ghost"
               />
             </UTooltip>
 
             <div class="flex items-center justify-end gap-2">
               <UButton
-                type="submit"
-                color="neutral"
                 :loading="loading"
-                label="Versturen"
+                color="neutral"
                 icon="i-lucide-send"
+                label="Versturen"
+                type="submit"
               />
             </div>
           </div>

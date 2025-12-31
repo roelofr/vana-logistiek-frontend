@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 
@@ -52,10 +52,10 @@ function doClearToken() {
 <template>
   <UModal v-model:open="open" title="Set access token">
     <UButton
-      label="Set access token"
-      color="neutral"
-      variant="subtle"
       block
+      color="neutral"
+      label="Set access token"
+      variant="subtle"
     />
 
     <template #body>
@@ -71,9 +71,9 @@ function doClearToken() {
           <template #description>
             You can retrieve an access token from the
             <ULink
-              target="_blank"
-              href="http://localhost:8080/api/users/me/token"
               external
+              href="http://localhost:8080/api/users/me/token"
+              target="_blank"
             ><code>/users/me/token</code> API
             </ULink>
           </template>
@@ -85,10 +85,10 @@ function doClearToken() {
     <template #footer>
       <div class="flex flex-row items-center justify-end gap-4 w-full">
         <UButton
-          form="access-token"
-          variant="outline"
           color="error"
+          form="access-token"
           icon="i-lucide-trash"
+          variant="outline"
           @click="doClearToken()"
         >
           Clear

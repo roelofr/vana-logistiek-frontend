@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { Period, Range, Stat } from '~/types'
 
 const props = defineProps<{
@@ -70,8 +70,6 @@ const { data: stats } = await useAsyncData<Stat[]>('stats', async () => {
       :key="index"
       :icon="stat.icon"
       :title="stat.title"
-      to="/customers"
-      variant="subtle"
       :ui="{
         container: 'gap-y-1.5',
         wrapper: 'items-start',
@@ -79,6 +77,8 @@ const { data: stats } = await useAsyncData<Stat[]>('stats', async () => {
         title: 'font-normal text-muted text-xs uppercase',
       }"
       class="lg:rounded-none first:rounded-l-lg last:rounded-r-lg hover:z-1"
+      to="/customers"
+      variant="subtle"
     >
       <div class="flex items-center gap-2">
         <span class="text-2xl font-semibold text-highlighted">
@@ -87,8 +87,8 @@ const { data: stats } = await useAsyncData<Stat[]>('stats', async () => {
 
         <UBadge
           :color="stat.variation > 0 ? 'success' : 'error'"
-          variant="subtle"
           class="text-xs"
+          variant="subtle"
         >
           {{ stat.variation > 0 ? '+' : '' }}{{ stat.variation }}%
         </UBadge>

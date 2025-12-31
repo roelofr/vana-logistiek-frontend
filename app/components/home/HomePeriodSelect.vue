@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { eachDayOfInterval } from 'date-fns'
 import type { Period, Range } from '~/types'
 
@@ -42,8 +42,8 @@ watch(periods, () => {
   <USelect
     v-model="model"
     :items="periods"
-    variant="ghost"
-    class="data-[state=open]:bg-elevated"
     :ui="{ value: 'capitalize', itemLabel: 'capitalize', trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }"
+    class="data-[state=open]:bg-elevated"
+    variant="ghost"
   />
 </template>
