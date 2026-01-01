@@ -7,6 +7,13 @@ import type { Thread } from '~/types'
 const { $api } = useNuxtApp()
 const router = useRouter()
 
+const suggestedOptions = [
+  'Bijbestelling',
+  'Service',
+  'Techniek',
+  'Gatorteam',
+]
+
 const schema = z.object({
   vendor: z.looseObject({
     id: z.number(),
@@ -16,7 +23,7 @@ const schema = z.object({
   subject: z.string('Onderwerp is verplicht')
     .min(4, 'Onderwerp moet minimaal 4 tekens zijn')
     .max(30, 'Onderwerp moet maximaal 30 tekens zijn'),
-  message: z.nullable(),
+  message: z.nullish(z.string()),
 })
 
 type Schema = z.output<typeof schema>
@@ -35,7 +42,7 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
       body: {
         vendorId: state.vendor!.id,
         subject: state.subject,
-        message: state.message,
+        message: state.message?.trim() ? state.message : null,
       },
     })
 
@@ -82,8 +89,9 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
             <UFormField
               label="Onderwerp"
               name="subject"
-              required
               description="Snelle omschrijving, 4-30 tekens."
+              :help="`Suggesties: ${suggestedOptions.join(', ')}`"
+              required
             >
               <UInput
                 v-model="state.subject"
@@ -91,6 +99,24 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
                 name="subject"
                 size="xl"
               />
+
+              <template #help>
+                <div class="flex flex-row justify-start items-center flex-wrap gap-2">
+                  <span class="text-sm text-muted">
+                    Suggesties
+                  </span>
+                  <UButton
+                    v-for="value of suggestedOptions"
+                    :key="value"
+                    size="sm"
+                    variant="soft"
+                    class="rounded-full"
+                    @click="state.subject = value"
+                  >
+                    {{ value }}
+                  </UButton>
+                </div>
+              </template>
             </UFormField>
 
             <UFormField
@@ -108,7 +134,12 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
               />
             </UFormField>
 
-            <UButton block size="xl" type="submit">
+            <UButton
+              block
+              size="xl"
+              type="submit"
+              icon="i-lucide-rocket"
+            >
               Melding aanmaken
             </UButton>
 
