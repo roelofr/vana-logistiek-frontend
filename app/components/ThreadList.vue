@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { format, isToday } from 'date-fns'
 import type { LoadingType, Thread } from '~/types'
+import { localTime } from '~/utils'
 
 const props = defineProps<{
   threads: Thread[]
@@ -44,14 +44,6 @@ defineShortcuts({
     }
   },
 })
-
-const threadDate = (thread: Thread): string => {
-  const date = new Date(thread.updatedAt)
-
-  return isToday(date)
-    ? format(new Date(thread.updatedAt), 'HH:mm')
-    : format(new Date(thread.updatedAt), 'dd MMM')
-}
 </script>
 
 <template>
@@ -98,16 +90,15 @@ const threadDate = (thread: Thread): string => {
           :key="index"
           :ref="el => { threadRefs[thread.id] = el as Element }"
         >
-          <NuxtLink
-            as="div"
+          <div
+            class="block p-4 sm:px-6 text-sm cursor-pointer border-l-2 transition-colors"
             :class="[
               thread.read ? 'text-toned' : 'text-highlighted',
               selectedThread && selectedThread.id === thread.id
                 ? 'border-primary bg-primary/10'
                 : 'border-(--ui-bg) hover:border-primary hover:bg-primary/5',
             ]"
-            class="block p-4 sm:px-6 text-sm cursor-pointer border-l-2 transition-colors"
-            :href="`/threads/${thread.id}`"
+            :data-href="`/threads/${thread.id}`"
             @click.prevent="emit('open', thread)"
           >
             <div :class="[thread.read || 'font-semibold']" class="flex items-center justify-between">
@@ -117,12 +108,12 @@ const threadDate = (thread: Thread): string => {
                 <UChip v-if="!thread.read" />
               </div>
 
-              <span>{{ threadDate(thread) }}</span>
+              <span>{{ localTime(thread.updatedAt) }}</span>
             </div>
             <p :class="[thread.read || 'font-semibold']" class="truncate">
               {{ thread.subject }}
             </p>
-          </NuxtLink>
+          </div>
         </div>
       </template>
     </template>

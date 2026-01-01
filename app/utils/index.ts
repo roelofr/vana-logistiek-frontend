@@ -1,3 +1,5 @@
+import { format, isToday } from 'date-fns'
+
 export function randomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
@@ -8,6 +10,16 @@ export function randomFrom<T>(array: T[]): T {
 
 type KeyLike = {
   id: number
+}
+
+export function localTime(time: Date | string | undefined): string | undefined {
+  if (!time)
+    return undefined
+
+  const actualTime = time instanceof Date ? time : new Date(time)
+  if (isToday(actualTime))
+    return format(actualTime, 'HH:mm')
+  return format(actualTime, 'dd MMM')
 }
 
 export function expand<T extends object>(input: T[] | undefined, selectors: (keyof T)[]): T[] {

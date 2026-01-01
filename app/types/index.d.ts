@@ -51,6 +51,7 @@ export interface ThreadUpdate {
   id: number
   message: string
   type: ThreadUpdateType
+  updateType: string
   date: Date
   me: boolean
   user: null | Only<'id' | 'name', User>

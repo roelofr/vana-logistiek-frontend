@@ -6,7 +6,7 @@ import type { LoadingType, Thread } from '~/types'
 const { data: user } = useUser()
 const route = useRoute()
 const toast = useToast()
-const router = useRouter()
+// const router = useRouter()
 
 definePageMeta({
   keepalive: true,
@@ -27,28 +27,40 @@ const { data: threads, pending } = await useApi<Thread[]>(() => '/api/threads', 
   lazy: route.params?.id == null,
 })
 
+const expandedThreads = computed(() => {
+  const expanded = expand(threads.value, ['user', 'team', 'vendor'])
+
+  expanded.forEach((thread) => {
+    if (thread.team?.id !== user.value?.team?.id)
+      thread.read = true
+  })
+
+  return expanded
+})
+
 // Filter threads based on the selected tab
 const filteredThreads = computed(() => {
-  if (!threads.value)
+  const threads = expandedThreads.value
+  if (!threads)
     return []
 
-  if (selectedTab.value === 'unread') {
-    return threads.value.filter((thread) => {
-      return !thread.read
-        && (thread.user?.id == user.value?.id || thread.team?.id == user.value?.team?.id)
-    })
-  }
+  if (selectedTab.value === 'unread')
+    return threads.filter(thread => !thread.read
+      && (
+        thread.user?.id == user.value?.id
+        || thread.team?.id == user.value?.team?.id
+      ))
 
-  return threads.value
+  return threads
 })
 
 const openThread = (thread: Thread) => {
-  router.push(`/threads/${thread.id}`)
+  // router.push(`/threads/${thread.id}`)
   selectedThread.value = thread
 }
 
 const closeThread = () => {
-  router.push('/threads')
+  // router.push('/threads')
   selectedThread.value = null
 }
 
@@ -121,12 +133,14 @@ const isMobile = breakpoints.smaller('lg')
       </template>
 
       <template #right>
-        <UTabs
-          v-model="selectedTab"
-          :content="false"
-          :items="tabItems"
-          size="xs"
-        />
+        <ClientOnly>
+          <UTabs
+            v-model="selectedTab"
+            :content="false"
+            :items="tabItems"
+            size="xs"
+          />
+        </ClientOnly>
       </template>
     </UDashboardNavbar>
     <ThreadList

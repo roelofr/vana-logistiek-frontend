@@ -1,9 +1,14 @@
 <script lang="ts" setup>
 import type { ThreadUpdate } from '~/types'
+import { localTime } from '~/utils'
 
-const { update } = defineProps<{
-  update: ThreadUpdate
+const { updates } = defineProps<{
+  updates: ThreadUpdate[]
 }>()
+
+console.log('Rendering update group %o', updates)
+
+const update = computed(() => updates[updates.length - 1]!)
 </script>
 
 <template>
@@ -11,8 +16,14 @@ const { update } = defineProps<{
     v-if="update.type == 'System'"
     class="text-dimmed text-center flex flex-row items-center justify-center gap-2"
   >
-    <UserAvatar :user="update.user" :team="update.team" size="sm" />
-    <span>{{ update.message }}</span>
+    <template v-if="update.updateType == 'Created'">
+      <span>{{ update.message.split(update.user.name, 2)[0] }}</span>
+      <UserAvatar :user="update.user" :team="update.team" size="xs" />
+      <span>{{ update.user.name + update.message.split(update.user.name, 2)[1] }}</span>
+    </template>
+    <template v-else>
+      <span>{{ update.message }}</span>
+    </template>
   </div>
   <article v-else class="w-full scroll-mt-4 sm:scroll-mt-6">
     <div
@@ -22,21 +33,33 @@ const { update } = defineProps<{
         'ltr:justify-start me-auto': !update.me,
       }"
     >
-      <div class="inline-flex items-center justify-center min-h-6 mt-2">
+      <div class="min-h-6 mt-2">
         <UserAvatar
+          v-if="!update.me"
           :user="update.user"
           :team="update.team"
           size="lg"
         />
       </div>
       <div
+        class="flex flex-col gap-y-1"
         :class="{
-          'bg-primary text-inverted': update.me,
-          'bg-elevated/50': !update.me,
+          'ltr:items-end': update.me,
+          'ltr:items-start': !update.me,
         }"
-        class="text-pretty min-w-0 *:first:mt-0 *:last:mb-0 bg-elevated/50 px-4 py-3 rounded-lg min-h-12"
       >
-        {{ update.message }}
+        <div
+          v-for="updateItem of updates"
+          :key="updateItem.id"
+          :class="{
+            'bg-primary text-inverted': update.me,
+            'bg-elevated/50': !update.me,
+          }"
+          class="text-pretty min-w-0 *:first:mt-0 *:last:mb-0 bg-elevated/50 px-4 py-3 rounded-lg min-h-12"
+        >
+          {{ updateItem.message }}
+        </div>
+        <time class="text-sm text-muted">{{ localTime(update.date) }}</time>
       </div>
     </div>
   </article>
