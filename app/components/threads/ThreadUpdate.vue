@@ -14,15 +14,20 @@ const update = computed(() => updates[updates.length - 1]!)
 <template>
   <div
     v-if="update.type == 'System'"
-    class="text-dimmed text-center flex flex-row items-center justify-center gap-2"
+    class="text-dimmed text-center leading-tight"
   >
     <template v-if="update.updateType == 'Created'">
-      <span>{{ update.message.split(update.user.name, 2)[0] }}</span>
-      <UserAvatar :user="update.user" :team="update.team" size="xs" />
-      <span>{{ update.user.name + update.message.split(update.user.name, 2)[1] }}</span>
+      {{ update.message.split(update.user.name, 2)[0] }}
+      <UserAvatar
+        :user="update.user"
+        :team="update.team"
+        size="xs"
+        class="pe-1"
+      />
+      {{ update.user.name + update.message.split(update.user.name, 2)[1] }}
     </template>
     <template v-else>
-      <span>{{ update.message }}</span>
+      {{ update.message }}
     </template>
   </div>
   <article v-else class="w-full scroll-mt-4 sm:scroll-mt-6">
