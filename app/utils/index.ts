@@ -18,8 +18,8 @@ export function localTime(time: Date | string | undefined): string | undefined {
 
   const actualTime = time instanceof Date ? time : new Date(time)
   if (isToday(actualTime))
-    return format(actualTime, 'dd MMM, HH:mm')
-  return format(actualTime, 'dd MMM')
+    return format(actualTime, 'HH:mm')
+  return format(actualTime, 'dd MMM, HH:mm')
 }
 
 export function expand<T extends object>(input: T[] | undefined, selectors: (keyof T)[]): T[] {
