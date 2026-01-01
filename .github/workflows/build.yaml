@@ -66,13 +66,13 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Set up NextJS cache
+      - name: Set up nuxt cache
         uses: actions/cache@v4
         with:
-          path: ${{ github.workspace }}/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.ts', '**/*.vue') }}
+          path: ${{ github.workspace }}/.nuxt/cache
+          key: ${{ runner.os }}-nuxt-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.ts', '**/*.vue') }}
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+            ${{ runner.os }}-nuxt-${{ hashFiles('**/package-lock.json') }}-
 
       - name: Install dependencies
         run: npm ci
@@ -94,7 +94,7 @@ jobs:
       - name: Publish app
         uses: actions/upload-artifact@v4
         with:
-          name: next-app
+          name: frontend-server
           path: .output
           include-hidden-files: true
           if-no-files-found: error
@@ -122,7 +122,7 @@ jobs:
       - name: Download application artifact
         uses: actions/download-artifact@v4
         with:
-          name: next-app
+          name: frontend-server
           path: ./.output
 
       # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
