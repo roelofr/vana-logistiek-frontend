@@ -18,7 +18,7 @@ export function localTime(time: Date | string | undefined): string | undefined {
 
   const actualTime = time instanceof Date ? time : new Date(time)
   if (isToday(actualTime))
-    return format(actualTime, 'HH:mm')
+    return format(actualTime, 'dd MMM, HH:mm')
   return format(actualTime, 'dd MMM')
 }
 
