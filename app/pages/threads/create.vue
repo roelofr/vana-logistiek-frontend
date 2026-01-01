@@ -7,12 +7,14 @@ import type { Thread } from '~/types'
 const { $api } = useNuxtApp()
 const router = useRouter()
 
-const suggestedOptions = [
-  'Bijbestelling',
-  'Service',
-  'Techniek',
-  'Gatorteam',
-]
+const { data: suggestedOptions } = useApi<string[]>('/api/settings/suggested-options', {
+  default: () => [
+    'Bijbestelling',
+    'Service',
+    'Techniek',
+    'Gatorteam',
+  ],
+})
 
 const schema = z.object({
   vendor: z.looseObject({
@@ -21,7 +23,7 @@ const schema = z.object({
     number: z.string(),
   }, 'Standhouder is verplicht'),
   subject: z.string('Onderwerp is verplicht')
-    .min(4, 'Onderwerp moet minimaal 4 tekens zijn')
+    .min(2, 'Onderwerp moet minimaal 2 tekens zijn')
     .max(30, 'Onderwerp moet maximaal 30 tekens zijn'),
   message: z.nullish(z.string()),
 })
@@ -89,7 +91,7 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
             <UFormField
               label="Onderwerp"
               name="subject"
-              description="Snelle omschrijving, 4-30 tekens."
+              description="Snelle omschrijving, 2-30 tekens."
               :help="`Suggesties: ${suggestedOptions.join(', ')}`"
               required
             >
