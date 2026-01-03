@@ -38,17 +38,6 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-12-20',
 
-  hooks: {
-    'pages:extend'(pages) {
-      // add a route
-      pages.push({
-        name: 'threads-id',
-        path: '/threads/:id',
-        file: '~/pages/threads/index.vue',
-      })
-    },
-  },
-
   eslint: {
     config: {
       stylistic: {

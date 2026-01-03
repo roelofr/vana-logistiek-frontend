@@ -2,18 +2,27 @@
 import type { LoadingType, Thread } from '~/types'
 import { localTime } from '~/utils'
 
+const route = useRoute()
+const router = useRouter()
 const props = defineProps<{
   threads: Thread[]
   loadingType: LoadingType
 }>()
 
-const emit = defineEmits<{
-  open: [thread: Thread]
-}>()
-
 const threadRefs = ref<Element[]>([])
 
-const selectedThread = defineModel<Thread | null>()
+const selectedThread = computed(() => {
+  if (!route.params?.id || !props.threads?.length)
+    return null
+
+  try {
+    const paramId = parseInt(route.params.id as string, 10)
+    return props.threads.find(thread => thread.id == paramId)
+  } catch (e) {
+    console.log('Param ID %o is not a number, somehow: %o', route.params.id, e)
+    return null
+  }
+})
 
 watch(selectedThread, () => {
   if (!selectedThread.value)
@@ -24,24 +33,26 @@ watch(selectedThread, () => {
     ref.scrollIntoView({ block: 'nearest' })
 })
 
+const threadRoute = (thread: Thread) => `/threads/${thread.id}`
+
 defineShortcuts({
-  arrowdown: () => {
+  arrowdown: async () => {
     const index = props.threads.findIndex(mail => mail.id === selectedThread.value?.id)
 
-    if (index === -1) {
-      selectedThread.value = props.threads[0]
-    } else if (index < props.threads.length - 1) {
-      selectedThread.value = props.threads[index + 1]
-    }
+    if (index === -1)
+      await router.push(
+        threadRoute(props.threads[0] as Thread),
+      )
+    else if (index < props.threads.length - 1)
+      await router.push(threadRoute(props.threads[index + 1] as Thread))
   },
-  arrowup: () => {
+  arrowup: async () => {
     const index = props.threads.findIndex(mail => mail.id === selectedThread.value?.id)
 
-    if (index === -1) {
-      selectedThread.value = props.threads[props.threads.length - 1]
-    } else if (index > 0) {
-      selectedThread.value = props.threads[index - 1]
-    }
+    if (index === -1)
+      await router.push(threadRoute(props.threads[props.threads.length - 1] as Thread))
+    else if (index < props.threads.length - 1)
+      await router.push(threadRoute(props.threads[index - 1] as Thread))
   },
 })
 </script>
@@ -90,7 +101,9 @@ defineShortcuts({
           :key="index"
           :ref="el => { threadRefs[thread.id] = el as Element }"
         >
-          <div
+          <NuxtLink
+            :href="threadRoute(thread)"
+            prefetch-on="interaction"
             class="block p-4 sm:px-6 text-sm cursor-pointer border-l-2 transition-colors"
             :class="[
               thread.read ? 'text-toned' : 'text-highlighted',
@@ -98,8 +111,6 @@ defineShortcuts({
                 ? 'border-primary bg-primary/10'
                 : 'border-(--ui-bg) hover:border-primary hover:bg-primary/5',
             ]"
-            :data-href="`/threads/${thread.id}`"
-            @click.prevent="emit('open', thread)"
           >
             <div :class="[thread.read || 'font-semibold']" class="flex items-center justify-between">
               <div class="flex items-center gap-3">
@@ -113,7 +124,7 @@ defineShortcuts({
             <p :class="[thread.read || 'font-semibold']" class="truncate">
               {{ thread.subject }}
             </p>
-          </div>
+          </NuxtLink>
         </div>
       </template>
     </template>
