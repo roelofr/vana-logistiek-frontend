@@ -44,14 +44,21 @@ const filteredThreads = computed(() => {
     ))
 })
 
-watch([route], () => {
+function reactToRouteChanges(): void {
   isPanelOpen.value = (route.name !== 'threads')
 
-  if (route.name === 'threads-id') {
-    const routeIdAsNumber = parseInt(route.params.id as string, 10)
-    selectedThread.value = filteredThreads.value.find(thread => thread.id == routeIdAsNumber)
+  if (route.name !== 'threads-id') {
+    selectedThread.value = null
+    return
   }
-}, { immediate: true })
+
+  const routeIdAsNumber = parseInt(route.params.id as string, 10)
+  console.log('Selecting thread %o from route', routeIdAsNumber)
+  selectedThread.value = filteredThreads.value.find(thread => thread.id == routeIdAsNumber)
+}
+
+watch([route, apiThreads], reactToRouteChanges)
+onMounted(reactToRouteChanges)
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isMobile = breakpoints.smaller('lg')
