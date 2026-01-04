@@ -22,7 +22,8 @@ function toDate(value: Date | string | undefined): Date | null {
 
   try {
     return new Date(value)
-  } catch (e) {
+  } catch (err) {
+    console.warn('Failed to parse %o into a valid date: %o', value, err)
     return null
   }
 }
@@ -53,7 +54,7 @@ export function expand<T extends object>(input: T[] | undefined, selectors: (key
 
   for (const key of selectors) {
     const localCache = new Map<number, KeyLike>()
-    outData = outData.map((row, index) => {
+    outData = outData.map((row) => {
       if (!Object.hasOwn(row, key))
         return row
 

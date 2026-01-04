@@ -23,7 +23,7 @@ const profile = reactive<Partial<ProfileSchema>>({
 })
 const toast = useToast()
 
-async function onSubmit(event: FormSubmitEvent<ProfileSchema>) {
+async function onSubmit(_event: FormSubmitEvent<ProfileSchema>) {
   toast.add({
     title: 'Success',
     description: 'Your settings have been updated.',
@@ -32,8 +32,8 @@ async function onSubmit(event: FormSubmitEvent<ProfileSchema>) {
   })
 }
 
-function onFileChange(e: Event) {
-  const input = e.target as HTMLInputElement
+function onFileChange(event: Event) {
+  const input = event.target as HTMLInputElement
 
   if (!input.files?.length) {
     return
