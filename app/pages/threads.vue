@@ -95,7 +95,7 @@ const isMobile = breakpoints.smaller('lg')
   <ClientOnly>
     <USlideover v-if="isMobile" v-model:open="isPanelOpen" @close="router.push('/threads')">
       <template #content>
-        <NuxtPage />
+        <NuxtPage @close="router.push('/threads')" />
       </template>
     </USlideover>
   </ClientOnly>
