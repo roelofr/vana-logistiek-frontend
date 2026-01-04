@@ -92,12 +92,12 @@ const isMobile = breakpoints.smaller('lg')
     </UDashboardNavbar>
     <ThreadsMessageList
       v-model="selectedThread"
-      :loading-type="activeFilter"
+      :loading-type="'full'"
       :threads="filteredThreads"
     />
   </UDashboardPanel>
 
-  <NuxtPage @close="router.push('/threads')" />
+  <NuxtPage v-if="!isMobile" @close="router.push('/threads')" />
 
   <ClientOnly>
     <USlideover v-if="isMobile" v-model:open="isPanelOpen" @close="router.push('/threads')">
