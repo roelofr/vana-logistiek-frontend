@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { breakpointsTailwind } from '@vueuse/core'
 import type { ListThread, Thread, ThreadFilter } from '~/types'
 import { unreadForUserMap } from '~/utils'
+import { breakpointsTailwind } from '@vueuse/core'
 
 definePageMeta({
   key: 'threads-index',
@@ -71,6 +71,11 @@ const isMobile = breakpoints.smaller('lg')
     :max-size="30"
     :min-size="20"
     resizable
+    :class="{
+      'message-list': true,
+      'message-list--mobile': isMobile,
+      'message-list--with-message': selectedThread,
+    }"
   >
     <UDashboardNavbar title="Meldingen">
       <template #leading>
@@ -97,13 +102,11 @@ const isMobile = breakpoints.smaller('lg')
     />
   </UDashboardPanel>
 
-  <NuxtPage v-if="!isMobile" @close="router.push('/threads')" />
-
-  <ClientOnly>
-    <USlideover v-if="isMobile" v-model:open="isPanelOpen" @close="router.push('/threads')">
-      <template #content>
-        <NuxtPage @close="router.push('/threads')" />
-      </template>
-    </USlideover>
-  </ClientOnly>
+  <NuxtPage @close="router.push('/threads')" />
 </template>
+
+<style scoped>
+.message-list--mobile.message-list--with-message {
+  display: none;
+}
+</style>
