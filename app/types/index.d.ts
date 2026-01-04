@@ -1,6 +1,6 @@
-export type SaleStatus = 'paid' | 'failed' | 'refunded'
-
 export type LoadingType = 'full' | 'partial' | null
+
+export type ThreadFilter = 'open' | 'unread' | 'all'
 
 export interface Team {
   id: number
@@ -44,6 +44,8 @@ export interface Thread {
   assignedUser: null | User
   assignedTeam: null | Team
 }
+
+export type ListThread = Only<'id' | 'subject' | 'createdAt' | 'updatedAt' | 'resolvedAt' | 'vendor', Thread>
 
 export type ThreadUpdateType = 'System' | 'Chat' | 'Resolved'
 

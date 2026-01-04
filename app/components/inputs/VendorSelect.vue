@@ -46,10 +46,8 @@ const uiVendor = computed<InputVendorItem | undefined>({
 })
 
 function fetchVendorsOnInitialOpen() {
-  if (apiStatus.value == 'idle') {
-    console.log('Fetching vendors...')
+  if (apiStatus.value == 'idle')
     fetchVendors()
-  }
 }
 </script>
 

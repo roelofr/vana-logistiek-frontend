@@ -1,107 +1,51 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { breakpointsTailwind } from '@vueuse/core'
-import type { LoadingType, Thread } from '~/types'
+import type { ListThread, Thread, ThreadFilter } from '~/types'
+import { unreadForUserMap } from '~/utils'
 
 const { data: user } = useUser()
-const route = useRoute()
-const toast = useToast()
 const router = useRouter()
+const route = useRoute()
 
-const tabItems = [{
-  label: 'All',
-  value: 'all',
-}, {
-  label: 'Unread',
-  value: 'unread',
-}]
+const isPanelOpen = ref(false)
+const selectedThread = ref<Thread | null>(null)
+const activeFilter = ref<ThreadFilter>('all')
 
-const selectedTab = ref('all')
-
-const { data: threads, pending } = await useApi<Thread[]>(() => '/api/threads', {
-  default: () => [] as Thread[],
-  lazy: route.name !== 'threads-id',
+const {
+  data: apiThreads,
+  status: threadsStatus,
+} = useApi<ListThread[]>('/api/threads', {
+  lazy: true,
+  params: {
+    closed: activeFilter.value === 'all',
+  },
 })
 
-watch(route, () => {
-  console.log('Route changed: %s with (id: %o)', route.name, route.params.id)
-})
-
-const expandedThreads = computed(() => {
-  const expanded = expand(threads.value, ['user', 'team', 'vendor'])
-
-  expanded.forEach((thread) => {
-    if (thread.team?.id !== user.value?.team?.id)
-      thread.read = true
-  })
-
-  return expanded
-})
+const isLoading = computed(() => threadsStatus.value !== 'success')
+const threads = computed(() => expand(apiThreads.value, ['user', 'team', 'vendor']).map(unreadForUserMap(user.value!)))
 
 // Filter threads based on the selected tab
 const filteredThreads = computed(() => {
-  const threads = expandedThreads.value
-  if (!threads)
+  if (!threads.value)
     return []
 
-  if (selectedTab.value === 'unread')
-    return threads.filter(thread => !thread.read
-      && (
-        thread.user?.id == user.value?.id
-        || thread.team?.id == user.value?.team?.id
-      ))
+  if (activeFilter.value !== 'unread')
+    return threads.value
 
-  return threads
+  return threads.value.filter(thread => !thread.read
+    && (
+      thread.user?.id == user.value?.id
+      || thread.team?.id == user.value?.team?.id
+    ))
 })
 
-const selectedThread = computed<Thread | null>(() => {
-  const paramId = route.params.id
-  if (!paramId)
-    return null
-
-  try {
-    const paramIdNumeric = parseInt(paramId as string, 10)
-    const thread = expandedThreads.value.find(t => t.id === paramIdNumeric) ?? null
-    if (thread)
-      return thread
-
-    toast.add({
-      color: 'warning',
-      title: 'Melding niet gevonden',
-      description: 'De gevraagde melding is niet beschikbaar',
-    })
-    router.replace('/threads')
-
-    return null
-  } catch (err) {
-    console.warn('Failed to convert ID to number: %o', err)
-    return null
+watch([route], () => {
+  isPanelOpen.value = (route.name !== 'threads')
+  if (route.name === 'threads-id') {
+    const routeIdAsNumber = parseInt(route.params.id as string, 10)
+    selectedThread.value = filteredThreads.value.find(thread => thread.id == routeIdAsNumber)
   }
-})
-
-const isPanelOpen = computed({
-  get() {
-    return !!selectedThread.value
-  },
-  set(value: boolean) {
-    if (!value) {
-      selectedThread.value = null
-    }
-  },
-})
-
-const isLoading = computed(() => pending.value)
-const hasCompletedLoadingOnce = ref(false)
-watch(isLoading, (value) => {
-  if (!value)
-    hasCompletedLoadingOnce.value = true
-})
-const loadingType = computed<LoadingType>(() => {
-  if (!isLoading.value)
-    return null
-  if (!hasCompletedLoadingOnce.value)
-    return 'full'
-  return 'partial'
 })
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
@@ -127,27 +71,26 @@ const isMobile = breakpoints.smaller('lg')
       <template #right>
         <ClientOnly>
           <UTabs
-            v-model="selectedTab"
+            v-model="activeFilter"
             :content="false"
-            :items="tabItems"
             size="xs"
           />
         </ClientOnly>
       </template>
     </UDashboardNavbar>
-    <ThreadList
+    <ThreadsMessageList
       v-model="selectedThread"
-      :loading-type="loadingType"
+      :loading-type="activeFilter"
       :threads="filteredThreads"
     />
   </UDashboardPanel>
 
-  <NuxtPage :thread="selectedThread" @close="router.push('/threads')" />
+  <NuxtPage @close="router.push('/threads')" />
 
   <ClientOnly>
     <USlideover v-if="isMobile" v-model:open="isPanelOpen" @close="router.push('/threads')">
       <template #content>
-        <NuxtPage :thread="selectedThread" />
+        <NuxtPage />
       </template>
     </USlideover>
   </ClientOnly>

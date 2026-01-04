@@ -6,8 +6,6 @@ const { updates } = defineProps<{
   updates: ThreadUpdate[]
 }>()
 
-console.log('Rendering update group %o', updates)
-
 const update = computed(() => updates[updates.length - 1]!)
 </script>
 

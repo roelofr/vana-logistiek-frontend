@@ -1,14 +1,30 @@
-<script lang="ts" setup>
-import { format } from 'date-fns'
-import type { Thread, ThreadUpdate } from '~/types'
-import { expand } from '~/utils'
+<script setup lang="ts">
 import { UTextarea } from '#components'
+import type { ListThread, ThreadUpdate } from '~/types'
+import { expand, formattedLocalTime } from '~/utils'
+
+const { thread } = defineProps<{
+  thread: ListThread
+}>()
 
 const { $api } = useNuxtApp()
-
-const { thread } = defineProps<{ thread: Thread }>()
+const toast = useToast()
 
 const emits = defineEmits(['close'])
+
+const reply = ref('')
+const loading = ref(false)
+
+const {
+  data: updates,
+  status: updatesStatus,
+  refresh: updatesRefresh,
+} = useApi<ThreadUpdate[]>(() => `/api/threads/${thread.id}/updates`, {
+  lazy: true,
+  watch: [() => thread],
+})
+
+const updatesExpanded = computed(() => expand(updates.value, ['user', 'team']))
 
 const dropdownItems = [[{
   label: 'Mark as unread',
@@ -23,22 +39,6 @@ const dropdownItems = [[{
   label: 'Mute thread',
   icon: 'i-lucide-circle-pause',
 }]]
-
-const toast = useToast()
-
-const reply = ref('')
-const loading = ref(false)
-
-const {
-  data: updates,
-  status: updatesStatus,
-  refresh: updatesRefresh,
-} = useApi<ThreadUpdate[]>(() => `/api/threads/${thread.id}/updates`, {
-  lazy: true,
-  watch: [thread],
-})
-
-const updatesExpanded = computed(() => expand(updates.value, ['user', 'team']))
 
 watch(() => thread, () => {
   reply.value = ''
@@ -64,7 +64,7 @@ async function sendMessage() {
     })
 
     reply.value = ''
-    updatesRefresh()
+    await updatesRefresh()
   } catch (error) {
     console.error('Fout bij plaatsen comment: %o', error)
     toast.add({
@@ -86,7 +86,7 @@ defineShortcuts({
 
 <template>
   <UDashboardPanel id="inbox-2">
-    <UDashboardNavbar :title="`Melding ${thread.id}`" :toggle="false">
+    <UDashboardNavbar :title="`Melding ${thread?.id ?? thread.id}`" :toggle="false">
       <template #leading>
         <UButton
           class="-ms-1.5"
@@ -130,22 +130,22 @@ defineShortcuts({
       <div class="flex items-start gap-4 sm:my-1.5">
         <div class="min-w-0">
           <p class="font-semibold text-highlighted">
-            {{ thread.vendor.name }}
+            {{ thread.vendor?.name }}
           </p>
           <div class="text-muted flex flex-row items-center gap-2">
             <VendorNumber :vendor="thread.vendor" />
-            <p>{{ thread.vendor.district.name }}</p>
+            <p>{{ thread.vendor?.district?.name }}</p>
           </div>
         </div>
       </div>
 
       <p class="text-muted text-sm sm:mt-2">
-        {{ format(new Date(thread.createdAt), 'dd MMM HH:mm') }}
+        {{ formattedLocalTime(thread.createdAt, 'dd MMM HH:mm') }}
       </p>
     </div>
 
     <div class="flex-1 p-4 sm:p-6">
-      <ThreadsThreadUpdates v-if="updatesStatus == 'success'" :updates="updatesExpanded" />
+      <ThreadsUpdateList v-if="updatesStatus == 'success'" :updates="updatesExpanded" />
       <UAlert
         v-else-if="updatesStatus == 'error'"
         color="error"
@@ -154,10 +154,7 @@ defineShortcuts({
         title="Laden mislukt"
         variant="soft"
       />
-      <div
-        v-else
-        class="my-4 flex flex-row items-center justify-center gap-2 text-dimmed"
-      >
+      <div v-else class="my-4 flex flex-row items-center justify-center gap-2 text-dimmed">
         <UIcon class="animate-spin" name="i-lucide-loader" size="20" />
         <span>Berichten worden opgehaald...</span>
       </div>

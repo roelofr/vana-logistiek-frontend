@@ -7,6 +7,8 @@ import type { Thread } from '~/types'
 const { $api } = useNuxtApp()
 const router = useRouter()
 
+const emits = defineEmits(['close'])
+
 const { data: suggestedOptions } = useApi<string[]>('/api/settings/suggested-options', {
   default: () => [
     'Bijbestelling',
@@ -63,7 +65,17 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
 <template>
   <UDashboardPanel>
     <template #header>
-      <UDashboardNavbar title="Nieuwe melding" />
+      <UDashboardNavbar title="Nieuwe melding">
+        <template #leading>
+          <UButton
+            class="-ms-1.5"
+            color="neutral"
+            icon="i-lucide-x"
+            variant="ghost"
+            @click="emits('close')"
+          />
+        </template>
+      </UDashboardNavbar>
     </template>
 
     <template #body>
@@ -92,7 +104,7 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
               label="Onderwerp"
               name="subject"
               description="Snelle omschrijving, 2-30 tekens."
-              :help="`Suggesties: ${suggestedOptions.join(', ')}`"
+              :help="`Suggesties: ${suggestedOptions!.join(', ')}`"
               required
             >
               <UInput

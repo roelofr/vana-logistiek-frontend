@@ -23,8 +23,6 @@ const updatesAsGroup = computed(() => {
     return current
   }, null)
 
-  console.log('Resulting groups = {}', resultingGroups)
-
   return resultingGroups.map((group, index) => ({
     id: index,
     updates: group,
@@ -35,7 +33,7 @@ const updatesAsGroup = computed(() => {
 <template>
   <UScrollArea class="w-full">
     <div class="flex flex-col flex-1 px-2.5 gap-y-4">
-      <ThreadsThreadUpdate v-for="group of updatesAsGroup" :key="group.id" :updates="group.updates" />
+      <ThreadsUpdate v-for="group of updatesAsGroup" :key="group.id" :updates="group.updates" />
     </div>
   </UScrollArea>
 </template>

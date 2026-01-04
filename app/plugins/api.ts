@@ -20,6 +20,7 @@ export default defineNuxtPlugin((_) => {
   }
 
   const $api = $fetch.create({
+    redirect: 'error',
     baseURL: config.apiUrl as string ?? config.public?.apiUrl as string ?? 'https://logistiek.myvana.dev',
     onRequest({ request, options }) {
       if (!isValidApiUrl(request))
