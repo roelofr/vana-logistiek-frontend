@@ -104,10 +104,12 @@ const isMobile = breakpoints.smaller('lg')
   </UDashboardPanel>
 
   <NuxtPage @close="router.push('/threads')" />
-</template>
 
-<style scoped>
-.message-list--mobile.message-list--with-message {
-  display: none;
-}
-</style>
+  <ClientOnly>
+    <USlideover v-if="isMobile" v-model:open="isPanelOpen" @close="router.push('/threads')">
+      <template #content>
+        <NuxtPage @close="router.push('/threads')" />
+      </template>
+    </USlideover>
+  </ClientOnly>
+</template>
