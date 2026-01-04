@@ -65,7 +65,7 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
 <template>
   <UDashboardPanel>
     <template #header>
-      <UDashboardNavbar title="Nieuwe melding">
+      <UDashboardNavbar title="Nieuwe melding" :toggle="false">
         <template #leading>
           <UButton
             class="-ms-1.5"

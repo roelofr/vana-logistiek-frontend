@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import type { ListThread, Thread, ThreadFilter } from '~/types'
+import type { ListThread, LoadingType, Thread, ThreadFilter } from '~/types'
 import { unreadForUserMap } from '~/utils'
 import { breakpointsTailwind } from '@vueuse/core'
 
@@ -26,7 +26,8 @@ const {
   },
 })
 
-const isLoading = computed(() => threadsStatus.value !== 'success')
+const isLoading = computed<boolean>(() => threadsStatus.value !== 'success')
+const loadingType = computed<LoadingType>(() => isLoading.value ? 'full' : null)
 const threads = computed(() => expand(apiThreads.value, ['user', 'team', 'vendor']).map(unreadForUserMap(user.value!)))
 
 // Filter threads based on the selected tab
@@ -97,7 +98,7 @@ const isMobile = breakpoints.smaller('lg')
     </UDashboardNavbar>
     <ThreadsMessageList
       v-model="selectedThread"
-      :loading-type="'full'"
+      :loading-type="loadingType"
       :threads="filteredThreads"
     />
   </UDashboardPanel>
