@@ -4,6 +4,10 @@ import { breakpointsTailwind } from '@vueuse/core'
 import type { ListThread, Thread, ThreadFilter } from '~/types'
 import { unreadForUserMap } from '~/utils'
 
+definePageMeta({
+  key: 'threads-index',
+})
+
 const { data: user } = useUser()
 const router = useRouter()
 const route = useRoute()
