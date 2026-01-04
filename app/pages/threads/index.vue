@@ -6,5 +6,5 @@ const isMobile = breakpoints.smaller('lg')
 </script>
 
 <template>
-  <ThreadEmpty v-if="!isMobile" />
+  <ThreadsEmpty v-if="!isMobile" />
 </template>

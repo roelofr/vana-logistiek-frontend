@@ -144,7 +144,7 @@ defineShortcuts({
       </p>
     </div>
 
-    <div class="flex-1 p-4 sm:p-6">
+    <UScrollArea class="flex-1 p-4 sm:p-6">
       <ThreadsUpdateList v-if="updatesStatus == 'success'" :updates="updatesExpanded" />
       <UAlert
         v-else-if="updatesStatus == 'error'"
@@ -158,17 +158,17 @@ defineShortcuts({
         <UIcon class="animate-spin" name="i-lucide-loader" size="20" />
         <span>Berichten worden opgehaald...</span>
       </div>
-    </div>
+    </UScrollArea>
 
     <div class="pb-4 px-4 sm:px-6 shrink-0">
       <UCard :ui="{ header: 'flex items-center gap-1.5 text-dimmed' }" class="mt-auto" variant="subtle">
-        <template #header>
+        <!-- <template #header>
           <UIcon class="size-5" name="i-lucide-reply" />
 
           <span class="text-sm truncate">
             Reageren op deze melding
           </span>
-        </template>
+        </template> -->
 
         <form @submit.prevent="sendMessage">
           <UTextarea

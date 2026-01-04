@@ -86,83 +86,85 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
         />
 
         <UPageBody>
-          <UForm
-            :schema="schema"
-            :state="state"
-            class="space-y-4"
-            @submit="onSubmit"
-          >
-            <UFormField
-              label="Standhouder"
-              name="vendor"
-              required
+          <UScrollArea>
+            <UForm
+              :schema="schema"
+              :state="state"
+              class="space-y-4"
+              @submit="onSubmit"
             >
-              <InputsVendorSelect v-model="state.vendor" name="vendor" size="xl" />
-            </UFormField>
+              <UFormField
+                label="Standhouder"
+                name="vendor"
+                required
+              >
+                <InputsVendorSelect v-model="state.vendor" name="vendor" size="xl" />
+              </UFormField>
 
-            <UFormField
-              label="Onderwerp"
-              name="subject"
-              description="Snelle omschrijving, 2-30 tekens."
-              :help="`Suggesties: ${suggestedOptions!.join(', ')}`"
-              required
-            >
-              <UInput
-                v-model="state.subject"
+              <UFormField
                 label="Onderwerp"
                 name="subject"
-                size="xl"
-              />
+                description="Snelle omschrijving, 2-30 tekens."
+                :help="`Suggesties: ${suggestedOptions!.join(', ')}`"
+                required
+              >
+                <UInput
+                  v-model="state.subject"
+                  label="Onderwerp"
+                  name="subject"
+                  size="xl"
+                />
 
-              <template #help>
-                <div class="flex flex-row justify-start items-center flex-wrap gap-2">
-                  <span class="text-sm text-muted">
-                    Suggesties
-                  </span>
-                  <UButton
-                    v-for="value of suggestedOptions"
-                    :key="value"
-                    size="sm"
-                    variant="soft"
-                    class="rounded-full"
-                    @click="state.subject = value"
-                  >
-                    {{ value }}
-                  </UButton>
-                </div>
-              </template>
-            </UFormField>
+                <template #help>
+                  <div class="flex flex-row justify-start items-center flex-wrap gap-2">
+                    <span class="text-sm text-muted">
+                      Suggesties
+                    </span>
+                    <UButton
+                      v-for="value of suggestedOptions"
+                      :key="value"
+                      size="sm"
+                      variant="soft"
+                      class="rounded-full"
+                      @click="state.subject = value"
+                    >
+                      {{ value }}
+                    </UButton>
+                  </div>
+                </template>
+              </UFormField>
 
-            <UFormField
-              label="Bericht"
-              name="message"
-              description="Plaats direct een eerste bericht in de conversatie. Hoeft niet, mag wel."
-            >
-              <UTextarea
-                v-model="state.message"
+              <UFormField
                 label="Bericht"
                 name="message"
-                :rows="3"
-                autocapitalize="sentences"
+                description="Plaats direct een eerste bericht in de conversatie. Hoeft niet, mag wel."
+              >
+                <UTextarea
+                  v-model="state.message"
+                  label="Bericht"
+                  name="message"
+                  :rows="3"
+                  autocapitalize="sentences"
+                  size="xl"
+                />
+              </UFormField>
+
+              <UButton
+                block
                 size="xl"
-              />
-            </UFormField>
+                type="submit"
+                icon="i-lucide-rocket"
+              >
+                Melding aanmaken
+              </UButton>
 
-            <UButton
-              block
-              size="xl"
-              type="submit"
-              icon="i-lucide-rocket"
-            >
-              Melding aanmaken
-            </UButton>
-
-            <DevOnly>
-              <UCard>
-                <pre><code>{{ JSON.stringify(state, undefined, 2) }}</code></pre>
-              </UCard>
-            </DevOnly>
-          </UForm>
+              <LazyDevOnly>
+                <UCard>
+                  <pre><code>{{ JSON.stringify(state, undefined, 2) }}</code></pre>
+                </UCard>
+              </LazyDevOnly>
+            </UForm>
+          </UScrollArea>
         </UPageBody>
       </div>
     </template>
