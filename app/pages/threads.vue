@@ -42,11 +42,12 @@ const filteredThreads = computed(() => {
 
 watch([route], () => {
   isPanelOpen.value = (route.name !== 'threads')
+
   if (route.name === 'threads-id') {
     const routeIdAsNumber = parseInt(route.params.id as string, 10)
     selectedThread.value = filteredThreads.value.find(thread => thread.id == routeIdAsNumber)
   }
-})
+}, { immediate: true })
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isMobile = breakpoints.smaller('lg')
