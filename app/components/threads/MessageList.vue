@@ -37,7 +37,7 @@ defineShortcuts({
 
     if (index === -1)
       await router.push(threadRoute(threads[threads.length - 1] as Thread))
-    else if (index < threads.length - 1)
+    else if (index > 1)
       await router.push(threadRoute(threads[index - 1] as Thread))
   },
 })
@@ -50,7 +50,7 @@ defineShortcuts({
       :key="index"
     >
       <div
-        class="space-y-1 p-4 sm:px-6 text-sm border-l-2 transition-colors border-(--ui-bg)"
+        class="space-y-1 p-4 sm:px-6 text-sm border-l-2 transition-colors border-bg"
       >
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
@@ -94,11 +94,11 @@ defineShortcuts({
             thread.read ? 'text-toned' : 'text-highlighted',
             selectedThread?.id === thread.id
               ? 'border-primary bg-primary/10'
-              : 'border-(--ui-bg) hover:border-primary hover:bg-primary/5',
+              : 'border-bg hover:border-primary hover:bg-primary/5',
           ]"
         >
           <div :class="[thread.read || 'font-semibold']" class="flex items-center justify-between max-w-full">
-            <div class="flex items-center gap-3 items-start">
+            <div class="flex items-start gap-3">
               <div class="flex-none text-muted">{{ thread.vendor.number }}</div>
               <div>{{ thread.vendor.name }}</div>
               <UChip v-if="!thread.read" class="flex-none self-center" />
