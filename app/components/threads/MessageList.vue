@@ -3,6 +3,8 @@ import type { ListThread, LoadingType, Thread } from '~/types'
 import { localTime } from '~/utils'
 
 const router = useRouter()
+const threadCount = useCookie<number>('expected-threads')
+
 const selectedThread = defineModel<ListThread | Thread | null>()
 const { threads, loadingType } = defineProps<{
   loadingType: LoadingType
@@ -10,7 +12,15 @@ const { threads, loadingType } = defineProps<{
 }>()
 
 const threadRefs = ref<Element[]>([])
+
+const expectedThreadCount = computed(() => threadCount.value > 0 ? threadCount.value : 30)
+
 const threadRoute = (thread: Thread) => `/threads/${thread.id}`
+
+watch(() => threads, () => {
+  if (threads.length)
+    threadCount.value = Math.min(30, Math.max(5, threads.length))
+})
 
 watch(selectedThread, () => {
   if (!selectedThread.value)
@@ -46,7 +56,7 @@ defineShortcuts({
 <template>
   <template v-if="loadingType == 'full'">
     <div
-      v-for="index in Array(30)"
+      v-for="index in Array(expectedThreadCount)"
       :key="index"
     >
       <div
