@@ -1,4 +1,4 @@
-const validationRoute = `https://${crypto.randomUUID()}.example.com/not-an-api/`
+const validationRoute = `https://api.example.com/not-an-api/`
 const validationOrigin = new URL(validationRoute).origin
 
 const apiAuthErrorToast = 'vana-api-auth-error'
