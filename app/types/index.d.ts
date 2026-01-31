@@ -28,6 +28,7 @@ export interface Vendor {
   id: number
   name: string
   number: string
+  type: string
   district?: Only<'id' | 'name', District>
 }
 
@@ -45,7 +46,7 @@ export interface Thread {
   assignedTeam: null | Team
 }
 
-export type ListThread = Only<'id' | 'subject' | 'createdAt' | 'updatedAt' | 'resolvedAt' | 'vendor', Thread>
+export type ListThread = Only<'id' | 'subject' | 'createdAt' | 'updatedAt' | 'resolvedAt' | 'vendor' | 'user' | 'team', Thread>
 
 export type ThreadUpdateType = 'System' | 'Chat' | 'Resolved'
 

@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxt/ui',
     '@vueuse/nuxt',
+    '@pinia/nuxt',
   ],
 
   $development: {

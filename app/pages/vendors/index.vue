@@ -2,29 +2,32 @@
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/table-core'
 import { getPaginationRowModel } from '@tanstack/table-core'
-import type { User } from '~/types'
+import type { Vendor } from '~/types'
+import { computed } from 'vue'
+import { VendorAvatar } from '#components'
 
 const UAvatar = resolveComponent('UAvatar')
 const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
-const UCheckbox = resolveComponent('UCheckbox')
 
 const toast = useToast()
 const table = useTemplateRef('table')
 
 const columnFilters = ref([{
-  id: 'email',
+  id: 'number',
   value: '',
 }])
 const columnVisibility = ref()
 const rowSelection = ref({ 1: true })
 
-const { data, status } = await useApi<User[]>('/api/vendors', {
+const { data: apiData, status } = await useApi<Vendor[]>('/api/vendors', {
   lazy: true,
 })
 
-function getRowItems(row: Row<User>) {
+const data = computed(() => expand(apiData.value, ['district']))
+
+function getRowItems(row: Row<Vendor>) {
   return [
     {
       type: 'label',
@@ -45,18 +48,18 @@ function getRowItems(row: Row<User>) {
       type: 'separator',
     },
     {
-      label: 'View customer details',
+      label: 'Bekijk details',
       icon: 'i-lucide-list',
     },
     {
-      label: 'View customer payments',
-      icon: 'i-lucide-wallet',
+      label: 'Nieuw ticket maken',
+      icon: 'i-lucide-plus',
     },
     {
       type: 'separator',
     },
     {
-      label: 'Delete customer',
+      label: 'Verwijderen',
       icon: 'i-lucide-trash',
       color: 'error',
       onSelect() {
@@ -69,54 +72,28 @@ function getRowItems(row: Row<User>) {
   ]
 }
 
-const columns: TableColumn<User>[] = [
-  {
-    id: 'select',
-    header: ({ table }) =>
-      h(UCheckbox, {
-        'modelValue': table.getIsSomePageRowsSelected()
-          ? 'indeterminate'
-          : table.getIsAllPageRowsSelected(),
-        'onUpdate:modelValue': (value: boolean | 'indeterminate') =>
-          table.toggleAllPageRowsSelected(!!value),
-        'ariaLabel': 'Select all',
-      }),
-    cell: ({ row }) =>
-      h(UCheckbox, {
-        'modelValue': row.getIsSelected(),
-        'onUpdate:modelValue': (value: boolean | 'indeterminate') => row.toggleSelected(!!value),
-        'ariaLabel': 'Select row',
-      }),
-  },
-  {
-    accessorKey: 'id',
-    header: 'ID',
-  },
+const columns: TableColumn<Vendor>[] = [
   {
     accessorKey: 'name',
-    header: 'Name',
+    header: 'Naam',
     cell: ({ row }) => {
       return h('div', { class: 'flex items-center gap-3' }, [
-        h(UAvatar, {
-          ...row.original.avatar,
-          size: 'lg',
-        }),
+        h(VendorAvatar, { vendor: row.original, size: 'lg' }),
         h('div', undefined, [
           h('p', { class: 'font-medium text-highlighted' }, row.original.name),
-          h('p', { class: '' }, `@${row.original.name}`),
         ]),
       ])
     },
   },
   {
-    accessorKey: 'email',
+    accessorKey: 'number',
     header: ({ column }) => {
       const isSorted = column.getIsSorted()
 
       return h(UButton, {
         color: 'neutral',
         variant: 'ghost',
-        label: 'Email',
+        label: 'Standnummer',
         icon: isSorted
           ? isSorted === 'asc'
             ? 'i-lucide-arrow-up-narrow-wide'
@@ -128,25 +105,9 @@ const columns: TableColumn<User>[] = [
     },
   },
   {
-    accessorKey: 'location',
-    header: 'Location',
-    cell: ({ row }) => row.original.location,
-  },
-  {
-    accessorKey: 'status',
-    header: 'Status',
-    filterFn: 'equals',
-    cell: ({ row }) => {
-      const color = {
-        subscribed: 'success' as const,
-        unsubscribed: 'error' as const,
-        bounced: 'warning' as const,
-      }[row.original.status]
-
-      return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () =>
-        row.original.status,
-      )
-    },
+    accessorKey: 'district',
+    header: 'Wijk',
+    cell: ({ row }) => row.original.district?.name,
   },
   {
     id: 'actions',
@@ -192,10 +153,10 @@ watch(() => statusFilter.value, (newVal) => {
 
 const filter = computed({
   get: (): string => {
-    return (table.value?.tableApi?.getColumn('email')?.getFilterValue() as string) || ''
+    return (table.value?.tableApi?.getColumn('number')?.getFilterValue() as string) || ''
   },
   set: (value: string) => {
-    table.value?.tableApi?.getColumn('email')?.setFilterValue(value || undefined)
+    table.value?.tableApi?.getColumn('number')?.setFilterValue(value || undefined)
   },
 })
 
@@ -264,7 +225,7 @@ const pagination = ref({
                 ?.getAllColumns()
                 .filter((column: any) => column.getCanHide())
                 .map((column: any) => ({
-                  label: upperFirst(column.id),
+                  label: (column.id),
                   type: 'checkbox' as const,
                   checked: column.getIsVisible(),
                   onUpdateChecked(checked: boolean) {
