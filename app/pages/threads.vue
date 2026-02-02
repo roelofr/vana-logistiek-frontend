@@ -96,11 +96,13 @@ const isMobile = breakpoints.smaller('lg')
         </ClientOnly>
       </template>
     </UDashboardNavbar>
-    <ThreadsMessageList
-      v-model="selectedThread"
-      :loading-type="loadingType"
-      :threads="filteredThreads"
-    />
+    <div class="overflow-y-auto divide-y divide-default">
+      <ThreadsMessageList
+        v-model="selectedThread"
+        :loading-type="loadingType"
+        :threads="filteredThreads"
+      />
+    </div>
   </UDashboardPanel>
 
   <NuxtPage @close="router.push('/threads')" />

@@ -20,6 +20,7 @@
     "@unovis/vue": "^1.6.2",
     "@vueuse/nuxt": "^13.9.0",
     "date-fns": "^4.1.0",
+    "js-confetti": "^0.13.1",
     "nuxt": "^4.2.1",
     "pinia": "^3.0.4",
     "zod": "^4.2.1"

@@ -60,3 +60,5 @@ export interface ThreadUpdate {
   user: null | Only<'id' | 'name', User>
   team: null | Only<'id' | 'name', Team>
 }
+
+export type ConfettiVariant = 'normal' | 'dino'

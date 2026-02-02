@@ -3,10 +3,6 @@ import type { Vendor } from '~/types'
 import type { InputMenuItem } from '@nuxt/ui'
 import { expand } from '~/utils'
 
-const { data: apiVendors, status: apiStatus, execute: fetchVendors } = useApi<Vendor[]>('/api/vendors', {
-  immediate: false,
-})
-
 type InputVendorItem = InputMenuItem & {
   id: number
   search: string
@@ -24,14 +20,26 @@ const toNuxtUiList = (vendor: Vendor): InputVendorItem => ({
   number: vendor.number,
 })
 
-const vendor = defineModel<Vendor | null>({ required: true })
+const vendor = defineModel<Vendor | null | undefined>({ required: true })
+const { defaultId } = defineProps<{ defaultId?: number }>()
+
+const { data: apiVendors, status: apiStatus, execute: fetchVendors } = useApi<Vendor[]>('/api/vendors', {
+  immediate: false,
+})
+
 const vendors = computed(() => apiVendors.value ? expand(apiVendors.value, ['district']) : [])
 const vendorsMapped = computed(() => vendors.value?.map(toNuxtUiList) ?? [])
 const vendorIndexed = computed(() => new Map(vendors.value?.map(v => [v.id, v])))
 
+watch(vendors, (newValue, oldValue) => {
+  if (oldValue == undefined && newValue != undefined && defaultId && !vendor.value) {
+    vendor.value = newValue.find(v => v.id === defaultId) ?? null
+  }
+})
+
 const uiVendor = computed<InputVendorItem | undefined>({
   get() {
-    return vendor.value ? toNuxtUiList(vendor.value) : undefined
+    return vendor.value ? toNuxtUiList(vendor.value) : null
   },
   set(value) {
     if (!value) {

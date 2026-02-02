@@ -6,12 +6,11 @@ import type { Vendor } from '~/types'
 import { computed } from 'vue'
 import { VendorAvatar } from '#components'
 
-const UAvatar = resolveComponent('UAvatar')
 const UButton = resolveComponent('UButton')
-const UBadge = resolveComponent('UBadge')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 
 const toast = useToast()
+const router = useRouter()
 const table = useTemplateRef('table')
 
 const columnFilters = ref([{
@@ -34,26 +33,15 @@ function getRowItems(row: Row<Vendor>) {
       label: 'Acties',
     },
     {
-      label: 'Copy customer ID',
-      icon: 'i-lucide-copy',
-      onSelect() {
-        navigator.clipboard.writeText(row.original.id.toString())
-        toast.add({
-          title: 'Copied to clipboard',
-          description: 'Customer ID copied to clipboard',
-        })
-      },
-    },
-    {
-      type: 'separator',
-    },
-    {
       label: 'Bekijk details',
       icon: 'i-lucide-list',
     },
     {
       label: 'Nieuw ticket maken',
       icon: 'i-lucide-plus',
+      async onSelect() {
+        await navigateTo({ path: `/threads/create`, query: { vendor: row.id } })
+      },
     },
     {
       type: 'separator',

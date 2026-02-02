@@ -2,10 +2,12 @@
 import type { FormSubmitEvent } from '@nuxt/ui'
 
 import * as z from 'zod'
-import type { Thread } from '~/types'
+import type { Thread, Vendor } from '~/types'
 
 const { $api } = useNuxtApp()
 const router = useRouter()
+const route = useRoute()
+const confetti = useConfetti()
 
 const emits = defineEmits(['close'])
 
@@ -38,6 +40,14 @@ const state = reactive<Partial<Schema>>({
   message: undefined,
 })
 
+useApi<Vendor>(() => `/api/vendors/${route.params?.vendor}`, {
+  watch: [() => route.params],
+}).then((vendor) => {
+  console.info('Recieved vendor %o for param ID %s', vendor, route.params.vendor)
+  if (vendor.data)
+    state.vendor = vendor.data as unknown as Schema['vendor']
+})
+
 const toast = useToast()
 const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
   try {
@@ -49,6 +59,8 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
         message: state.message?.trim() ? state.message : null,
       },
     })
+
+    confetti.dispatch()
 
     toast.add({
       color: 'success',
@@ -98,7 +110,11 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
                 name="vendor"
                 required
               >
-                <InputsVendorSelect v-model="state.vendor" name="vendor" size="xl" />
+                <InputsVendorSelect
+                  v-model="state.vendor"
+                  name="vendor"
+                  size="xl"
+                />
               </UFormField>
 
               <UFormField

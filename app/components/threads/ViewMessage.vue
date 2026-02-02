@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import { UTextarea } from '#components'
 import type { ListThread, ThreadUpdate } from '~/types'
 import { expand, formattedLocalTime } from '~/utils'
 
 const { thread } = defineProps<{
   thread: ListThread
 }>()
-
-const { $api } = useNuxtApp()
-const toast = useToast()
 
 const emits = defineEmits(['close'])
 
@@ -45,42 +41,6 @@ watch(() => thread, () => {
   loading.value = false
 }, {
   immediate: false,
-})
-
-async function sendMessage() {
-  try {
-    loading.value = true
-
-    await $api(`/api/threads/${thread.id}/message`, {
-      method: 'post',
-      body: {
-        message: reply.value,
-      },
-    })
-
-    toast.add({
-      color: 'success',
-      title: 'Opgeslagen',
-    })
-
-    reply.value = ''
-    await updatesRefresh()
-  } catch (error) {
-    console.error('Fout bij plaatsen comment: %o', error)
-    toast.add({
-      color: 'error',
-      title: 'Toevoegen van opmerking mislukt!',
-    })
-  } finally {
-    loading.value = false
-  }
-}
-
-defineShortcuts({
-  meta_enter: {
-    usingInput: 'reply-field',
-    handler: sendMessage,
-  },
 })
 </script>
 
@@ -128,13 +88,17 @@ defineShortcuts({
 
     <div class="flex flex-col sm:flex-row justify-between gap-1 p-4 sm:px-6 border-b border-default">
       <div class="flex items-start gap-4 sm:my-1.5">
-        <div class="min-w-0">
-          <p class="font-semibold text-highlighted">
-            {{ thread.vendor?.name }}
-          </p>
-          <div class="text-muted flex flex-row items-center gap-2">
-            <VendorNumber :vendor="thread.vendor" />
-            <p>{{ thread.vendor?.district?.name }}</p>
+        <div class="flex items-center gap-4">
+          <VendorAvatar size="lg" :vendor="thread.vendor" />
+
+          <div class="min-w-0">
+            <p class="font-semibold text-highlighted">
+              {{ thread.vendor?.name }}
+            </p>
+            <div class="text-muted flex flex-row items-center gap-2">
+              <VendorNumber :vendor="thread.vendor" />
+              <p>{{ thread.vendor?.district?.name }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -161,52 +125,7 @@ defineShortcuts({
     </UScrollArea>
 
     <div class="pb-4 px-4 sm:px-6 shrink-0">
-      <UCard :ui="{ header: 'flex items-center gap-1.5 text-dimmed' }" class="mt-auto" variant="subtle">
-        <!-- <template #header>
-          <UIcon class="size-5" name="i-lucide-reply" />
-
-          <span class="text-sm truncate">
-            Reageren op deze melding
-          </span>
-        </template> -->
-
-        <form @submit.prevent="sendMessage">
-          <UTextarea
-            ref="reply-field"
-            v-model="reply"
-            :disabled="loading"
-            :rows="1"
-            :ui="{ base: 'p-0 pb-4 resize-none' }"
-            autoresize
-            class="w-full"
-            color="neutral"
-            name="reply-field"
-            placeholder="Typ een gevatte reactie, of wat doms..."
-            required
-            variant="none"
-          />
-
-          <div class="flex items-center justify-between">
-            <UTooltip text="Attach file">
-              <UButton
-                color="neutral"
-                icon="i-lucide-paperclip"
-                variant="ghost"
-              />
-            </UTooltip>
-
-            <div class="flex items-center justify-end gap-2">
-              <UButton
-                :loading="loading"
-                color="neutral"
-                icon="i-lucide-send"
-                label="Versturen"
-                type="submit"
-              />
-            </div>
-          </div>
-        </form>
-      </UCard>
+      <ThreadsInteractWithMessage :thread="thread" @update="updatesRefresh" />
     </div>
   </UDashboardPanel>
 </template>

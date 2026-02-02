@@ -6,6 +6,8 @@ const close = () => {
   open.value = false
 }
 
+const confetti = useConfetti()
+
 const links = [
   [
     {
@@ -49,6 +51,12 @@ const links = [
     },
   ],
   [
+    {
+      label: 'Feest',
+      icon: 'i-lucide-party-popper',
+      type: 'trigger',
+      onSelect: () => confetti.dispatch('dino'),
+    },
     {
       label: 'Emotional Support',
       icon: 'i-lucide-info',
