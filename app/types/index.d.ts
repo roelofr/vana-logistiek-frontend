@@ -61,4 +61,15 @@ export interface ThreadUpdate {
   team: null | Only<'id' | 'name', Team>
 }
 
+export type ChatThreadType = 'system' | 'user'
+
+export interface ChatThread {
+  id: number
+  teams: Team[]
+  participants: User[]
+  subject: string
+  closed: boolean
+  type: ChatThreadType
+}
+
 export type ConfettiVariant = 'normal' | 'dino'

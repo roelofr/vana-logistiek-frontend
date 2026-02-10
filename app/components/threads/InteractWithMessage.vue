@@ -1,20 +1,16 @@
-<script setup lang="ts">
-import { UTextarea } from '#components'
+<script lang="ts" setup>
 import type { Thread } from '~/types'
 import type { TabsItem } from '@nuxt/ui/components/Tabs.vue'
+import ReplyToMessage from '~/components/threads/ReplyToMessage.vue'
 
 const actions: TabsItem[] = [
   { icon: 'i-lucide-reply', label: 'Reageren' },
   { icon: 'i-lucide-settings', label: 'Acties' },
 ]
 
-const { thread } = defineProps<{
-  thread: Thread
-}>()
+const { thread } = defineProps<{ thread: Thread }>()
 
-const emit = defineEmits<{
-  update: []
-}>()
+const emit = defineEmits<{ update: [] }>()
 
 const { $api } = useNuxtApp()
 const toast = useToast()
@@ -22,11 +18,6 @@ const toast = useToast()
 const reply = ref('')
 const loading = ref(false)
 const fileList = ref([])
-
-watch(() => thread, () => {
-  reply.value = ''
-  loading.value = false
-})
 
 async function sendMessage() {
   if (loading.value)
@@ -72,50 +63,15 @@ defineShortcuts({
 <template>
   <div class="rounded-lg overflow-hidden mt-auto bg-elevated/50 ring ring-default divide-y divide-default">
     <UTabs
-      color="neutral"
-      variant="link"
       :content="false"
       :items="actions"
       class="w-full"
+      color="neutral"
+      variant="link"
     />
 
     <div class="p-4 sm:p-6">
-      <form @submit.prevent="sendMessage">
-        <UTextarea
-          ref="reply-field"
-          v-model="reply"
-          :disabled="loading"
-          :rows="1"
-          :ui="{ base: 'p-0 pb-4 resize-none' }"
-          autoresize
-          class="w-full"
-          color="neutral"
-          name="reply-field"
-          placeholder="Typ een gevatte reactie, of wat doms..."
-          required
-          variant="none"
-        />
-
-        <div class="flex items-center justify-between">
-          <UTooltip text="Attach file">
-            <UButton
-              color="neutral"
-              icon="i-lucide-paperclip"
-              variant="ghost"
-            />
-          </UTooltip>
-
-          <div class="flex items-center justify-end gap-2">
-            <UButton
-              :loading="loading"
-              color="neutral"
-              icon="i-lucide-send"
-              label="Versturen"
-              type="submit"
-            />
-          </div>
-        </div>
-      </form>
+      <ReplyToMessage :thread="thread" @update="emit('update')" />
     </div>
   </div>
 </template>

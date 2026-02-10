@@ -1,22 +1,23 @@
 <script lang="ts" setup>
 import type { TableColumn } from '@nuxt/ui'
-import type { Row } from '@tanstack/table-core'
 import { getPaginationRowModel } from '@tanstack/table-core'
 import type { Vendor } from '~/types'
 import { computed } from 'vue'
 import { VendorAvatar } from '#components'
 
 const UButton = resolveComponent('UButton')
-const UDropdownMenu = resolveComponent('UDropdownMenu')
-
-const toast = useToast()
-const router = useRouter()
 const table = useTemplateRef('table')
 
-const columnFilters = ref([{
-  id: 'number',
-  value: '',
-}])
+const filter = ref('')
+const columnFilters = ref([
+  {
+    id: 'name',
+    value: '',
+  }, {
+    id: 'number',
+    value: '',
+  },
+])
 const columnVisibility = ref()
 const rowSelection = ref({ 1: true })
 
@@ -26,44 +27,32 @@ const { data: apiData, status } = await useApi<Vendor[]>('/api/vendors', {
 
 const data = computed(() => expand(apiData.value, ['district']))
 
-function getRowItems(row: Row<Vendor>) {
-  return [
-    {
-      type: 'label',
-      label: 'Acties',
-    },
-    {
-      label: 'Bekijk details',
-      icon: 'i-lucide-list',
-    },
-    {
-      label: 'Nieuw ticket maken',
-      icon: 'i-lucide-plus',
-      async onSelect() {
-        await navigateTo({ path: `/threads/create`, query: { vendor: row.id } })
-      },
-    },
-    {
-      type: 'separator',
-    },
-    {
-      label: 'Verwijderen',
-      icon: 'i-lucide-trash',
-      color: 'error',
-      onSelect() {
-        toast.add({
-          title: 'Customer deleted',
-          description: 'The customer has been deleted.',
-        })
-      },
-    },
-  ]
-}
+const pagination = ref({
+  pageIndex: 0,
+  pageSize: 10,
+})
 
 const columns: TableColumn<Vendor>[] = [
   {
-    accessorKey: 'name',
+    id: 'name',
     header: 'Naam',
+    accessorFn: row => `${row.name}`,
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted()
+
+      return h(UButton, {
+        color: 'neutral',
+        variant: 'ghost',
+        label: 'Naam',
+        icon: isSorted
+          ? isSorted === 'asc'
+            ? 'i-lucide-arrow-up-narrow-wide'
+            : 'i-lucide-arrow-down-wide-narrow'
+          : 'i-lucide-arrow-up-down',
+        class: '-mx-2.5',
+        onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
+      })
+    },
     cell: ({ row }) => {
       return h('div', { class: 'flex items-center gap-3' }, [
         h(VendorAvatar, { vendor: row.original, size: 'lg' }),
@@ -103,55 +92,17 @@ const columns: TableColumn<Vendor>[] = [
       return h(
         'div',
         { class: 'text-right' },
-        h(
-          UDropdownMenu,
-          {
-            content: {
-              align: 'end',
-            },
-            items: getRowItems(row),
-          },
-          () =>
-            h(UButton, {
-              icon: 'i-lucide-ellipsis-vertical',
-              color: 'neutral',
-              variant: 'ghost',
-              class: 'ml-auto',
-            }),
-        ),
+        h(UButton, {
+          trailingIcon: 'i-lucide-chevron-right',
+          color: 'neutral',
+          variant: 'ghost',
+          class: 'ml-auto',
+          to: `/vendors/${row.original.id}`,
+        }, 'Bekijken'),
       )
     },
   },
 ]
-
-const statusFilter = ref('all')
-
-watch(() => statusFilter.value, (newVal) => {
-  if (!table?.value?.tableApi) return
-
-  const statusColumn = table.value.tableApi.getColumn('status')
-  if (!statusColumn) return
-
-  if (newVal === 'all') {
-    statusColumn.setFilterValue(undefined)
-  } else {
-    statusColumn.setFilterValue(newVal)
-  }
-})
-
-const filter = computed({
-  get: (): string => {
-    return (table.value?.tableApi?.getColumn('number')?.getFilterValue() as string) || ''
-  },
-  set: (value: string) => {
-    table.value?.tableApi?.getColumn('number')?.setFilterValue(value || undefined)
-  },
-})
-
-const pagination = ref({
-  pageIndex: 0,
-  pageSize: 10,
-})
 </script>
 
 <template>
@@ -176,67 +127,11 @@ const pagination = ref({
           icon="i-lucide-search"
           placeholder="Filter op naam of nummer..."
         />
-
-        <div class="flex flex-wrap items-center gap-1.5">
-          <CustomersDeleteModal :count="table?.tableApi?.getFilteredSelectedRowModel().rows.length">
-            <UButton
-              v-if="table?.tableApi?.getFilteredSelectedRowModel().rows.length"
-              color="error"
-              icon="i-lucide-trash"
-              label="Delete"
-              variant="subtle"
-            >
-              <template #trailing>
-                <UKbd>
-                  {{ table?.tableApi?.getFilteredSelectedRowModel().rows.length }}
-                </UKbd>
-              </template>
-            </UButton>
-          </CustomersDeleteModal>
-
-          <USelect
-            v-model="statusFilter"
-            :items="[
-              { label: 'All', value: 'all' },
-              { label: 'Subscribed', value: 'subscribed' },
-              { label: 'Unsubscribed', value: 'unsubscribed' },
-              { label: 'Bounced', value: 'bounced' },
-            ]"
-            :ui="{ trailingIcon: 'group-data-[state=open]:rotate-180 transition-transform duration-200' }"
-            class="min-w-28"
-            placeholder="Filter status"
-          />
-          <UDropdownMenu
-            :content="{ align: 'end' }"
-            :items="
-              table?.tableApi
-                ?.getAllColumns()
-                .filter((column: any) => column.getCanHide())
-                .map((column: any) => ({
-                  label: (column.id),
-                  type: 'checkbox' as const,
-                  checked: column.getIsVisible(),
-                  onUpdateChecked(checked: boolean) {
-                    table?.tableApi?.getColumn(column.id)?.toggleVisibility(!!checked)
-                  },
-                  onSelect(e?: Event) {
-                    e?.preventDefault()
-                  },
-                }))
-            "
-          >
-            <UButton
-              color="neutral"
-              label="Display"
-              trailing-icon="i-lucide-settings-2"
-              variant="outline"
-            />
-          </UDropdownMenu>
-        </div>
       </div>
 
       <UTable
         ref="table"
+        v-model="filter"
         v-model:column-filters="columnFilters"
         v-model:column-visibility="columnVisibility"
         v-model:pagination="pagination"

@@ -15,6 +15,14 @@ export default defineAppConfig({
     ],
     htmlAttrs: { lang: 'nl' },
   },
+  vendor: {
+    types: {
+      shop: 'Verkoper',
+      publisher: 'Uitgever',
+      food: 'Cateraar',
+      entertainment: 'Entertainment',
+    },
+  },
   ui: {
     input: inputUi,
     inputMenu: inputUi,

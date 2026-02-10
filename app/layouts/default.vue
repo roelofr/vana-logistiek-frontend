@@ -20,13 +20,16 @@ const links = [
       label: 'Meldingen',
       icon: 'i-lucide-inbox',
       to: '/threads',
-      // badge: '4',
+      exact: false,
+      exactQuery: 'partial',
       onSelect: close,
     },
     {
       label: 'Standhouders',
       icon: 'i-lucide-store',
       to: '/vendors',
+      exact: false,
+      exactQuery: 'partial',
       onSelect: close,
     },
     {
@@ -93,7 +96,13 @@ const groups = computed(() => [
       <template #default="{ collapsed }">
         <UDashboardSearchButton :collapsed="collapsed" class="bg-transparent ring-default" label="Zoeken..." />
 
-        <UButton href="/threads/create">
+        <UButton
+          v-if="collapsed"
+          href="/threads/create"
+          icon="i-lucide-plus"
+          size="md"
+        />
+        <UButton v-else href="/threads/create" leading-icon="i-lucide-plus">
           Nieuwe melding
         </UButton>
 
