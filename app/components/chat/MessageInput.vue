@@ -23,6 +23,14 @@ async function sendMessage() {
   emit('send', reply.value, (files.value ?? []) as FileList)
 }
 
+function addFiles() {
+  const initialFiles = files.value
+  fileOpen({
+    initialFiles: initialFiles ?? [],
+    multiple: true,
+  })
+}
+
 defineShortcuts({
   meta_enter: {
     usingInput: 'reply-field',
@@ -50,23 +58,35 @@ defineShortcuts({
     />
 
     <div class="flex items-center justify-between">
-      <div class="flex flex-row flex-wrap items-center">
-        <UTooltip text="Bijlage toevoegen">
-          <UButton
-            color="neutral"
-            icon="i-lucide-paperclip"
-            variant="ghost"
-            @click="fileOpen"
-          />
-        </UTooltip>
-
+      <div class="flex flex-row flex-wrap gap-2 items-center">
         <template v-if="files != null">
           <ChatInputFile
             v-for="file of files"
             :key="file.name"
             :file="file"
           />
+
+          <UTooltip text="Bijlage toevoegen">
+            <UButton
+              size="xl"
+              color="neutral"
+              icon="i-lucide-plus"
+              variant="ghost"
+              @click="addFiles"
+            />
+          </UTooltip>
         </template>
+
+        <UTooltip v-else text="Bijlage toevoegen">
+          <UButton
+            color="neutral"
+            leading-icon="i-lucide-paperclip"
+            variant="ghost"
+            @click="addFiles"
+          >
+            Foto's bijvoegen
+          </UButton>
+        </UTooltip>
       </div>
 
       <div class="flex items-center justify-end gap-2 flex-none">

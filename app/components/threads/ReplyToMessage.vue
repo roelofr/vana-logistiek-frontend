@@ -22,12 +22,14 @@ async function submitMessage(message: string, files: FileList) {
   try {
     loading.value = true
 
+    const messageWithFiles = new FormData()
+    messageWithFiles.set('message', message)
+    if (files.length > 0)
+      Array.from(files).forEach(file => messageWithFiles.append('file', file))
+
     await $api(`/api/threads/${thread.id}/message`, {
       method: 'post',
-      body: {
-        message: message,
-        files: files,
-      },
+      body: messageWithFiles,
     })
 
     toast.add({

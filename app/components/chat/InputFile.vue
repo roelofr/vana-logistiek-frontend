@@ -1,14 +1,17 @@
 <script lang="ts" setup>
+import type { AvatarProps } from '#ui/components/Avatar.vue'
+
 const { file } = defineProps<{ file: File }>()
 const emit = defineEmits<{ remove: [] }>()
 
 const thumbnail = ref<string | null>(null)
 
-const avatar = computed(() => {
-  if (thumbnail.value)
-    return { src: thumbnail.value }
-  return { icon: 'i-lucide-paperclip' }
-})
+const avatar = computed(() => ({
+  ...((thumbnail.value) ? { src: thumbnail.value } : { icon: 'i-lucide-paperclip' }),
+  ui: {
+    root: 'rounded-sm',
+  },
+} as AvatarProps))
 
 onMounted(async () => {
   if (!file)
