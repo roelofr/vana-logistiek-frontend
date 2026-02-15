@@ -20,7 +20,7 @@ const {
   watch: [() => thread],
 })
 
-const updatesExpanded = computed(() => expand(updates.value, ['user', 'team']))
+const updatesExpanded = computed(() => expand(updates.value, ['user', 'team', 'thread']))
 
 const dropdownItems = [[{
   label: 'Mark as unread',

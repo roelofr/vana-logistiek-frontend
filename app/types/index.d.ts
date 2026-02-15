@@ -48,7 +48,7 @@ export interface Thread {
 
 export type ListThread = Only<'id' | 'subject' | 'createdAt' | 'updatedAt' | 'resolvedAt' | 'vendor' | 'user' | 'team', Thread>
 
-export type ThreadUpdateType = 'System' | 'Chat' | 'Resolved'
+export type ThreadUpdateType = 'System' | 'Chat' | 'Image' | 'Resolved'
 
 export interface ThreadUpdate {
   id: number
@@ -59,6 +59,17 @@ export interface ThreadUpdate {
   me: boolean
   user: null | Only<'id' | 'name', User>
   team: null | Only<'id' | 'name', Team>
+  thread: Only<'id', Thread>
+  update: {
+    id: number
+    groupKey: string
+    createdAt: Date
+    type: string
+    message: string
+    filename?: string
+    fileStatus?: 'New' | 'Ready' | 'Corrupted'
+    fileReady?: boolean
+  }
 }
 
 export type ChatThreadType = 'system' | 'user'

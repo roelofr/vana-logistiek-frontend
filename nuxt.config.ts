@@ -4,6 +4,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/hints',
     '@nuxt/icon',
+    '@nuxt/image',
     '@nuxt/ui',
     '@vueuse/nuxt',
     '@pinia/nuxt',
@@ -91,5 +92,9 @@ export default defineNuxtConfig({
       // guard for uncompressed bundle size, will fail the build if exceeds
       sizeLimitKb: 256,
     },
+  },
+
+  image: {
+    provider: 'none',
   },
 })

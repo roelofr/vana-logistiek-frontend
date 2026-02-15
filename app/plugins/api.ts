@@ -9,6 +9,8 @@ export default defineNuxtPlugin((_) => {
   const toast = useToast()
   const toastRef = ref<string | number | null>(null)
 
+  const baseUrl = computed(() => config.apiUrl as string ?? config.public?.apiUrl as string ?? 'https://logistiek.myvana.dev')
+
   const isValidApiUrl = (request: string | Request): boolean => {
     const requestUri = typeof request == 'string' ? request : request.url
 
@@ -21,7 +23,7 @@ export default defineNuxtPlugin((_) => {
 
   const $api = $fetch.create({
     redirect: 'error',
-    baseURL: config.apiUrl as string ?? config.public?.apiUrl as string ?? 'https://logistiek.myvana.dev',
+    baseURL: baseUrl.value,
     onRequest({ request, options }) {
       if (!isValidApiUrl(request))
         return
@@ -56,9 +58,22 @@ export default defineNuxtPlugin((_) => {
     },
   })
 
+  const resolve = (path: string): string => {
+    if (baseUrl.value[0] == '/')
+      return baseUrl.value + '/' + path.replace(/^\//, '')
+
+    return new URL(path, baseUrl.value).toString()
+  }
+
+  const $apiUrl = {
+    baseUrl,
+    resolve,
+  }
+
   return {
     provide: {
       api: $api,
+      apiUrl: $apiUrl,
     },
   }
 })
