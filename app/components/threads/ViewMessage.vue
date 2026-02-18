@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { ListThread, ThreadUpdate } from '~/types'
 import { expand, formattedLocalTime } from '~/utils'
 
@@ -35,6 +35,22 @@ const dropdownItems = [[{
   label: 'Mute thread',
   icon: 'i-lucide-circle-pause',
 }]]
+
+const reloadUpdatesTimeout = useTimeoutFn(() => {
+  console.info('Updating updates')
+  updatesRefresh()
+}, 2500)
+
+watch(() => updates, () => {
+  const hasPendingImages = (updates.value ?? [])
+    .find(({ type, update }) => type == 'Image' && update.fileStatus === 'New')
+
+  const isPending = unref(reloadUpdatesTimeout.isPending)
+  if (!hasPendingImages && isPending)
+    reloadUpdatesTimeout.stop()
+  else if (hasPendingImages && !isPending)
+    reloadUpdatesTimeout.start()
+})
 
 watch(() => thread, () => {
   reply.value = ''
@@ -89,7 +105,7 @@ watch(() => thread, () => {
     <div class="flex flex-col sm:flex-row justify-between gap-1 p-4 sm:px-6 border-b border-default">
       <div class="flex items-start gap-4 sm:my-1.5">
         <div class="flex items-center gap-4">
-          <VendorAvatar size="lg" :vendor="thread.vendor" />
+          <VendorAvatar :vendor="thread.vendor" size="lg" />
 
           <div class="min-w-0">
             <p class="font-semibold text-highlighted">
