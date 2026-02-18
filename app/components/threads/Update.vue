@@ -59,24 +59,24 @@ const { resolve } = useApiUrl()
             <NuxtImg
               v-if="updateItem.update.fileReady"
               v-slot="{ src, isLoaded, imgAttrs }"
-              :src="resolve(`/api/threads/${updateItem.thread.id}/image/${updateItem.id}/${updateItem.update.filename}.webp`)"
               :custom="true"
+              :src="resolve(`/api/files/thread/${updateItem.thread.id}/image/${updateItem.id}/${updateItem.update.filename}.webp`)"
               loading="lazy"
             >
               <!-- Show the actual image when loaded -->
               <img
                 v-if="isLoaded"
-                v-bind="imgAttrs"
-                class="min-w-0 bg-elevated/50 rounded-lg image"
                 :alt="`${updateItem.message} door ${updateItem.user.name}`"
                 :src="src"
+                class="min-w-0 bg-elevated/50 rounded-lg image"
+                v-bind="imgAttrs"
               >
 
               <!-- Show skeleton otherwise -->
               <div class="relative">
                 <USkeleton class="image bg-elevated/50 rounded-lg" />
                 <div class="absolute inset-0 flex items-center justify-center">
-                  <UIcon name="i-lucide-loader-circle" class="animate-spin" size="lg" />
+                  <UIcon class="animate-spin" name="i-lucide-loader-circle" size="lg" />
                 </div>
               </div>
             </NuxtImg>
