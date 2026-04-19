@@ -19,6 +19,8 @@ export default defineNuxtConfig({
     },
   },
 
+  ssr: false,
+
   devtools: {
     enabled: true,
   },
@@ -32,13 +34,18 @@ export default defineNuxtConfig({
     },
   },
 
-  routeRules: {
-    '/api/**': {
-      cors: true,
+  compatibilityDate: '2025-12-20',
+
+  nitro: {
+    hooks: {
+      'prerender:generate'(route) {
+        const routesToSkip = ['/200.html']
+        if (routesToSkip.includes(route.route)) {
+          route.skip = true
+        }
+      },
     },
   },
-
-  compatibilityDate: '2025-12-20',
 
   eslint: {
     config: {

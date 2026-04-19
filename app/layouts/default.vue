@@ -52,6 +52,31 @@ const links = [
         },
       ],
     },
+    {
+      label: 'Systeem',
+      to: '/admin',
+      icon: 'i-lucide-settings',
+      defaultOpen: true,
+      type: 'trigger',
+      children: [
+        {
+          label: 'Algemeen',
+          to: '/admin',
+          exact: true,
+          onSelect: close,
+        },
+        {
+          label: 'Wijken',
+          to: '/admin/districts',
+          onSelect: close,
+        },
+        {
+          label: 'Gebruikers',
+          to: '/admin/users',
+          onSelect: close,
+        },
+      ],
+    },
   ],
   [
     {
