@@ -60,14 +60,14 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Node LTS
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 'lts/*'
           cache: npm
           cache-dependency-path: package-lock.json
 
       - name: Set up nuxt cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ github.workspace }}/.nuxt/cache
           key: ${{ runner.os }}-nuxt-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.ts', '**/*.vue') }}
