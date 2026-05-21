@@ -37,13 +37,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: https://github.com/gittools/actions/gitversion/setup@v4.5.0
+        uses: gittools/actions/gitversion/setup@v4.5.0
         with:
           versionSpec: '6.5.x'
 
       - name: Determine Version
         id: version_step
-        uses: https://github.com/gittools/actions/gitversion/execute@v4.5.0
+        uses: gittools/actions/gitversion/execute@v4.5.0
 
   build-node:
     runs-on: codeberg-small
