@@ -53,12 +53,7 @@ async function doClearToken() {
 
 <template>
   <UModal v-model:open="open" title="Set access token">
-    <UButton
-      block
-      color="neutral"
-      label="Set access token"
-      variant="subtle"
-    />
+    <UButton block color="neutral" label="Set access token" variant="subtle" />
 
     <template #body>
       <UForm
@@ -72,11 +67,8 @@ async function doClearToken() {
         <UFormField label="Access Token" name="token">
           <template #description>
             You can retrieve an access token from the
-            <ULink
-              external
-              href="http://localhost:8080/api/users/me/token"
-              target="_blank"
-            ><code>/users/me/token</code> API
+            <ULink external href="http://localhost:8080/api/users/me/token" target="_blank"
+              ><code>/users/me/token</code> API
             </ULink>
           </template>
           <UTextarea v-model="state.token" autoresize />
@@ -95,13 +87,7 @@ async function doClearToken() {
         >
           Clear
         </UButton>
-        <UButton
-          form="access-token"
-          icon="i-lucide-save"
-          @click="form?.submit()"
-        >
-          Update
-        </UButton>
+        <UButton form="access-token" icon="i-lucide-save" @click="form?.submit()"> Update </UButton>
       </div>
     </template>
   </UModal>

@@ -16,10 +16,7 @@ const isPanelOpen = ref(false)
 const selectedThread = ref<Thread | null>(null)
 const activeFilter = ref<ThreadFilter>('all')
 
-const {
-  data: apiThreads,
-  status: threadsStatus,
-} = useApi<ListThread[]>('/api/threads', {
+const { data: apiThreads, status: threadsStatus } = useApi<ListThread[]>('/api/threads', {
   lazy: true,
   params: {
     closed: activeFilter.value === 'all',
@@ -27,26 +24,26 @@ const {
 })
 
 const isLoading = computed<boolean>(() => threadsStatus.value !== 'success')
-const loadingType = computed<LoadingType>(() => isLoading.value ? 'full' : null)
-const threads = computed(() => expand(apiThreads.value, ['user', 'team', 'vendor']).map(unreadForUserMap(user.value!)))
+const loadingType = computed<LoadingType>(() => (isLoading.value ? 'full' : null))
+const threads = computed(() =>
+  expand(apiThreads.value, ['user', 'team', 'vendor']).map(unreadForUserMap(user.value!)),
+)
 
 // Filter threads based on the selected tab
 const filteredThreads = computed(() => {
-  if (!threads.value)
-    return []
+  if (!threads.value) return []
 
-  if (activeFilter.value !== 'unread')
-    return threads.value
+  if (activeFilter.value !== 'unread') return threads.value
 
-  return threads.value.filter(thread => !thread.read
-    && (
-      thread.user?.id == user.value?.id
-      || thread.team?.id == user.value?.team?.id
-    ))
+  return threads.value.filter(
+    (thread) =>
+      !thread.read &&
+      (thread.user?.id == user.value?.id || thread.team?.id == user.value?.team?.id),
+  )
 })
 
 function reactToRouteChanges(): void {
-  isPanelOpen.value = (route.name !== 'threads')
+  isPanelOpen.value = route.name !== 'threads'
 
   if (route.name !== 'threads-id') {
     selectedThread.value = null
@@ -55,7 +52,7 @@ function reactToRouteChanges(): void {
 
   const routeIdAsNumber = parseInt(route.params.id as string, 10)
   console.log('Selecting thread %o from route', routeIdAsNumber)
-  selectedThread.value = filteredThreads.value.find(thread => thread.id == routeIdAsNumber)
+  selectedThread.value = filteredThreads.value.find((thread) => thread.id == routeIdAsNumber)
 }
 
 watch([route, apiThreads], reactToRouteChanges)
@@ -88,11 +85,7 @@ const isMobile = breakpoints.smaller('lg')
 
       <template #right>
         <ClientOnly>
-          <UTabs
-            v-model="activeFilter"
-            :content="false"
-            size="xs"
-          />
+          <UTabs v-model="activeFilter" :content="false" size="xs" />
         </ClientOnly>
       </template>
     </UDashboardNavbar>

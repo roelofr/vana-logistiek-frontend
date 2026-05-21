@@ -8,6 +8,8 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@vueuse/nuxt',
     '@pinia/nuxt',
+    'nuxt-oidc-auth',
+    '@nuxtjs/robots',
   ],
 
   $development: {
@@ -26,6 +28,8 @@ export default defineNuxtConfig({
   },
 
   css: ['~/assets/css/main.css'],
+
+  site: { indexable: false },
 
   runtimeConfig: {
     apiUrl: 'https://logistiek.myvana.dev',
@@ -90,7 +94,6 @@ export default defineNuxtConfig({
         'lucide:library-big',
         'lucide:theater',
         'lucide:lectern',
-
       ],
 
       // scan all components in the project and include icons
@@ -103,5 +106,19 @@ export default defineNuxtConfig({
 
   image: {
     provider: 'none',
+  },
+
+  oidc: {
+    providers: {
+      oidc: {
+        clientId: '',
+        clientSecret: '',
+        authorizationUrl: 'https://login.troela.fun',
+        scope: ['openid', 'profile', 'groups'],
+        state: true,
+        nonce: true,
+        pkce: true,
+      },
+    },
   },
 })

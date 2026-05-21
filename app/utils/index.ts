@@ -14,11 +14,9 @@ type KeyLike = {
 }
 
 function toDate(value: Date | string | undefined): Date | null {
-  if (!value)
-    return null
+  if (!value) return null
 
-  if (value instanceof Date)
-    return value
+  if (value instanceof Date) return value
 
   try {
     return new Date(value)
@@ -30,33 +28,28 @@ function toDate(value: Date | string | undefined): Date | null {
 
 export function formattedLocalTime(time: Date | string | undefined, wantedFormat: string) {
   const actualTime = toDate(time)
-  if (!actualTime)
-    return undefined
+  if (!actualTime) return undefined
 
   return format(actualTime, wantedFormat)
 }
 
 export function localTime(time: Date | string | undefined): string | undefined {
   const actualTime = toDate(time)
-  if (!actualTime)
-    return undefined
+  if (!actualTime) return undefined
 
-  if (isToday(actualTime))
-    return format(actualTime, 'HH:mm')
+  if (isToday(actualTime)) return format(actualTime, 'HH:mm')
   return format(actualTime, 'dd MMM, HH:mm')
 }
 
 export function expand<T extends object>(input: T[] | undefined, selectors: (keyof T)[]): T[] {
-  if (!input || typeof input?.map !== 'function')
-    return []
+  if (!input || typeof input?.map !== 'function') return []
 
   let outData = Array.from(input)
 
   for (const key of selectors) {
     const localCache = new Map<number, KeyLike>()
     outData = outData.map((row) => {
-      if (!Object.hasOwn(row, key))
-        return row
+      if (!Object.hasOwn(row, key)) return row
 
       const rowValue = row[key]
       if (rowValue && typeof rowValue === 'number') {
@@ -67,7 +60,7 @@ export function expand<T extends object>(input: T[] | undefined, selectors: (key
 
       if (rowValue) {
         const cacheable = rowValue as unknown as KeyLike
-        localCache.set((cacheable).id, cacheable)
+        localCache.set(cacheable.id, cacheable)
       }
 
       return row
@@ -78,14 +71,11 @@ export function expand<T extends object>(input: T[] | undefined, selectors: (key
 }
 
 export function unreadForUser(thread: Thread, user: User): boolean {
-  if (!user)
-    return true
+  if (!user) return true
 
-  if (user?.id && thread.assignedUser?.id === user.id)
-    return thread.read
+  if (user?.id && thread.assignedUser?.id === user.id) return thread.read
 
-  if (user?.team?.id && thread.assignedTeam?.id === user.team?.id)
-    return thread.read
+  if (user?.team?.id && thread.assignedTeam?.id === user.team?.id) return thread.read
 
   return true
 }

@@ -48,12 +48,7 @@ function onFileClick() {
 </script>
 
 <template>
-  <UForm
-    id="settings"
-    :schema="profileSchema"
-    :state="profile"
-    @submit="onSubmit"
-  >
+  <UForm id="settings" :schema="profileSchema" :state="profile" @submit="onSubmit">
     <UPageCard
       class="mb-4"
       description="These informations will be displayed publicly."
@@ -78,10 +73,7 @@ function onFileClick() {
         name="name"
         required
       >
-        <UInput
-          v-model="profile.name"
-          autocomplete="off"
-        />
+        <UInput v-model="profile.name" autocomplete="off" />
       </UFormField>
       <USeparator />
       <UFormField
@@ -91,11 +83,7 @@ function onFileClick() {
         name="email"
         required
       >
-        <UInput
-          v-model="profile.email"
-          autocomplete="off"
-          type="email"
-        />
+        <UInput v-model="profile.email" autocomplete="off" type="email" />
       </UFormField>
       <USeparator />
       <UFormField
@@ -105,11 +93,7 @@ function onFileClick() {
         name="username"
         required
       >
-        <UInput
-          v-model="profile.username"
-          autocomplete="off"
-          type="username"
-        />
+        <UInput v-model="profile.username" autocomplete="off" type="username" />
       </UFormField>
       <USeparator />
       <UFormField
@@ -119,23 +103,15 @@ function onFileClick() {
         name="avatar"
       >
         <div class="flex flex-wrap items-center gap-3">
-          <UAvatar
-            :alt="profile.name"
-            :src="profile.avatar"
-            size="lg"
-          />
-          <UButton
-            color="neutral"
-            label="Choose"
-            @click="onFileClick"
-          />
+          <UAvatar :alt="profile.name" :src="profile.avatar" size="lg" />
+          <UButton color="neutral" label="Choose" @click="onFileClick" />
           <input
             ref="fileRef"
             accept=".jpg, .jpeg, .png, .gif"
             class="hidden"
             type="file"
             @change="onFileChange"
-          >
+          />
         </div>
       </UFormField>
       <USeparator />
@@ -146,12 +122,7 @@ function onFileClick() {
         label="Bio"
         name="bio"
       >
-        <UTextarea
-          v-model="profile.bio"
-          :rows="5"
-          autoresize
-          class="w-full"
-        />
+        <UTextarea v-model="profile.bio" :rows="5" autoresize class="w-full" />
       </UFormField>
     </UPageCard>
   </UForm>

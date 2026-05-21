@@ -3,9 +3,11 @@ import type { User } from '~/types'
 
 declare type useUserOpts = Pick<UseFetchOptions<User>, 'lazy' | 'server'>
 
-export const useUser = (opts: useUserOpts = {
-  server: true,
-}) => {
+export const useUser = (
+  opts: useUserOpts = {
+    server: true,
+  },
+) => {
   const accessToken = useAccessToken()
 
   const http = useApi<User>('/api/users/me', {

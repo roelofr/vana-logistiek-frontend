@@ -13,55 +13,45 @@ const { threads, loadingType } = defineProps<{
 
 const threadRefs = ref<Element[]>([])
 
-const expectedThreadCount = computed(() => threadCount.value > 0 ? threadCount.value : 30)
+const expectedThreadCount = computed(() => (threadCount.value > 0 ? threadCount.value : 30))
 
 const threadRoute = (thread: Thread) => `/threads/${thread.id}`
 
-watch(() => threads, () => {
-  if (threads.length)
-    threadCount.value = Math.min(30, Math.max(5, threads.length))
-})
+watch(
+  () => threads,
+  () => {
+    if (threads.length) threadCount.value = Math.min(30, Math.max(5, threads.length))
+  },
+)
 
 watch(selectedThread, () => {
-  if (!selectedThread.value)
-    return
+  if (!selectedThread.value) return
 
   const ref = threadRefs.value[selectedThread.value.id]
-  if (ref)
-    ref.scrollIntoView({ block: 'nearest' })
+  if (ref) ref.scrollIntoView({ block: 'nearest' })
 })
 
 defineShortcuts({
   arrowdown: async () => {
-    const index = threads.findIndex(thread => thread.id === selectedThread.value?.id)
+    const index = threads.findIndex((thread) => thread.id === selectedThread.value?.id)
 
-    if (index === -1)
-      await router.push(
-        threadRoute(threads[0] as Thread),
-      )
+    if (index === -1) await router.push(threadRoute(threads[0] as Thread))
     else if (index < threads.length - 1)
       await router.push(threadRoute(threads[index + 1] as Thread))
   },
   arrowup: async () => {
-    const index = threads.findIndex(thread => thread.id === selectedThread.value?.id)
+    const index = threads.findIndex((thread) => thread.id === selectedThread.value?.id)
 
-    if (index === -1)
-      await router.push(threadRoute(threads[threads.length - 1] as Thread))
-    else if (index > 1)
-      await router.push(threadRoute(threads[index - 1] as Thread))
+    if (index === -1) await router.push(threadRoute(threads[threads.length - 1] as Thread))
+    else if (index > 1) await router.push(threadRoute(threads[index - 1] as Thread))
   },
 })
 </script>
 
 <template>
   <template v-if="loadingType == 'full'">
-    <div
-      v-for="index in Array(expectedThreadCount)"
-      :key="index"
-    >
-      <div
-        class="space-y-1 p-4 sm:px-6 text-sm border-l-2 transition-colors border-bg"
-      >
+    <div v-for="index in Array(expectedThreadCount)" :key="index">
+      <div class="space-y-1 p-4 sm:px-6 text-sm border-l-2 transition-colors border-bg">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
             <USkeleton class="h-4 w-35" />
@@ -94,7 +84,11 @@ defineShortcuts({
       <div
         v-for="thread in threads"
         :key="thread.id"
-        :ref="el => { threadRefs[thread.id] = el as Element }"
+        :ref="
+          (el) => {
+            threadRefs[thread.id] = el as Element
+          }
+        "
       >
         <NuxtLink
           :href="threadRoute(thread)"
@@ -107,7 +101,10 @@ defineShortcuts({
               : 'border-bg hover:border-primary hover:bg-primary/5',
           ]"
         >
-          <div :class="[thread.read || 'font-semibold']" class="flex items-center justify-between max-w-full">
+          <div
+            :class="[thread.read || 'font-semibold']"
+            class="flex items-center justify-between max-w-full"
+          >
             <div class="flex items-start gap-3">
               <div class="flex-none text-muted">{{ thread.vendor.number }}</div>
               <div>{{ thread.vendor.name }}</div>

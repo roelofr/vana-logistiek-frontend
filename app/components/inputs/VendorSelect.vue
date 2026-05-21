@@ -23,17 +23,21 @@ const toNuxtUiList = (vendor: Vendor): InputVendorItem => ({
 const vendor = defineModel<Vendor | null | undefined>({ required: true })
 const { defaultId } = defineProps<{ defaultId?: number }>()
 
-const { data: apiVendors, status: apiStatus, execute: fetchVendors } = useApi<Vendor[]>('/api/vendors', {
+const {
+  data: apiVendors,
+  status: apiStatus,
+  execute: fetchVendors,
+} = useApi<Vendor[]>('/api/vendors', {
   immediate: false,
 })
 
-const vendors = computed(() => apiVendors.value ? expand(apiVendors.value, ['district']) : [])
+const vendors = computed(() => (apiVendors.value ? expand(apiVendors.value, ['district']) : []))
 const vendorsMapped = computed(() => vendors.value?.map(toNuxtUiList) ?? [])
-const vendorIndexed = computed(() => new Map(vendors.value?.map(v => [v.id, v])))
+const vendorIndexed = computed(() => new Map(vendors.value?.map((v) => [v.id, v])))
 
 watch(vendors, (newValue, oldValue) => {
   if (oldValue == undefined && newValue != undefined && defaultId && !vendor.value) {
-    vendor.value = newValue.find(v => v.id === defaultId) ?? null
+    vendor.value = newValue.find((v) => v.id === defaultId) ?? null
   }
 })
 
@@ -47,15 +51,14 @@ const uiVendor = computed<InputVendorItem | undefined>({
       return
     }
 
-    vendor.value = (vendorIndexed.value!).get(value.id) ?? null
+    vendor.value = vendorIndexed.value!.get(value.id) ?? null
     if (vendor.value == null)
       console.error('Could not find %o in %o', value.id, vendorIndexed.value)
   },
 })
 
 function fetchVendorsOnInitialOpen() {
-  if (apiStatus.value == 'idle')
-    fetchVendors()
+  if (apiStatus.value == 'idle') fetchVendors()
 }
 </script>
 

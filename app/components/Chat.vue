@@ -1,8 +1,11 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 const { chatId, showHeader = true } = defineProps<{
   chatId: number
   showHeader?: boolean
 }>()
+
+effect(() => console.info('Chat Id = %o', chatId))
 </script>
 
 <template>
@@ -13,6 +16,4 @@ const { chatId, showHeader = true } = defineProps<{
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

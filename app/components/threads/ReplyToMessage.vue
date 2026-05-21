@@ -10,22 +10,23 @@ const toast = useToast()
 
 const loading = ref(false)
 
-watch(() => thread, () => {
-  loading.value = false
-  input.value?.reset()
-})
+watch(
+  () => thread,
+  () => {
+    loading.value = false
+    input.value?.reset()
+  },
+)
 
 async function submitMessage(message: string, files: FileList) {
-  if (loading.value)
-    return
+  if (loading.value) return
 
   try {
     loading.value = true
 
     const messageWithFiles = new FormData()
     messageWithFiles.set('message', message)
-    if (files.length > 0)
-      Array.from(files).forEach(file => messageWithFiles.append('file', file))
+    if (files.length > 0) Array.from(files).forEach((file) => messageWithFiles.append('file', file))
 
     await $api(`/api/threads/${thread.id}/message`, {
       method: 'post',

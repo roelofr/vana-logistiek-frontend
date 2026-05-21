@@ -19,18 +19,27 @@ const { width } = useElementSize(cardRef)
 
 const data = ref<DataRecord[]>([])
 
-watch([() => props.period, () => props.range], () => {
-  const dates = ({
-    daily: eachDayOfInterval,
-    weekly: eachWeekOfInterval,
-    monthly: eachMonthOfInterval,
-  } as Record<Period, typeof eachDayOfInterval>)[props.period](props.range)
+watch(
+  [() => props.period, () => props.range],
+  () => {
+    const dates = (
+      {
+        daily: eachDayOfInterval,
+        weekly: eachWeekOfInterval,
+        monthly: eachMonthOfInterval,
+      } as Record<Period, typeof eachDayOfInterval>
+    )[props.period](props.range)
 
-  const min = 1000
-  const max = 10000
+    const min = 1000
+    const max = 10000
 
-  data.value = dates.map(date => ({ date, amount: Math.floor(Math.random() * (max - min + 1)) + min }))
-}, { immediate: true })
+    data.value = dates.map((date) => ({
+      date,
+      amount: Math.floor(Math.random() * (max - min + 1)) + min,
+    }))
+  },
+  { immediate: true },
+)
 
 const x = (_: DataRecord, i: number) => i
 const y = (d: DataRecord) => d.amount
@@ -44,11 +53,11 @@ const formatNumber = new Intl.NumberFormat('en', {
 }).format
 
 const formatDate = (date: Date): string => {
-  return ({
+  return {
     daily: format(date, 'd MMM'),
     weekly: format(date, 'd MMM'),
     monthly: format(date, 'MMM yyy'),
-  })[props.period]
+  }[props.period]
 }
 
 const xTicks = (i: number) => {
@@ -66,43 +75,20 @@ const template = (d: DataRecord) => `${formatDate(d.date)}: ${formatNumber(d.amo
   <UCard ref="cardRef" :ui="{ root: 'overflow-visible', body: '!px-0 !pt-0 !pb-3' }">
     <template #header>
       <div>
-        <p class="text-xs text-muted uppercase mb-1.5">
-          Revenue
-        </p>
+        <p class="text-xs text-muted uppercase mb-1.5">Revenue</p>
         <p class="text-3xl text-highlighted font-semibold">
           {{ formatNumber(total) }}
         </p>
       </div>
     </template>
 
-    <VisXYContainer
-      :data="data"
-      :padding="{ top: 40 }"
-      :width="width"
-      class="h-96"
-    >
-      <VisLine
-        :x="x"
-        :y="y"
-        color="var(--ui-primary)"
-      />
-      <VisArea
-        :opacity="0.1"
-        :x="x"
-        :y="y"
-        color="var(--ui-primary)"
-      />
+    <VisXYContainer :data="data" :padding="{ top: 40 }" :width="width" class="h-96">
+      <VisLine :x="x" :y="y" color="var(--ui-primary)" />
+      <VisArea :opacity="0.1" :x="x" :y="y" color="var(--ui-primary)" />
 
-      <VisAxis
-        :tick-format="xTicks"
-        :x="x"
-        type="x"
-      />
+      <VisAxis :tick-format="xTicks" :x="x" type="x" />
 
-      <VisCrosshair
-        :template="template"
-        color="var(--ui-primary)"
-      />
+      <VisCrosshair :template="template" color="var(--ui-primary)" />
 
       <VisTooltip />
     </VisXYContainer>

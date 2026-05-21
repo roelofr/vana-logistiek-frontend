@@ -8,8 +8,7 @@ const { updates } = defineProps<{
 }>()
 
 const updatesAsGroup = computed(() => {
-  if (!updates)
-    return []
+  if (!updates) return []
 
   const resultingGroups: ThreadUpdate[][] = []
 
@@ -29,7 +28,7 @@ const updatesAsGroup = computed(() => {
         return current
       }
 
-      if ((current.date.getTime() - previous.date.getTime()) > MAX_INTERVAL) {
+      if (current.date.getTime() - previous.date.getTime() > MAX_INTERVAL) {
         resultingGroups.push([current])
         return current
       }

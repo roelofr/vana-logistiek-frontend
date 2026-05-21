@@ -46,7 +46,10 @@ export interface Thread {
   assignedTeam: null | Team
 }
 
-export type ListThread = Only<'id' | 'subject' | 'createdAt' | 'updatedAt' | 'resolvedAt' | 'vendor' | 'user' | 'team', Thread>
+export type ListThread = Only<
+  'id' | 'subject' | 'createdAt' | 'updatedAt' | 'resolvedAt' | 'vendor' | 'user' | 'team',
+  Thread
+>
 
 export type ThreadUpdateType = 'System' | 'Chat' | 'Image' | 'Resolved'
 

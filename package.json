@@ -2,35 +2,43 @@
   "name": "@roelofr/vana-logistiek-frontend",
   "private": true,
   "type": "module",
-  "packageManager": "npm@11.7.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "start": "nuxt dev",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "eslint .",
+    "lint": "eslint . && oxfmt --check",
+    "format": "eslint --fix . && oxfmt",
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.90",
+    "@iconify-json/lucide": "^1.2.105",
     "@nuxt/image": "^2.0.0",
-    "@nuxt/ui": "^4.4.0",
+    "@nuxt/ui": "^4.7.1",
+    "@nuxtjs/robots": "^6.0.8",
     "@pinia/nuxt": "^0.11.3",
     "@unovis/ts": "^1.6.2",
-    "@unovis/vue": "^1.6.4",
+    "@unovis/vue": "^1.6.5",
+    "@uppy/vue": "^3.2.0",
     "@vueuse/nuxt": "^13.9.0",
     "date-fns": "^4.1.0",
+    "file-type": "^22.0.1",
     "js-confetti": "^0.13.1",
     "nuxt": "^4.3.0",
+    "oxc-nuxt": "^0.1.5",
     "pinia": "^3.0.4",
-    "zod": "^4.3.6"
+    "zod": "^4.4.1"
   },
   "devDependencies": {
-    "@nuxt/eslint": "^1.15.1",
-    "@nuxt/hints": "^1.0.0-alpha.2",
-    "eslint": "^9.39.2",
+    "@nuxt/eslint": "^1.15.2",
+    "@nuxt/hints": "^1.0.3",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.3",
     "typescript": "^5.9.3",
-    "vue-tsc": "^3.2.4"
-  }
+    "vue-tsc": "^3.2.7"
+  },
+  "packageManager": "npm@11.7.0"
 }

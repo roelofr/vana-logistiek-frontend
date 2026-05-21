@@ -6,16 +6,18 @@ const emit = defineEmits<{ remove: [] }>()
 
 const thumbnail = ref<string | null>(null)
 
-const avatar = computed(() => ({
-  ...((thumbnail.value) ? { src: thumbnail.value } : { icon: 'i-lucide-paperclip' }),
-  ui: {
-    root: 'rounded-sm',
-  },
-} as AvatarProps))
+const avatar = computed(
+  () =>
+    ({
+      ...(thumbnail.value ? { src: thumbnail.value } : { icon: 'i-lucide-paperclip' }),
+      ui: {
+        root: 'rounded-sm',
+      },
+    }) as AvatarProps,
+)
 
 onMounted(async () => {
-  if (!file)
-    return
+  if (!file) return
 
   const bitmap = await createImageBitmap(file, {
     imageOrientation: 'from-image',
@@ -34,11 +36,5 @@ onMounted(async () => {
 </script>
 
 <template>
-  <UButton
-    :avatar="avatar"
-    color="neutral"
-    size="lg"
-    variant="outline"
-    @click="emit('remove')"
-  />
+  <UButton :avatar="avatar" color="neutral" size="lg" variant="outline" @click="emit('remove')" />
 </template>

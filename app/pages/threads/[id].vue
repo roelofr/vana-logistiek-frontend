@@ -3,7 +3,7 @@ import type { Thread } from '~/types'
 
 definePageMeta({
   name: 'threads-id',
-  key: route => `thread-id-${route.params.id}`,
+  key: (route) => `thread-id-${route.params.id}`,
   validate({ params }) {
     if (!params.id || !String(params.id).match(/^[1-9]\d{0,4}$/)) {
       console.warn('Route /threads/:id was non-numeric.')
@@ -23,7 +23,11 @@ const emits = defineEmits<{
 
 const route = useRoute()
 const threadId = computed(() => parseInt((route.params.id ?? '0') as string, 10))
-const { data: thread, status, refresh } = useApi<Thread>(() => `/api/threads/${threadId.value}`, {
+const {
+  data: thread,
+  status,
+  refresh,
+} = useApi<Thread>(() => `/api/threads/${threadId.value}`, {
   lazy: true,
   watch: [() => threadId],
 })
@@ -48,15 +52,21 @@ const { data: thread, status, refresh } = useApi<Thread>(() => `/api/threads/${t
         variant="soft"
         title="Laden van melding mislukt"
         description="De melding kon niet worden geladen"
-        :actions="[{
-          label: 'Herladen',
-          icon: 'i-lucide-rotate-ccw',
-          onClick: refresh,
-        }]"
+        :actions="[
+          {
+            label: 'Herladen',
+            icon: 'i-lucide-rotate-ccw',
+            onClick: refresh,
+          },
+        ]"
       />
     </div>
   </UDashboardPanel>
 
-  <ThreadsViewMessageLoading v-else-if="status !== 'success'" :thread-id="threadId" @close="emits('close')" />
+  <ThreadsViewMessageLoading
+    v-else-if="status !== 'success'"
+    :thread-id="threadId"
+    @close="emits('close')"
+  />
   <ThreadsViewMessage v-else-if="thread" :thread="thread" @close="emits('close')" />
 </template>

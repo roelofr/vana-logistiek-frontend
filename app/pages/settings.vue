@@ -1,18 +1,21 @@
 <script lang="ts" setup>
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-const links = [[
-  {
-    label: 'Profiel',
-    icon: 'i-lucide-user',
-    to: '/settings',
-    exact: true,
-  }, {
-    label: 'Gebruikers',
-    icon: 'i-lucide-users',
-    to: '/settings/users',
-  },
-]] satisfies NavigationMenuItem[][]
+const links = [
+  [
+    {
+      label: 'Profiel',
+      icon: 'i-lucide-user',
+      to: '/settings',
+      exact: true,
+    },
+    {
+      label: 'Gebruikers',
+      icon: 'i-lucide-users',
+      to: '/settings/users',
+    },
+  ],
+] satisfies NavigationMenuItem[][]
 </script>
 
 <template>

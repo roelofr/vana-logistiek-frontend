@@ -7,7 +7,10 @@ const q = ref('')
 
 const filteredMembers = computed(() => {
   return members.value.filter((member) => {
-    return member.name.search(new RegExp(q.value, 'i')) !== -1 || member.username.search(new RegExp(q.value, 'i')) !== -1
+    return (
+      member.name.search(new RegExp(q.value, 'i')) !== -1 ||
+      member.username.search(new RegExp(q.value, 'i')) !== -1
+    )
   })
 })
 </script>
@@ -21,15 +24,15 @@ const filteredMembers = computed(() => {
       title="Members"
       variant="naked"
     >
-      <UButton
-        class="w-fit lg:ms-auto"
-        color="neutral"
-        label="Invite people"
-      />
+      <UButton class="w-fit lg:ms-auto" color="neutral" label="Invite people" />
     </UPageCard>
 
     <UPageCard
-      :ui="{ container: 'p-0 sm:p-0 gap-y-0', wrapper: 'items-stretch', header: 'p-4 mb-0 border-b border-default' }"
+      :ui="{
+        container: 'p-0 sm:p-0 gap-y-0',
+        wrapper: 'items-stretch',
+        header: 'p-4 mb-0 border-b border-default',
+      }"
       variant="subtle"
     >
       <template #header>

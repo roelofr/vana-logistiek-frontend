@@ -1,11 +1,15 @@
 <script lang="ts" setup>
 import type { DropdownMenuItem } from '@nuxt/ui'
 
-const items = [[{
-  label: 'Nieuwe melding',
-  icon: 'i-lucide-send',
-  to: '/threads/create',
-}]] satisfies DropdownMenuItem[][]
+const items = [
+  [
+    {
+      label: 'Nieuwe melding',
+      icon: 'i-lucide-send',
+      to: '/threads/create',
+    },
+  ],
+] satisfies DropdownMenuItem[][]
 </script>
 
 <template>

@@ -13,18 +13,10 @@ const { resolve } = useApiUrl()
 </script>
 
 <template>
-  <div
-    v-if="update.type == 'System'"
-    class="text-dimmed text-center leading-tight"
-  >
+  <div v-if="update.type == 'System'" class="text-dimmed text-center leading-tight">
     <template v-if="update.updateType == 'Created'">
       {{ update.message.split(update.user.name, 2)[0] }}
-      <UserAvatar
-        :team="update.team"
-        :user="update.user"
-        class="pe-1"
-        size="xs"
-      />
+      <UserAvatar :team="update.team" :user="update.user" class="pe-1" size="xs" />
       {{ update.user.name + update.message.split(update.user.name, 2)[1] }}
     </template>
     <template v-else>
@@ -40,12 +32,7 @@ const { resolve } = useApiUrl()
       class="flex items-start max-w-[80%] gap-3"
     >
       <div class="min-h-6 mt-2">
-        <UserAvatar
-          v-if="!update.me"
-          :team="update.team"
-          :user="update.user"
-          size="lg"
-        />
+        <UserAvatar v-if="!update.me" :team="update.team" :user="update.user" size="lg" />
       </div>
       <div
         :class="{
@@ -60,7 +47,11 @@ const { resolve } = useApiUrl()
               v-if="updateItem.update.fileReady"
               v-slot="{ src, isLoaded, imgAttrs }"
               :custom="true"
-              :src="resolve(`/api/files/thread/${updateItem.thread.id}/image/${updateItem.id}/${updateItem.update.filename}.webp`)"
+              :src="
+                resolve(
+                  `/api/files/thread/${updateItem.thread.id}/image/${updateItem.id}/${updateItem.update.filename}.webp`,
+                )
+              "
               loading="lazy"
             >
               <!-- Show the actual image when loaded -->
@@ -70,7 +61,7 @@ const { resolve } = useApiUrl()
                 :src="src"
                 class="min-w-0 bg-elevated/50 rounded-lg image"
                 v-bind="imgAttrs"
-              >
+              />
 
               <!-- Show skeleton otherwise -->
               <div class="relative">

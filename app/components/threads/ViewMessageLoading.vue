@@ -29,7 +29,9 @@ const emits = defineEmits(['close'])
       </div>
     </div>
 
-    <div class="flex flex-col sm:flex-row justify-between gap-1 p-4 sm:px-6 border-b border-default">
+    <div
+      class="flex flex-col sm:flex-row justify-between gap-1 p-4 sm:px-6 border-b border-default"
+    >
       <div class="flex items-start gap-4 sm:my-1.5">
         <div class="min-w-0 gap-1">
           <p class="font-semibold text-highlighted">

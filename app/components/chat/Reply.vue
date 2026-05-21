@@ -1,13 +1,7 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <div>
-    I am the chat reply box.
-  </div>
+  <div>I am the chat reply box.</div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

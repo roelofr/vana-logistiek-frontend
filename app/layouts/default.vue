@@ -119,14 +119,13 @@ const groups = computed(() => [
       </template>
 
       <template #default="{ collapsed }">
-        <UDashboardSearchButton :collapsed="collapsed" class="bg-transparent ring-default" label="Zoeken..." />
-
-        <UButton
-          v-if="collapsed"
-          href="/threads/create"
-          icon="i-lucide-plus"
-          size="md"
+        <UDashboardSearchButton
+          :collapsed="collapsed"
+          class="bg-transparent ring-default"
+          label="Zoeken..."
         />
+
+        <UButton v-if="collapsed" href="/threads/create" icon="i-lucide-plus" size="md" />
         <UButton v-else href="/threads/create" leading-icon="i-lucide-plus">
           Nieuwe melding
         </UButton>
@@ -156,10 +155,7 @@ const groups = computed(() => [
       </template>
     </UDashboardSidebar>
 
-    <UDashboardSearch
-      :groups="groups"
-      placeholder="Typ een commando of zoekopdracht..."
-    />
+    <UDashboardSearch :groups="groups" placeholder="Typ een commando of zoekopdracht..." />
 
     <slot />
 

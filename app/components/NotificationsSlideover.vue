@@ -8,10 +8,7 @@ const { data: notifications } = await useFetch<Notification[]>('/api/notificatio
 </script>
 
 <template>
-  <USlideover
-    v-model:open="isNotificationsSlideoverOpen"
-    title="Notifications"
-  >
+  <USlideover v-model:open="isNotificationsSlideoverOpen" title="Notifications">
     <template #body>
       <NuxtLink
         v-for="notification in notifications"
@@ -19,16 +16,8 @@ const { data: notifications } = await useFetch<Notification[]>('/api/notificatio
         :to="`/inbox?id=${notification.id}`"
         class="px-3 py-2.5 rounded-md hover:bg-elevated/50 flex items-center gap-3 relative -mx-3 first:-mt-3 last:-mb-3"
       >
-        <UChip
-          :show="!!notification.unread"
-          color="error"
-          inset
-        >
-          <UAvatar
-            :alt="notification.sender.name"
-            size="md"
-            v-bind="notification.sender.avatar"
-          />
+        <UChip :show="!!notification.unread" color="error" inset>
+          <UAvatar :alt="notification.sender.name" size="md" v-bind="notification.sender.avatar" />
         </UChip>
 
         <div class="text-sm flex-1">

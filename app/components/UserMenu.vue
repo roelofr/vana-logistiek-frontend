@@ -9,23 +9,26 @@ defineProps<{
 const { data: user, status: userStatus, pending: userPending } = useUser({ lazy: true })
 
 const userError = computed(() => userStatus.value == 'error')
-const menuDisabled = computed(() => (userPending.value || userError.value))
+const menuDisabled = computed(() => userPending.value || userError.value)
 
-const items = computed<DropdownMenuItem[][]>(() => ([[
-  {
-    type: 'label',
-    label: user.value?.name,
-  },
-], [
-  {
-    label: 'Profiel',
-    icon: 'i-lucide-user',
-  },
-  {
-    label: 'Uitloggen',
-    icon: 'i-lucide-log-out',
-  },
-]]))
+const items = computed<DropdownMenuItem[][]>(() => [
+  [
+    {
+      type: 'label',
+      label: user.value?.name,
+    },
+  ],
+  [
+    {
+      label: 'Profiel',
+      icon: 'i-lucide-user',
+    },
+    {
+      label: 'Uitloggen',
+      icon: 'i-lucide-log-out',
+    },
+  ],
+])
 </script>
 
 <template>
@@ -44,7 +47,7 @@ const items = computed<DropdownMenuItem[][]>(() => ([[
       class="data-[state=open]:bg-elevated"
       color="neutral"
       v-bind="{
-        trailingIcon: (collapsed || userPending) ? undefined : 'i-lucide-chevrons-up-down',
+        trailingIcon: collapsed || userPending ? undefined : 'i-lucide-chevrons-up-down',
       }"
       variant="ghost"
     >

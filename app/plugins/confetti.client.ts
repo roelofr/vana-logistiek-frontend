@@ -16,8 +16,7 @@ export default defineNuxtPlugin((_) => {
         emojis: ['🦖', '🦕', '🌴'],
         confettiNumber: 20,
       })
-    } else
-      confettiApi.addConfetti()
+    } else confettiApi.addConfetti()
   }
 
   const addConfetti = (variant: ConfettiVariant): void => {
@@ -26,15 +25,17 @@ export default defineNuxtPlugin((_) => {
 
   const clearConfetti = () => confettiApi.clearCanvas()
 
-  effect(() => {
-    while (confettiBacklog.value.length > 0) {
-      addConfetti(confettiBacklog.value.shift()!)
-    }
-  }, { allowRecurse: false })
+  effect(
+    () => {
+      while (confettiBacklog.value.length > 0) {
+        addConfetti(confettiBacklog.value.shift()!)
+      }
+    },
+    { allowRecurse: false },
+  )
 
   onUnmounted(() => {
-    if (confettiApi)
-      confettiApi.destroyCanvas()
+    if (confettiApi) confettiApi.destroyCanvas()
   })
 
   return {

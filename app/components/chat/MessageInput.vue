@@ -2,7 +2,11 @@
 const { disabled } = defineProps<{ disabled: boolean }>()
 const emit = defineEmits<{ send: [string, FileList] }>()
 
-const { files, open: fileOpen, reset: fileReset } = useFileDialog({
+const {
+  files,
+  open: fileOpen,
+  reset: fileReset,
+} = useFileDialog({
   accept: 'image/*',
   directory: false,
 })
@@ -17,8 +21,7 @@ function reset() {
 defineExpose({ reset })
 
 async function sendMessage() {
-  if (disabled)
-    return
+  if (disabled) return
 
   emit('send', reply.value, (files.value ?? []) as FileList)
 }
@@ -60,11 +63,7 @@ defineShortcuts({
     <div class="flex items-center justify-between">
       <div class="flex flex-row flex-wrap gap-2 items-center">
         <template v-if="files != null">
-          <ChatInputFile
-            v-for="file of files"
-            :key="file.name"
-            :file="file"
-          />
+          <ChatInputFile v-for="file of files" :key="file.name" :file="file" />
 
           <UTooltip text="Bijlage toevoegen">
             <UButton

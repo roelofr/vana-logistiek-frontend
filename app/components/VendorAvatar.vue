@@ -8,7 +8,7 @@ const { vendor, size } = defineProps<{
 
 const colourComputed = computed(() => vendor?.district?.colour ?? 'zinc')
 const iconComputed = computed(() => {
-  const type = (vendor?.type)?.toLowerCase() ?? 'shop'
+  const type = vendor?.type?.toLowerCase() ?? 'shop'
   switch (type) {
     case 'publisher':
       return 'i-lucide-book-text'

@@ -13,7 +13,8 @@ const columnFilters = ref([
   {
     id: 'name',
     value: '',
-  }, {
+  },
+  {
     id: 'number',
     value: '',
   },
@@ -36,7 +37,7 @@ const columns: TableColumn<Vendor>[] = [
   {
     id: 'name',
     header: 'Naam',
-    accessorFn: row => `${row.name}`,
+    accessorFn: (row) => `${row.name}`,
     header: ({ column }) => {
       const isSorted = column.getIsSorted()
 
@@ -56,9 +57,7 @@ const columns: TableColumn<Vendor>[] = [
     cell: ({ row }) => {
       return h('div', { class: 'flex items-center gap-3' }, [
         h(VendorAvatar, { vendor: row.original, size: 'lg' }),
-        h('div', undefined, [
-          h('p', { class: 'font-medium text-highlighted' }, row.original.name),
-        ]),
+        h('div', undefined, [h('p', { class: 'font-medium text-highlighted' }, row.original.name)]),
       ])
     },
   },
@@ -92,13 +91,17 @@ const columns: TableColumn<Vendor>[] = [
       return h(
         'div',
         { class: 'text-right' },
-        h(UButton, {
-          trailingIcon: 'i-lucide-chevron-right',
-          color: 'neutral',
-          variant: 'ghost',
-          class: 'ml-auto',
-          to: `/vendors/${row.original.id}`,
-        }, 'Bekijken'),
+        h(
+          UButton,
+          {
+            trailingIcon: 'i-lucide-chevron-right',
+            color: 'neutral',
+            variant: 'ghost',
+            class: 'ml-auto',
+            to: `/vendors/${row.original.id}`,
+          },
+          'Bekijken',
+        ),
       )
     },
   },
