@@ -36,9 +36,9 @@ const filteredThreads = computed(() => {
   if (activeFilter.value !== 'unread') return threads.value
 
   return threads.value.filter(
-    (thread) =>
-      !thread.read &&
-      (thread.user?.id == user.value?.id || thread.team?.id == user.value?.team?.id),
+    thread =>
+      !thread.read
+      && (thread.user?.id == user.value?.id || thread.team?.id == user.value?.team?.id),
   )
 })
 
@@ -52,7 +52,7 @@ function reactToRouteChanges(): void {
 
   const routeIdAsNumber = parseInt(route.params.id as string, 10)
   console.log('Selecting thread %o from route', routeIdAsNumber)
-  selectedThread.value = filteredThreads.value.find((thread) => thread.id == routeIdAsNumber)
+  selectedThread.value = filteredThreads.value.find(thread => thread.id == routeIdAsNumber)
 }
 
 watch([route, apiThreads], reactToRouteChanges)

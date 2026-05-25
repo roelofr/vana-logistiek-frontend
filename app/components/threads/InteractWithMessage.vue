@@ -63,7 +63,13 @@ defineShortcuts({
   <div
     class="rounded-lg overflow-hidden mt-auto bg-elevated/50 ring ring-default divide-y divide-default"
   >
-    <UTabs :content="false" :items="actions" class="w-full" color="neutral" variant="link" />
+    <UTabs
+      :content="false"
+      :items="actions"
+      class="w-full"
+      color="neutral"
+      variant="link"
+    />
 
     <div class="p-4 sm:p-6">
       <ReplyToMessage :thread="thread" @update="emit('update')" />

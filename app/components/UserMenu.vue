@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import type { DropdownMenuItem } from '@nuxt/ui'
-import { useUser } from '~/composables/useUser'
 
 defineProps<{
   collapsed?: boolean
 }>()
 
-const { data: user, status: userStatus, pending: userPending } = useUser({ lazy: true })
+const { user, isLoading, signOut } = useAuth()
 
-const userError = computed(() => userStatus.value == 'error')
-const menuDisabled = computed(() => userPending.value || userError.value)
+const userPending = isLoading
+const menuDisabled = computed(() => user.value == null && false)
 
 const items = computed<DropdownMenuItem[][]>(() => [
   [
@@ -26,6 +25,10 @@ const items = computed<DropdownMenuItem[][]>(() => [
     {
       label: 'Uitloggen',
       icon: 'i-lucide-log-out',
+      onClick: async () => {
+        await signOut()
+        reloadNuxtApp()
+      },
     },
   ],
 ])
@@ -63,14 +66,10 @@ const items = computed<DropdownMenuItem[][]>(() => [
           color="neutral"
           variant="ghost"
         >
-          Sam Smith
+          {{ user?.name ?? 'Onbekende gebruiker' }}
         </UButton>
-
-        <template #content>
-          <pre><code>{{ JSON.stringify(user, undefined, 4) }}</code></pre>
-        </template>
       </UPopover>
-      <span v-else>{{ user?.name }}</span>
+      <span v-else>{{ user?.name ?? 'Onbekende gebruiker' }}</span>
     </UButton>
 
     <template #chip-leading="{ item }">

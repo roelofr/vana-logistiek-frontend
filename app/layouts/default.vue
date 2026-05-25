@@ -125,7 +125,12 @@ const groups = computed(() => [
           label="Zoeken..."
         />
 
-        <UButton v-if="collapsed" href="/threads/create" icon="i-lucide-plus" size="md" />
+        <UButton
+          v-if="collapsed"
+          href="/threads/create"
+          icon="i-lucide-plus"
+          size="md"
+        />
         <UButton v-else href="/threads/create" leading-icon="i-lucide-plus">
           Nieuwe melding
         </UButton>
@@ -144,10 +149,6 @@ const groups = computed(() => [
           orientation="vertical"
           tooltip
         />
-
-        <DevOnly>
-          <SetAccessToken />
-        </DevOnly>
       </template>
 
       <template #footer="{ collapsed }">

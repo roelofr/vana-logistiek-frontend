@@ -26,7 +26,7 @@ async function submitMessage(message: string, files: FileList) {
 
     const messageWithFiles = new FormData()
     messageWithFiles.set('message', message)
-    if (files.length > 0) Array.from(files).forEach((file) => messageWithFiles.append('file', file))
+    if (files.length > 0) Array.from(files).forEach(file => messageWithFiles.append('file', file))
 
     await $api(`/api/threads/${thread.id}/message`, {
       method: 'post',

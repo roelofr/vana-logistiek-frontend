@@ -33,14 +33,14 @@ watch(selectedThread, () => {
 
 defineShortcuts({
   arrowdown: async () => {
-    const index = threads.findIndex((thread) => thread.id === selectedThread.value?.id)
+    const index = threads.findIndex(thread => thread.id === selectedThread.value?.id)
 
     if (index === -1) await router.push(threadRoute(threads[0] as Thread))
     else if (index < threads.length - 1)
       await router.push(threadRoute(threads[index + 1] as Thread))
   },
   arrowup: async () => {
-    const index = threads.findIndex((thread) => thread.id === selectedThread.value?.id)
+    const index = threads.findIndex(thread => thread.id === selectedThread.value?.id)
 
     if (index === -1) await router.push(threadRoute(threads[threads.length - 1] as Thread))
     else if (index > 1) await router.push(threadRoute(threads[index - 1] as Thread))

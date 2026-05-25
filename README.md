@@ -3,7 +3,7 @@
 A Nuxt app that renders information received by the Vana Logistiek application (Quarkus). Used since Castlefest 2025,
 and continuously iterating on that version.
 
-## Powered by Nuxt
+## Powered by Nuxt and Better Auth
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
@@ -21,6 +21,13 @@ Use [`npm`](https://nodejs.org) to install the dependencies:
 
 ```bash
 npm install
+```
+
+Make sure to copy and configure the `.env` file:
+
+```shell
+cp -n .env.example .env
+sed -i "s/BETTER_AUTH_SECRET=$/BETTER_AUTH_SECRET=$( openssl rand -base64 32)/" .env
 ```
 
 ## Development Server

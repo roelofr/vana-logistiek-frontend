@@ -3,18 +3,15 @@ const validationOrigin = new URL(validationRoute).origin
 
 const apiAuthErrorToast = 'vana-api-auth-error'
 
-export default defineNuxtPlugin((_) => {
-  const config = useRuntimeConfig()
-  const accessToken = ref<string | null>(null)
+export default defineNuxtPlugin(() => {
   const toast = useToast()
   const toastRef = ref<string | number | null>(null)
-
-  const baseUrl = computed(
-    () =>
-      (config.apiUrl as string)
-      ?? (config.public?.apiUrl as string)
-      ?? 'https://logistiek.myvana.dev',
-  )
+  const baseUrl = computed<string>(() => {
+    if (document?.location?.origin)
+      new URL('/api/', document.location.origin).toString()
+    return '/api/'
+  })
+  const baseOrigin = computed(() => new URL(baseUrl.value, 'https://example.com').origin)
 
   const isValidApiUrl = (request: string | Request): boolean => {
     const requestUri = typeof request == 'string' ? request : request.url
@@ -32,11 +29,12 @@ export default defineNuxtPlugin((_) => {
       if (!isValidApiUrl(request)) return
 
       options.headers.set('Accept', 'application/json, image/*, text/*;q=0.9, */*;q=0.8')
-
-      if (accessToken.value) options.headers.set('Authorization', `Bearer ${accessToken.value}`)
     },
     onResponse(res) {
-      if (res.response.status < 300 && toastRef.value) toast.remove(toastRef.value)
+      if (res.response.status < 300 && toastRef.value) {
+        toast.remove(toastRef.value)
+        toastRef.value = null
+      }
     },
     onResponseError(response) {
       if (toastRef.value == null && response.response.status === 401) {
@@ -60,9 +58,16 @@ export default defineNuxtPlugin((_) => {
   })
 
   const resolve = (path: string): string => {
-    if (baseUrl.value[0] == '/') return baseUrl.value + '/' + path.replace(/^\//, '')
+    if (path.startsWith('/api/'))
+      return new URL(path, baseUrl.value).toString()
 
-    return new URL(path, baseUrl.value).toString()
+    // Parse as a path, but don't allow any origin change.
+    const pathAsUrl = new URL(path, baseOrigin.value)
+    if (pathAsUrl.origin !== baseOrigin.value) throw new Error('Path must not specify an origin.')
+
+    // Trim the origin and the first slash and join it together with the base path
+    const pathOnly = pathAsUrl.toString().substring(pathAsUrl.origin.length + 1)
+    return new URL(pathOnly, baseUrl.value).toString()
   }
 
   const $apiUrl = {

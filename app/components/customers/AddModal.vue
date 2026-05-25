@@ -32,7 +32,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     <UButton icon="i-lucide-plus" label="New customer" />
 
     <template #body>
-      <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
+      <UForm
+        :schema="schema"
+        :state="state"
+        class="space-y-4"
+        @submit="onSubmit"
+      >
         <UFormField label="Name" name="name" placeholder="John Doe">
           <UInput v-model="state.name" class="w-full" />
         </UFormField>
@@ -40,8 +45,18 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           <UInput v-model="state.email" class="w-full" />
         </UFormField>
         <div class="flex justify-end gap-2">
-          <UButton color="neutral" label="Cancel" variant="subtle" @click="open = false" />
-          <UButton color="primary" label="Create" type="submit" variant="solid" />
+          <UButton
+            color="neutral"
+            label="Cancel"
+            variant="subtle"
+            @click="open = false"
+          />
+          <UButton
+            color="primary"
+            label="Create"
+            type="submit"
+            variant="solid"
+          />
         </div>
       </UForm>
     </template>

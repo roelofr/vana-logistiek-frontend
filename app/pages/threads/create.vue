@@ -97,7 +97,12 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
 
         <UPageBody>
           <UScrollArea>
-            <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
+            <UForm
+              :schema="schema"
+              :state="state"
+              class="space-y-4"
+              @submit="onSubmit"
+            >
               <UFormField label="Standhouder" name="vendor" required>
                 <InputsVendorSelect v-model="state.vendor" name="vendor" size="xl" />
               </UFormField>
@@ -109,7 +114,12 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
                 :help="`Suggesties: ${suggestedOptions!.join(', ')}`"
                 required
               >
-                <UInput v-model="state.subject" label="Onderwerp" name="subject" size="xl" />
+                <UInput
+                  v-model="state.subject"
+                  label="Onderwerp"
+                  name="subject"
+                  size="xl"
+                />
 
                 <template #help>
                   <div class="flex flex-row justify-start items-center flex-wrap gap-2">
@@ -143,7 +153,12 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
                 />
               </UFormField>
 
-              <UButton block size="xl" type="submit" icon="i-lucide-rocket">
+              <UButton
+                block
+                size="xl"
+                type="submit"
+                icon="i-lucide-rocket"
+              >
                 Melding aanmaken
               </UButton>
 

@@ -33,7 +33,7 @@ watch(
     const min = 1000
     const max = 10000
 
-    data.value = dates.map((date) => ({
+    data.value = dates.map(date => ({
       date,
       amount: Math.floor(Math.random() * (max - min + 1)) + min,
     }))
@@ -75,16 +75,28 @@ const template = (d: DataRecord) => `${formatDate(d.date)}: ${formatNumber(d.amo
   <UCard ref="cardRef" :ui="{ root: 'overflow-visible', body: '!px-0 !pt-0 !pb-3' }">
     <template #header>
       <div>
-        <p class="text-xs text-muted uppercase mb-1.5">Revenue</p>
+        <p class="text-xs text-muted uppercase mb-1.5">
+          Revenue
+        </p>
         <p class="text-3xl text-highlighted font-semibold">
           {{ formatNumber(total) }}
         </p>
       </div>
     </template>
 
-    <VisXYContainer :data="data" :padding="{ top: 40 }" :width="width" class="h-96">
+    <VisXYContainer
+      :data="data"
+      :padding="{ top: 40 }"
+      :width="width"
+      class="h-96"
+    >
       <VisLine :x="x" :y="y" color="var(--ui-primary)" />
-      <VisArea :opacity="0.1" :x="x" :y="y" color="var(--ui-primary)" />
+      <VisArea
+        :opacity="0.1"
+        :x="x"
+        :y="y"
+        color="var(--ui-primary)"
+      />
 
       <VisAxis :tick-format="xTicks" :x="x" type="x" />
 

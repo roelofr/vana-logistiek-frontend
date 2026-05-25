@@ -36,5 +36,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <UButton :avatar="avatar" color="neutral" size="lg" variant="outline" @click="emit('remove')" />
+  <UButton
+    :avatar="avatar"
+    color="neutral"
+    size="lg"
+    variant="outline"
+    @click="emit('remove')"
+  />
 </template>

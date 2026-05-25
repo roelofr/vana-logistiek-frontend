@@ -33,17 +33,17 @@ const {
 
 const vendors = computed(() => (apiVendors.value ? expand(apiVendors.value, ['district']) : []))
 const vendorsMapped = computed(() => vendors.value?.map(toNuxtUiList) ?? [])
-const vendorIndexed = computed(() => new Map(vendors.value?.map((v) => [v.id, v])))
+const vendorIndexed = computed(() => new Map(vendors.value?.map(v => [v.id, v])))
 
 watch(vendors, (newValue, oldValue) => {
   if (oldValue == undefined && newValue != undefined && defaultId && !vendor.value) {
-    vendor.value = newValue.find((v) => v.id === defaultId) ?? null
+    vendor.value = newValue.find(v => v.id === defaultId) ?? null
   }
 })
 
 const uiVendor = computed<InputVendorItem | undefined>({
   get() {
-    return vendor.value ? toNuxtUiList(vendor.value) : null
+    return vendor.value ? toNuxtUiList(vendor.value) : undefined
   },
   set(value) {
     if (!value) {

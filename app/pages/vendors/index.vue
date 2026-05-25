@@ -37,7 +37,7 @@ const columns: TableColumn<Vendor>[] = [
   {
     id: 'name',
     header: 'Naam',
-    accessorFn: (row) => `${row.name}`,
+    accessorFn: row => `${row.name}`,
     header: ({ column }) => {
       const isSorted = column.getIsSorted()
 

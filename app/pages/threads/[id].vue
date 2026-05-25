@@ -3,7 +3,7 @@ import type { Thread } from '~/types'
 
 definePageMeta({
   name: 'threads-id',
-  key: (route) => `thread-id-${route.params.id}`,
+  key: route => `thread-id-${route.params.id}`,
   validate({ params }) {
     if (!params.id || !String(params.id).match(/^[1-9]\d{0,4}$/)) {
       console.warn('Route /threads/:id was non-numeric.')

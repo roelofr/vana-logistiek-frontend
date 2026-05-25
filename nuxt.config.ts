@@ -8,20 +8,14 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@vueuse/nuxt',
     '@pinia/nuxt',
-    'nuxt-oidc-auth',
-    '@nuxtjs/robots',
+    './server/modules/better-auth-migrate',
   ],
 
   $development: {
     runtimeConfig: {
-      apiUrl: 'http://localhost:8080',
-      public: {
-        apiUrl: 'http://localhost:8080',
-      },
+      upstreamUrl: 'http://localhost:8080',
     },
   },
-
-  ssr: false,
 
   devtools: {
     enabled: true,
@@ -29,12 +23,21 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
-  site: { indexable: false },
-
   runtimeConfig: {
-    apiUrl: 'https://logistiek.myvana.dev',
+    upstreamUrl: process.env.UPSTREAM_URL || 'https://api.logistiek.myvana.dev',
+    authSecret: process.env.BETTER_AUTH_SECRET || 'secret',
+    authCache: {
+      version: '1',
+      maxAge: 300, // Seconds
+    },
+    pocketId: {
+      issuer: process.env.POCKET_SERVER || 'https://login.troela.fun',
+      clientId: process.env.POCKET_CLIENT_ID || 'logistiek-nuxt-dev',
+      clientSecret: process.env.POCKET_CLIENT_SECRET || 'secret',
+      scopes: ['email', 'profile', 'groups'],
+    },
     public: {
-      apiUrl: 'https://logistiek.myvana.dev',
+      // noop
     },
   },
 
@@ -48,6 +51,11 @@ export default defineNuxtConfig({
           route.skip = true
         }
       },
+    },
+
+    // Disable WASM to allow our proxy-middleware to work
+    experimental: {
+      wasm: false,
     },
   },
 
@@ -106,19 +114,5 @@ export default defineNuxtConfig({
 
   image: {
     provider: 'none',
-  },
-
-  oidc: {
-    providers: {
-      oidc: {
-        clientId: '',
-        clientSecret: '',
-        authorizationUrl: 'https://login.troela.fun',
-        scope: ['openid', 'profile', 'groups'],
-        state: true,
-        nonce: true,
-        pkce: true,
-      },
-    },
   },
 })

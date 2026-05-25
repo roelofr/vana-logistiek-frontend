@@ -1,5 +1,6 @@
 import type { UseFetchOptions } from 'nuxt/app'
 import type { User } from '~/types'
+import { useAuth } from '~/composables/useAuth'
 
 declare type useUserOpts = Pick<UseFetchOptions<User>, 'lazy' | 'server'>
 
@@ -8,11 +9,11 @@ export const useUser = (
     server: true,
   },
 ) => {
-  const accessToken = useAccessToken()
+  const { getAccessToken } = useAuth()
 
   const http = useApi<User>('/api/users/me', {
     ...opts,
-    watch: [accessToken],
+    watch: [getAccessToken],
   })
 
   return {
