@@ -1,4 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+function env<T>(key: string, defaultValue: T, formatter: (value: string) => T = value => value as T): T {
+  if (Object.hasOwn(process.env, key))
+    return formatter(process.env[key]!)
+  return defaultValue
+}
+
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
@@ -24,17 +30,17 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   runtimeConfig: {
-    upstreamUrl: process.env.UPSTREAM_URL || 'https://api.logistiek.myvana.dev',
-    authSecret: process.env.BETTER_AUTH_SECRET || 'secret',
+    upstreamUrl: env('UPSTREAM_URL', 'https://api.logistiek.myvana.dev'),
+    authSecret: env('BETTER_AUTH_SECRET', 'secret'),
     authCache: {
       version: '1',
       maxAge: 300, // Seconds
     },
     pocketId: {
-      issuer: process.env.POCKET_SERVER || 'https://login.troela.fun',
-      clientId: process.env.POCKET_CLIENT_ID || 'logistiek-nuxt-dev',
-      clientSecret: process.env.POCKET_CLIENT_SECRET || 'secret',
-      scopes: ['email', 'profile', 'groups'],
+      issuer: env('POCKET_SERVER', 'https://login.troela.fun'),
+      clientId: env('POCKET_CLIENT_ID', 'logistiek-nuxt-dev'),
+      clientSecret: env('POCKET_CLIENT_SECRET', 'secret'),
+      scopes: env('POCKET_SCOPES', ['email', 'profile', 'groups'], value => value.split(',').map(scope => scope.trim())),
     },
     public: {
       // noop
@@ -56,6 +62,16 @@ export default defineNuxtConfig({
     // Disable WASM to allow our proxy-middleware to work
     experimental: {
       wasm: false,
+    },
+  },
+
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@tanstack/table-core',
+        'date-fns',
+        'zod',
+      ],
     },
   },
 

@@ -10,7 +10,7 @@ export default defineNuxtModule({
   setup(options, nuxt) {
     // Hook into nitro:prepare to run migration BEFORE the server builds
     nuxt.hook('modules:done', async () => {
-      logger.info('🔄 Running better-auth migrations...')
+      logger.start('Checking for better-auth migrations...')
 
       // Get config
       const auth = getAuthConfig()
@@ -20,12 +20,13 @@ export default defineNuxtModule({
 
       // Run, if any
       if (toBeAdded.length > 0 || toBeCreated.length > 0) {
-        logger.info('🚀 Running database migrations...')
-        runMigrations()
+        logger.start('Running database migrations...')
 
-        logger.info('✅ Database migrations completed successfully.')
+        await runMigrations()
+
+        logger.success('Database migrations completed successfully.')
       } else {
-        logger.info('✅ No database migrations needed.')
+        logger.success('Database migrations are up-to-date.')
       }
     })
   },

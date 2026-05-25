@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 const { number } = useRoute().params
+
+definePageMeta({
+  middleware: ['auth'],
+})
 </script>
 
 <template>

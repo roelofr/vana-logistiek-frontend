@@ -24,8 +24,8 @@ const createSecret = (bytes: number): string => {
     .join('')
 }
 
-export function getAuthConfig() {
-  const config = (typeof useRuntimeConfig === 'function')
+function getRuntimeConfig() {
+  return (typeof useRuntimeConfig === 'function')
     ? useRuntimeConfig()
     : {
         authSecret: createSecret(32),
@@ -40,6 +40,10 @@ export function getAuthConfig() {
           scopes: ['openid'],
         },
       }
+}
+
+export function getAuthConfig() {
+  const config = getRuntimeConfig()
 
   return {
     appName: 'Penis Logistiekapp',
@@ -56,7 +60,7 @@ export function getAuthConfig() {
       cookieCache: {
         enabled: true,
         version: config.authCache.version ?? '1',
-        maxAge: config.authCache.maxAge ?? 300, // 5 minutes
+        maxAge: 30, // 30 seconds
       },
     },
 

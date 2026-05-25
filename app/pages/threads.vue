@@ -6,6 +6,7 @@ import { breakpointsTailwind } from '@vueuse/core'
 
 definePageMeta({
   key: 'threads-index',
+  middleware: ['auth'],
 })
 
 const { data: user } = useUser()

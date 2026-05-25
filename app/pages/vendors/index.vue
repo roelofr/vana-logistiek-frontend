@@ -5,6 +5,10 @@ import type { Vendor } from '~/types'
 import { computed } from 'vue'
 import { VendorAvatar } from '#components'
 
+definePageMeta({
+  middleware: ['auth'],
+})
+
 const UButton = resolveComponent('UButton')
 const table = useTemplateRef('table')
 
@@ -22,7 +26,7 @@ const columnFilters = ref([
 const columnVisibility = ref()
 const rowSelection = ref({ 1: true })
 
-const { data: apiData, status } = await useApi<Vendor[]>('/api/vendors', {
+const { data: apiData, status } = await useFetch<Vendor[]>('/api/vendors', {
   lazy: true,
 })
 
