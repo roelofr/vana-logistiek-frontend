@@ -56,7 +56,7 @@ const {
           {
             label: 'Herladen',
             icon: 'i-lucide-rotate-ccw',
-            onClick: refresh,
+            onClick: () => refresh(),
           },
         ]"
       />

@@ -12,7 +12,7 @@ definePageMeta({
 const UButton = resolveComponent('UButton')
 const table = useTemplateRef('table')
 
-const filter = ref('')
+const filter = ref<string | undefined>('')
 const columnFilters = ref([
   {
     id: 'name',
@@ -40,7 +40,6 @@ const pagination = ref({
 const columns: TableColumn<Vendor>[] = [
   {
     id: 'name',
-    header: 'Naam',
     accessorFn: row => `${row.name}`,
     header: ({ column }) => {
       const isSorted = column.getIsSorted()
@@ -138,7 +137,7 @@ const columns: TableColumn<Vendor>[] = [
 
       <UTable
         ref="table"
-        v-model="filter"
+        v-model:filter="filter"
         v-model:column-filters="columnFilters"
         v-model:column-visibility="columnVisibility"
         v-model:pagination="pagination"
