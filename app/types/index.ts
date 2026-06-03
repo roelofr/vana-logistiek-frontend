@@ -1,8 +1,13 @@
+/**
+ * A model, or a reference if this reference has already been filled.
+ */
+export type QuarkusRef<T> = number | T
+
 export type LoadingType = 'full' | 'partial' | null
 
-export type ThreadFilter = 'open' | 'unread' | 'all'
+export type IssueFilter = 'open' | 'unread' | 'all'
 
-export interface Team {
+export interface Group {
   id: number
   name: string
   system: boolean
@@ -14,7 +19,7 @@ export interface User {
   id: number
   name: string
   email: string
-  team?: Team
+  group?: Group
   roles?: string[]
 }
 
@@ -32,37 +37,37 @@ export interface Vendor {
   district?: Only<'id' | 'name', District>
 }
 
-export interface Thread {
+export interface Issue {
   id: number
   subject: string
   read: boolean
   createdAt: Date
   updatedAt: Date
   resolvedAt: null | Date
-  vendor: Vendor
+  vendor: Vendor | null
   user: User
-  team: Team
+  group: Group
   assignedUser: null | User
-  assignedTeam: null | Team
+  assignedGroup: null | Group
 }
 
-export type ListThread = Only<
-  'id' | 'subject' | 'createdAt' | 'updatedAt' | 'resolvedAt' | 'vendor' | 'user' | 'team',
-  Thread
+export type ListIssue = Only<
+  'id' | 'subject' | 'createdAt' | 'updatedAt' | 'resolvedAt' | 'vendor' | 'user' | 'group',
+  Issue
 >
 
-export type ThreadUpdateType = 'System' | 'Chat' | 'Image' | 'Resolved'
+export type IssueUpdateType = 'System' | 'Chat' | 'Image' | 'Resolved'
 
-export interface ThreadUpdate {
+export interface IssueUpdate {
   id: number
   message: string
-  type: ThreadUpdateType
+  type: IssueUpdateType
   updateType: string
   date: Date
   me: boolean
   user: null | Only<'id' | 'name', User>
-  team: null | Only<'id' | 'name', Team>
-  thread: Only<'id', Thread>
+  group: null | Only<'id' | 'name', Group>
+  thread: Only<'id', Issue>
   update: {
     id: number
     groupKey: string
@@ -75,15 +80,15 @@ export interface ThreadUpdate {
   }
 }
 
-export type ChatThreadType = 'system' | 'user'
+export type ChatIssueType = 'system' | 'user'
 
-export interface ChatThread {
+export interface ChatIssue {
   id: number
-  teams: Team[]
+  groups: Group[]
   participants: User[]
   subject: string
   closed: boolean
-  type: ChatThreadType
+  type: ChatIssueType
 }
 
 export type ConfettiVariant = 'normal' | 'dino'

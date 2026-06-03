@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ThreadUpdate } from '~/types'
+import type { ThreadUpdate } from '../../types'
 import { localTime } from '~/utils'
 import { useApiUrl } from '~/composables/useApiUrl'
 

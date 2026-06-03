@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Member } from '~/types'
+import type { Member } from '../../types'
 
 const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [] })
 

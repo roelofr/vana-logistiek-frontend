@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { CalendarDate, DateFormatter, getLocalTimeZone, today } from '@internationalized/date'
-import type { Range } from '~/types'
+import type { Range } from '../../types'
 
 const df = new DateFormatter('en-US', {
   dateStyle: 'medium',

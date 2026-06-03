@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { formatTimeAgo } from '@vueuse/core'
-import type { Notification } from '~/types'
+import type { Notification } from '../types'
 
 const { isNotificationsSlideoverOpen } = useDashboard()
 

@@ -5,7 +5,7 @@ definePageMeta({
   middleware: ['auth'],
 })
 
-const { user, session } = useAuth()
+const { user } = useAuth()
 
 const items = [
   [
@@ -43,15 +43,6 @@ const items = [
           <UIcon :size="64" name="i-lucide-swords" />
         </template>
       </UEmpty>
-
-      <div class="grid gap-8 grid-cols-2">
-        <UCard title="User">
-          <pre><code>{{ JSON.stringify(user, undefined, 4) }}</code></pre>
-        </UCard>
-        <UCard title="Session">
-          <pre><code>{{ JSON.stringify(session, undefined, 4) }}</code></pre>
-        </UCard>
-      </div>
     </template>
   </UDashboardPanel>
 </template>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Team, User } from '~/types'
+import type { Team, User } from '../types'
 
 const { user, team, size } = defineProps<{
   user: User

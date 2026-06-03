@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-const open = ref(false)
-const close = () => {
-  open.value = false
+const menuOpen = ref(false)
+const closeMenu = () => {
+  menuOpen.value = false
 }
 
 const confetti = useConfetti()
@@ -14,15 +14,15 @@ const links = [
       label: 'Start',
       icon: 'i-lucide-house',
       to: '/',
-      onSelect: close,
+      onSelect: closeMenu,
     },
     {
       label: 'Meldingen',
       icon: 'i-lucide-inbox',
-      to: '/threads',
+      to: '/issues',
       exact: false,
       exactQuery: 'partial',
-      onSelect: close,
+      onSelect: closeMenu,
     },
     {
       label: 'Standhouders',
@@ -30,7 +30,7 @@ const links = [
       to: '/vendors',
       exact: false,
       exactQuery: 'partial',
-      onSelect: close,
+      onSelect: closeMenu,
     },
     {
       label: 'Instellingen',
@@ -43,12 +43,12 @@ const links = [
           label: 'Profiel',
           to: '/settings',
           exact: true,
-          onSelect: close,
+          onSelect: closeMenu,
         },
         {
           label: 'Gebruikers',
           to: '/settings/users',
-          onSelect: close,
+          onSelect: closeMenu,
         },
       ],
     },
@@ -63,17 +63,17 @@ const links = [
           label: 'Algemeen',
           to: '/admin',
           exact: true,
-          onSelect: close,
+          onSelect: closeMenu,
         },
         {
           label: 'Wijken',
           to: '/admin/districts',
-          onSelect: close,
+          onSelect: closeMenu,
         },
         {
           label: 'Gebruikers',
           to: '/admin/users',
-          onSelect: close,
+          onSelect: closeMenu,
         },
       ],
     },
@@ -101,13 +101,18 @@ const groups = computed(() => [
     items: links.flat(),
   },
 ])
+
+const showCreateIssue = ref(false)
+const createIssue = () => {
+  showCreateIssue.value = true
+}
 </script>
 
 <template>
   <UDashboardGroup unit="rem">
     <UDashboardSidebar
       id="default"
-      v-model:open="open"
+      v-model:open="menuOpen"
       :ui="{ footer: 'lg:border-t lg:border-default' }"
       class="bg-elevated/25"
       collapsible
@@ -115,7 +120,11 @@ const groups = computed(() => [
     >
       <template #header="{ collapsed }">
         <Logo v-if="!collapsed" class="h-5 w-auto shrink-0" />
-        <UIcon v-else class="size-5 text-primary mx-auto" name="i-simple-icons-nuxtdotjs" />
+        <UIcon
+          v-else
+          class="size-5 text-primary mx-auto"
+          name="i-simple-icons-nuxtdotjs"
+        />
       </template>
 
       <template #default="{ collapsed }">
@@ -127,11 +136,11 @@ const groups = computed(() => [
 
         <UButton
           v-if="collapsed"
-          href="/threads/create"
           icon="i-lucide-plus"
           size="md"
+          @click="createIssue()"
         />
-        <UButton v-else href="/threads/create" leading-icon="i-lucide-plus">
+        <UButton v-else leading-icon="i-lucide-plus" @click="createIssue()">
           Nieuwe melding
         </UButton>
 
@@ -156,10 +165,16 @@ const groups = computed(() => [
       </template>
     </UDashboardSidebar>
 
-    <UDashboardSearch :groups="groups" placeholder="Typ een commando of zoekopdracht..." />
+    <UDashboardSearch
+      :groups="groups"
+      placeholder="Typ een commando of zoekopdracht..."
+    />
 
     <slot />
 
     <NotificationsSlideover />
   </UDashboardGroup>
+
+  <!-- modals -->
+  <CreateIssueModal v-model:open="showCreateIssue" />
 </template>

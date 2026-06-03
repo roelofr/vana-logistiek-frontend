@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ThreadUpdate } from '~/types'
+import type { ThreadUpdate } from '../../types'
 
 const MAX_INTERVAL = 90 * 1000 // 1,5 min between messages
 

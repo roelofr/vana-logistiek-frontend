@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Vendor } from '~/types'
+import type { Vendor } from '../types'
 
 const { vendor } = defineProps<{ vendor: Vendor | null }>()
 </script>

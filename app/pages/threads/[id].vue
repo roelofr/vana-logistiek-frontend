@@ -1,36 +1,29 @@
 <script setup lang="ts">
-import type { Thread } from '~/types'
+import type { Thread } from '../../types'
+
+const NUMBERS_ONLY = /^[1-9][0-9]*$/
 
 definePageMeta({
-  name: 'threads-id',
-  key: route => `thread-id-${route.params.id}`,
   validate({ params }) {
-    if (!params.id || !String(params.id).match(/^[1-9]\d{0,4}$/)) {
-      console.warn('Route /threads/:id was non-numeric.')
-      return false
-    }
-
-    return true
+    return typeof params.id === 'string' && NUMBERS_ONLY.test(params.id)
   },
   keepalive: {
     max: 5,
   },
 })
 
-const emits = defineEmits<{
-  close: []
-}>()
+const threadId = computed(() => useRoute().params.id as string)
 
-const route = useRoute()
-const threadId = computed(() => parseInt((route.params.id ?? '0') as string, 10))
+const ticketStore = useTicketStore()
+onMounted(() => ticketStore.setActiveTicket(Number.parseInt(threadId.value, 10)))
+
+const closeAction = () => ticketStore.setActiveTicket(null)
+
 const {
   data: thread,
   status,
   refresh,
-} = useApi<Thread>(() => `/api/threads/${threadId.value}`, {
-  lazy: true,
-  watch: [() => threadId],
-})
+} = useApi<Thread>(() => `/api/threads/${threadId.value}`, { lazy: true })
 </script>
 
 <template>
@@ -42,7 +35,7 @@ const {
           color="neutral"
           icon="i-lucide-x"
           variant="ghost"
-          @click="emits('close')"
+          @click="closeAction()"
         />
       </template>
     </UDashboardNavbar>
@@ -66,7 +59,7 @@ const {
   <ThreadsViewMessageLoading
     v-else-if="status !== 'success'"
     :thread-id="threadId"
-    @close="emits('close')"
+    @close="closeAction()"
   />
-  <ThreadsViewMessage v-else-if="thread" :thread="thread" @close="emits('close')" />
+  <ThreadsViewMessage v-else-if="thread" :thread="thread" @close="closeAction()" />
 </template>

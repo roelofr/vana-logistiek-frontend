@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Thread } from '~/types'
+import type { Thread } from '../../types'
 import type { TabsItem } from '@nuxt/ui/components/Tabs.vue'
 import ReplyToMessage from '~/components/threads/ReplyToMessage.vue'
 

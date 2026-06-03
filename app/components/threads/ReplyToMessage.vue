@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { Thread } from '~/types'
+import type { Issue } from '~/types'
 
 const emit = defineEmits<{ update: [] }>()
-const { thread } = defineProps<{ thread: Thread }>()
+const { thread } = defineProps<{ thread: Issue }>()
 const input = useTemplateRef('input')
 
 const { $api } = useNuxtApp()
@@ -28,7 +28,7 @@ async function submitMessage(message: string, files: FileList) {
     messageWithFiles.set('message', message)
     if (files.length > 0) Array.from(files).forEach(file => messageWithFiles.append('file', file))
 
-    await $api(`/api/threads/${thread.id}/message`, {
+    await $fetch(`/api/threads/${thread.id}/message`, {
       method: 'post',
       body: messageWithFiles,
     })

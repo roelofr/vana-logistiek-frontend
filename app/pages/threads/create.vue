@@ -2,7 +2,7 @@
 import type { FormSubmitEvent } from '@nuxt/ui'
 
 import * as z from 'zod'
-import type { Thread, Vendor } from '~/types'
+import type { Thread, Vendor } from '../../types'
 
 const { $api } = useNuxtApp()
 const router = useRouter()

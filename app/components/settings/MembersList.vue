@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { DropdownMenuItem } from '@nuxt/ui'
-import type { Member } from '~/types'
+import type { Member } from '../../types'
 
 defineProps<{
   members: Member[]

@@ -28,26 +28,44 @@ function getRuntimeConfig() {
   return (typeof useRuntimeConfig === 'function')
     ? useRuntimeConfig()
     : {
-        authSecret: createSecret(32),
-        authCache: {
-          version: '1',
-          maxAge: 300,
-        },
-        pocketId: {
-          clientId: 'string',
-          clientSecret: 'string',
-          issuer: 'https://example.com',
-          scopes: ['openid'],
-        },
-      }
+      authBase: 'http://localhost:3000',
+      authSecret: createSecret(32),
+      authCache: {
+        version: '1',
+        maxAge: 300,
+      },
+      pocketId: {
+        clientId: 'string',
+        clientSecret: 'string',
+        issuer: 'https://example.com',
+        scopes: ['openid'],
+      },
+    }
+}
+
+function buildBaseUrl(baseUrl: string) {
+  const baseUrls = process.env.BETTER_AUTH_ORIGINS ?? ''
+  if (!baseUrls)
+    return process.env.BETTER_AUTH_URL || baseUrl
+
+  const origins = baseUrls.split(',').map(origin => new URL(origin.trim()))
+
+  return {
+    allowedHosts: origins.map(origin => origin.port ? `${origin.hostname}:${origin.port}` : origin.hostname),
+    protocol: origins[0]!.protocol.replace(/:$/, ''),
+    fallback: baseUrl ?? origins[0]!.origin,
+  }
 }
 
 export function getAuthConfig() {
   const config = getRuntimeConfig()
+  const baseUrlConfig = buildBaseUrl(config.authBase)
 
   return {
     appName: 'Penis Logistiekapp',
-    secret: config.authSecret,
+
+    baseUrl: baseUrlConfig,
+    secret: process.env.BETTER_AUTH_SECRET || config.authSecret,
 
     // Use SQLite for storage
     database: new Database('data/database.sqlite'),
@@ -62,6 +80,12 @@ export function getAuthConfig() {
         version: config.authCache.version ?? '1',
         maxAge: 30, // 30 seconds
       },
+    },
+
+    // Error page formatting
+    onAPIError: {
+      throw: true,
+      errorURL: '/auth/login',
     },
 
     // OpenID plugin

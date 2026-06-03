@@ -7,8 +7,8 @@ defineProps<{
 
 const { user, isLoading, signOut } = useAuth()
 
-const userPending = isLoading
-const menuDisabled = computed(() => user.value == null && false)
+const userPending = computed(() => isLoading.value && user.value == null)
+const menuDisabled = computed(() => user.value == null)
 
 const items = computed<DropdownMenuItem[][]>(() => [
   [
@@ -58,18 +58,14 @@ const items = computed<DropdownMenuItem[][]>(() => [
         <USkeleton class="h-6 w-6 rounded-full" />
         <USkeleton class="h-4 w-[70%]" />
       </div>
-      <UPopover v-else-if="menuDisabled">
-        <UButton
-          :square="collapsed"
-          block
-          class="data-[state=open]:bg-elevated"
-          color="neutral"
-          variant="ghost"
-        >
-          {{ user?.name ?? 'Onbekende gebruiker' }}
-        </UButton>
-      </UPopover>
-      <span v-else>{{ user?.name ?? 'Onbekende gebruiker' }}</span>
+      <span v-else class="flex items-center gap-2">
+        <UAvatar
+          :src="user?.image ?? undefined"
+          alt="Profielfoto"
+          class="h-6 w-6"
+        />
+        {{ user?.name ?? 'Onbekende gebruiker' }}
+      </span>
     </UButton>
 
     <template #chip-leading="{ item }">

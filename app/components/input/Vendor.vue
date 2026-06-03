@@ -27,16 +27,23 @@ const {
   data: apiVendors,
   status: apiStatus,
   execute: fetchVendors,
-} = useApi<Vendor[]>('/api/vendors', {
-  immediate: false,
-})
+} = useFetch<Vendor[]>('/api/vendors', { immediate: false })
 
-const vendors = computed(() => (apiVendors.value ? expand(apiVendors.value, ['district']) : []))
+const vendors = computed(() =>
+  apiVendors.value ? expand(apiVendors.value, ['district']) : [],
+)
 const vendorsMapped = computed(() => vendors.value?.map(toNuxtUiList) ?? [])
-const vendorIndexed = computed(() => new Map(vendors.value?.map(v => [v.id, v])))
+const vendorIndexed = computed(
+  () => new Map(vendors.value?.map(v => [v.id, v])),
+)
 
 watch(vendors, (newValue, oldValue) => {
-  if (oldValue == undefined && newValue != undefined && defaultId && !vendor.value) {
+  if (
+    oldValue == undefined
+    && newValue != undefined
+    && defaultId
+    && !vendor.value
+  ) {
     vendor.value = newValue.find(v => v.id === defaultId) ?? null
   }
 })
@@ -76,8 +83,14 @@ function fetchVendorsOnInitialOpen() {
     @update:open="fetchVendorsOnInitialOpen"
   >
     <template #trailing="{ modelValue }">
-      <span v-if="modelValue" class="text-muted pr-1">{{ modelValue.number }}</span>
-      <UIcon class="text-dimmed" name="i-lucide-chevron-down" size="calc(var(--spacing) * 5)" />
+      <span v-if="modelValue" class="text-muted pr-1">{{
+        modelValue.number
+      }}</span>
+      <UIcon
+        class="text-dimmed"
+        name="i-lucide-chevron-down"
+        size="calc(var(--spacing) * 5)"
+      />
     </template>
     <template #item-description="{ item }">
       <div class="flex flex-row items-center gap-2">

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { TableColumn } from '@nuxt/ui'
-import { getPaginationRowModel } from '@tanstack/table-core'
-import type { Vendor } from '~/types'
-import { computed } from 'vue'
-import { VendorAvatar } from '#components'
+import type {TableColumn} from '@nuxt/ui'
+import {getPaginationRowModel} from '@tanstack/table-core'
+import type {Vendor} from '../../types'
+import {computed} from 'vue'
+import {VendorAvatar} from '#components'
 
 definePageMeta({
   middleware: ['auth'],
@@ -24,9 +24,9 @@ const columnFilters = ref([
   },
 ])
 const columnVisibility = ref()
-const rowSelection = ref({ 1: true })
+const rowSelection = ref({1: true})
 
-const { data: apiData, status } = await useFetch<Vendor[]>('/api/vendors', {
+const {data: apiData, status} = await useFetch<Vendor[]>('/api/vendors', {
   lazy: true,
 })
 
@@ -41,7 +41,7 @@ const columns: TableColumn<Vendor>[] = [
   {
     id: 'name',
     accessorFn: row => `${row.name}`,
-    header: ({ column }) => {
+    header: ({column}) => {
       const isSorted = column.getIsSorted()
 
       return h(UButton, {
@@ -57,16 +57,16 @@ const columns: TableColumn<Vendor>[] = [
         onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
       })
     },
-    cell: ({ row }) => {
-      return h('div', { class: 'flex items-center gap-3' }, [
-        h(VendorAvatar, { vendor: row.original, size: 'lg' }),
-        h('div', undefined, [h('p', { class: 'font-medium text-highlighted' }, row.original.name)]),
+    cell: ({row}) => {
+      return h('div', {class: 'flex items-center gap-3'}, [
+        h(VendorAvatar, {vendor: row.original, size: 'lg'}),
+        h('div', undefined, [h('p', {class: 'font-medium text-highlighted'}, row.original.name)]),
       ])
     },
   },
   {
     accessorKey: 'number',
-    header: ({ column }) => {
+    header: ({column}) => {
       const isSorted = column.getIsSorted()
 
       return h(UButton, {
@@ -86,14 +86,14 @@ const columns: TableColumn<Vendor>[] = [
   {
     accessorKey: 'district',
     header: 'Wijk',
-    cell: ({ row }) => row.original.district?.name,
+    cell: ({row}) => row.original.district?.name,
   },
   {
     id: 'actions',
-    cell: ({ row }) => {
+    cell: ({row}) => {
       return h(
         'div',
-        { class: 'text-right' },
+        {class: 'text-right'},
         h(
           UButton,
           {
@@ -116,11 +116,11 @@ const columns: TableColumn<Vendor>[] = [
     <template #header>
       <UDashboardNavbar title="Standhouders">
         <template #leading>
-          <UDashboardSidebarCollapse />
+          <UDashboardSidebarCollapse/>
         </template>
 
         <template #right>
-          <CustomersAddModal />
+          <VendorsAddModal/>
         </template>
       </UDashboardNavbar>
     </template>

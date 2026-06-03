@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ListThread, ThreadUpdate } from '~/types'
+import type { ListThread, ThreadUpdate } from '../../types'
 import { expand, formattedLocalTime } from '~/utils'
 
 const { thread } = defineProps<{

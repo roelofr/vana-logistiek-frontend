@@ -8,7 +8,6 @@ function env<T>(key: string, defaultValue: T, formatter: (value: string) => T = 
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
-    '@nuxt/hints',
     '@nuxt/icon',
     '@nuxt/image',
     '@nuxt/ui',
@@ -21,16 +20,31 @@ export default defineNuxtConfig({
     runtimeConfig: {
       upstreamUrl: 'http://localhost:8080',
     },
+    devtools: {
+      enabled: true,
+    },
+    vite: {
+      optimizeDeps: {
+        include: [
+          '@tanstack/table-core',
+          '@vue/devtools-core',
+          '@vue/devtools-kit',
+          'better-auth/client/plugins',
+          'better-auth/vue',
+          'date-fns',
+          'js-confetti',
+          'zod',
+        ],
+      },
+    },
   },
 
-  devtools: {
-    enabled: true,
-  },
 
   css: ['~/assets/css/main.css'],
 
   runtimeConfig: {
     upstreamUrl: env('UPSTREAM_URL', 'https://api.logistiek.myvana.dev'),
+    authBase: env('BETTER_AUTH_URL', 'http://localhost:3000'),
     authSecret: env('BETTER_AUTH_SECRET', 'secret'),
     authCache: {
       version: '1',
@@ -58,18 +72,16 @@ export default defineNuxtConfig({
         }
       },
     },
-
-    // Disable WASM to allow our proxy-middleware to work
-    experimental: {
-      wasm: false,
-    },
   },
 
   vite: {
     optimizeDeps: {
       include: [
         '@tanstack/table-core',
+        'better-auth/client/plugins',
+        'better-auth/vue',
         'date-fns',
+        'js-confetti',
         'zod',
       ],
     },
@@ -77,17 +89,11 @@ export default defineNuxtConfig({
 
   eslint: {
     config: {
-      stylistic: {
-        commaDangle: 'always-multiline',
-        braceStyle: '1tbs',
-      },
+      stylistic: false,
     },
   },
 
   icon: {
-    // Force use of non-/api-route, as they are rewritten to Quarkus by the load balancer.
-    localApiEndpoint: '/resources/dynamic/icons',
-
     serverBundle: {
       collections: ['lucide'],
     },

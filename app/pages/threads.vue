@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import type { ListThread, LoadingType, Thread, ThreadFilter } from '~/types'
-import { unreadForUserMap } from '~/utils'
+import type { IssueFilter, LoadingType } from '~/types'
 import { breakpointsTailwind } from '@vueuse/core'
 
 definePageMeta({
@@ -9,55 +8,40 @@ definePageMeta({
   middleware: ['auth'],
 })
 
-const { data: user } = useUser()
 const router = useRouter()
-const route = useRoute()
 
 const isPanelOpen = ref(false)
-const selectedThread = ref<Thread | null>(null)
-const activeFilter = ref<ThreadFilter>('all')
+const activeFilter = ref<IssueFilter>('all')
 
-const { data: apiThreads, status: threadsStatus } = useApi<ListThread[]>('/api/threads', {
-  lazy: true,
-  params: {
-    closed: activeFilter.value === 'all',
-  },
+const { activeIssue, issues, loadingState, fetch } = useIssueStore()
+
+onMounted(() => {
+  if (loadingState == LoadingState.Initial)
+    fetch()
 })
 
-const isLoading = computed<boolean>(() => threadsStatus.value !== 'success')
-const loadingType = computed<LoadingType>(() => (isLoading.value ? 'full' : null))
-const threads = computed(() =>
-  expand(apiThreads.value, ['user', 'team', 'vendor']).map(unreadForUserMap(user.value!)),
-)
+const isLoading = computed<boolean>(() => loadingState !== LoadingState.Idle)
+const loadingType = computed<LoadingType>(() => {
+  switch (loadingState) {
+    case LoadingState.Update:
+      return 'partial'
+    case LoadingState.Initial:
+      return 'full'
+    default:
+      return null
+  }
+})
 
 // Filter threads based on the selected tab
-const filteredThreads = computed(() => {
-  if (!threads.value) return []
+const filteredIssues = computed(() => {
+  if (!issues) return []
 
-  if (activeFilter.value !== 'unread') return threads.value
+  if (activeFilter.value !== 'unread') return issues
 
-  return threads.value.filter(
-    thread =>
-      !thread.read
-      && (thread.user?.id == user.value?.id || thread.team?.id == user.value?.team?.id),
-  )
+  // TODO filter
+
+  return issues
 })
-
-function reactToRouteChanges(): void {
-  isPanelOpen.value = route.name !== 'threads'
-
-  if (route.name !== 'threads-id') {
-    selectedThread.value = null
-    return
-  }
-
-  const routeIdAsNumber = parseInt(route.params.id as string, 10)
-  console.log('Selecting thread %o from route', routeIdAsNumber)
-  selectedThread.value = filteredThreads.value.find(thread => thread.id == routeIdAsNumber)
-}
-
-watch([route, apiThreads], reactToRouteChanges)
-onMounted(reactToRouteChanges)
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isMobile = breakpoints.smaller('lg')
@@ -73,38 +57,32 @@ const isMobile = breakpoints.smaller('lg')
     :class="{
       'message-list': true,
       'message-list--mobile': isMobile,
-      'message-list--with-message': selectedThread,
+      'message-list--with-message': activeIssue != null,
     }"
   >
     <UDashboardNavbar title="Meldingen">
       <template #leading>
         <UDashboardSidebarCollapse />
       </template>
-      <template #trailing>
-        <UBadge v-if="!isLoading" :label="filteredThreads.length" variant="subtle" />
-      </template>
-
-      <template #right>
-        <ClientOnly>
-          <UTabs v-model="activeFilter" :content="false" size="xs" />
-        </ClientOnly>
-      </template>
     </UDashboardNavbar>
-    <div class="overflow-y-auto divide-y divide-default">
-      <ThreadsMessageList
-        v-model="selectedThread"
-        :loading-type="loadingType"
-        :threads="filteredThreads"
-      />
+
+    <div class="p-4">
+      Hello World
     </div>
   </UDashboardPanel>
 
-  <NuxtPage @close="router.push('/threads')" />
+  <NuxtPage @close="router.push('/threads')">
+    <div class="p-4">
+      Hello World
+    </div>
+  </NuxtPage>
 
   <ClientOnly>
     <USlideover v-if="isMobile" v-model:open="isPanelOpen" @close="router.push('/threads')">
       <template #content>
-        <NuxtPage @close="router.push('/threads')" />
+        <NuxtPage @close="router.push('/threads')">
+          <ThreadsEmpty />
+        </NuxtPage>
       </template>
     </USlideover>
   </ClientOnly>

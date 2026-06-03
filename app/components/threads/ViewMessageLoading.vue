@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ListThread } from '~/types'
+import type { ListThread } from '../../types'
 
 const { threadId, thread } = defineProps<{
   threadId: number | string
