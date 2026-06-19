@@ -26,7 +26,7 @@ const columnFilters = ref([
 const columnVisibility = ref()
 const rowSelection = ref({1: true})
 
-const {data: apiData, status} = await useFetch<Vendor[]>('/api/vendors', {
+const {data: apiData, status, refesh} = await useFetch<Vendor[]>('/api/vendors', {
   lazy: true,
 })
 
@@ -120,7 +120,8 @@ const columns: TableColumn<Vendor>[] = [
         </template>
 
         <template #right>
-          <VendorsAddModal/>
+          <VendorsAddModal />
+          <VendorsAdminActions @update="refresh()" />
         </template>
       </UDashboardNavbar>
     </template>
