@@ -38,7 +38,7 @@ function getRuntimeConfig() {
         clientId: 'string',
         clientSecret: 'string',
         issuer: 'https://example.com',
-        scopes: ['openid', 'roles', 'profile'],
+        scopes: ['openid', 'groups', 'profile'],
       },
     }
 }

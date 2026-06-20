@@ -1,6 +1,7 @@
 // server/middleware/proxy-useAuth.ts
 import {createError, defineEventHandler} from 'h3'
 import {getAuth} from '#server/lib/auth'
+import {jwtDecode} from "jwt-decode";
 
 const skippedRequestHeaders = [
   'connection',
@@ -19,9 +20,7 @@ export default defineEventHandler(async (event) => {
 
   // 1. Get Configuration
   const config = useRuntimeConfig()
-  const upstreamUrl = config.upstreamUrl
-    ? config.upstreamUrl
-    : 'https://api.logistiek.myvana.dev'
+  const upstreamUrl = config.upstreamUrl || 'https://api.logistiek.myvana.dev'
 
   if (!upstreamUrl) {
     console.warn('No upstream URL configured')
@@ -61,8 +60,12 @@ export default defineEventHandler(async (event) => {
     )
       throw new Error('Token missing or expired')
 
-    // Optionally attach user info to context if needed downstream
+    // Attach access token
     event.context.userToken = token.accessToken
+
+    // Attach ID token if present
+    if (token.idToken)
+      event.context.idToken = token.idToken
   } catch {
     // Access Token has expired, kill the whole session
     await auth.api.revokeSession({
@@ -79,10 +82,13 @@ export default defineEventHandler(async (event) => {
   // 4. Construct Target URL
   const targetUrl = new URL(event.path, upstreamUrl)
 
-  // 5. Prepare Headers
+  // 5. Prepare headers
+  const authToken = (event.context.idToken && (jwtDecode(event.context.idToken)?.exp ?? 0) > (Date.now() / 1000))
+    ? event.context.idToken : event.context.useToken
+
   const upstreamHeaders = new Headers({
     'Accept': 'application/json, text/plain, */*',
-    'Authorization': `Bearer ${event.context.userToken}`,
+    'Authorization': `Bearer ${authToken}`,
     'X-User-Id': event.context.userId,
   })
 
@@ -98,7 +104,6 @@ export default defineEventHandler(async (event) => {
       method: method,
       body: ['GET', 'HEAD'].includes(method) ? undefined : await readBody(event),
     })
-
 
 
     await event.respondWith(response)

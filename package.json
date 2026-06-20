@@ -25,6 +25,7 @@
     "date-fns": "^4.3.0",
     "file-type": "^22.0.1",
     "js-confetti": "^0.13.1",
+    "jwt-decode": "^4.0.0",
     "nuxt": "^4.4.6",
     "pinia": "^3.0.4",
     "yup": "^1.7.1",
