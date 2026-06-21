@@ -1,14 +1,24 @@
 <script lang="ts" setup>
-import type { Team, User } from '../types'
+import type { Team, User } from "../types";
 
 const { user, team, size } = defineProps<{
-  user: User
-  team: Team | undefined
-  size: 'md' | '3xs' | '2xs' | 'xs' | 'sm' | 'lg' | 'xl' | '2xl' | '3xl' | undefined
-}>()
+  user: User;
+  team: Team | undefined;
+  size:
+    | "md"
+    | "3xs"
+    | "2xs"
+    | "xs"
+    | "sm"
+    | "lg"
+    | "xl"
+    | "2xl"
+    | "3xl"
+    | undefined;
+}>();
 
-const teamComputed = computed<Team>(() => team ?? user.team!)
-const colourComputed = computed(() => teamComputed.value.colour ?? 'pink')
+const teamComputed = computed<Team>(() => team ?? user.team!);
+const colourComputed = computed(() => teamComputed.value.colour ?? "pink");
 </script>
 
 <template>

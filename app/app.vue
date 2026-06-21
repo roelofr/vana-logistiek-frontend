@@ -1,19 +1,21 @@
 <script lang="ts" setup>
-const colorMode = useColorMode()
-const color = computed(() => (colorMode.value === 'dark' ? '#1b1718' : 'white'))
+const colorMode = useColorMode();
+const color = computed(() =>
+  colorMode.value === "dark" ? "#1b1718" : "white",
+);
 
 useHead({
-  meta: [{ name: 'theme-color', content: color }],
-})
+  meta: [{ name: "theme-color", content: color }],
+});
 
-const title = 'Penis LogistiekApp'
-const description = 'De app voor Team Logistiek'
+const title = "Penis LogistiekApp";
+const description = "De app voor Team Logistiek";
 
 useSeoMeta({
   title,
   description,
-  robots: 'noindex, nofollow',
-})
+  robots: "noindex, nofollow",
+});
 </script>
 
 <template>

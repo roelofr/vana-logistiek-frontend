@@ -1,3 +1,3 @@
 export function useConfetti() {
-  return useNuxtApp().$confetti
+  return useNuxtApp().$confetti;
 }

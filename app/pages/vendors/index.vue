@@ -1,114 +1,120 @@
 <script lang="ts" setup>
-import type {TableColumn} from '@nuxt/ui'
-import {getPaginationRowModel} from '@tanstack/table-core'
-import type {Vendor} from '../../types'
-import {computed} from 'vue'
-import {VendorAvatar} from '#components'
+import type { TableColumn } from "@nuxt/ui";
+import { getPaginationRowModel } from "@tanstack/table-core";
+import type { Vendor } from "../../types";
+import { computed } from "vue";
+import { VendorAvatar } from "#components";
 
 definePageMeta({
-  middleware: ['auth'],
-})
+  middleware: ["auth"],
+});
 
-const UButton = resolveComponent('UButton')
-const table = useTemplateRef('table')
+const UButton = resolveComponent("UButton");
+const table = useTemplateRef("table");
 
-const filter = ref<string | undefined>('')
+const filter = ref<string | undefined>("");
 const columnFilters = ref([
   {
-    id: 'name',
-    value: '',
+    id: "name",
+    value: "",
   },
   {
-    id: 'number',
-    value: '',
+    id: "number",
+    value: "",
   },
-])
-const columnVisibility = ref()
-const rowSelection = ref({1: true})
+]);
+const columnVisibility = ref();
+const rowSelection = ref({ 1: true });
 
-const {data: apiData, status, refesh} = await useFetch<Vendor[]>('/api/vendors', {
+const {
+  data: apiData,
+  status,
+  refresh,
+} = await useFetch<Vendor[]>("/api/vendors", {
   lazy: true,
-})
+});
 
-const data = computed(() => expand(apiData.value, ['district']))
+const data = computed(() => expand(apiData.value, ["district"]));
 
 const pagination = ref({
   pageIndex: 0,
   pageSize: 10,
-})
+});
 
 const columns: TableColumn<Vendor>[] = [
   {
-    id: 'name',
-    accessorFn: row => `${row.name}`,
-    header: ({column}) => {
-      const isSorted = column.getIsSorted()
+    id: "name",
+    accessorFn: (row) => `${row.name}`,
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
 
       return h(UButton, {
-        color: 'neutral',
-        variant: 'ghost',
-        label: 'Naam',
+        color: "neutral",
+        variant: "ghost",
+        label: "Naam",
         icon: isSorted
-          ? isSorted === 'asc'
-            ? 'i-lucide-arrow-up-narrow-wide'
-            : 'i-lucide-arrow-down-wide-narrow'
-          : 'i-lucide-arrow-up-down',
-        class: '-mx-2.5',
-        onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
-      })
+          ? isSorted === "asc"
+            ? "i-lucide-arrow-up-narrow-wide"
+            : "i-lucide-arrow-down-wide-narrow"
+          : "i-lucide-arrow-up-down",
+        class: "-mx-2.5",
+        onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      });
     },
-    cell: ({row}) => {
-      return h('div', {class: 'flex items-center gap-3'}, [
-        h(VendorAvatar, {vendor: row.original, size: 'lg'}),
-        h('div', undefined, [h('p', {class: 'font-medium text-highlighted'}, row.original.name)]),
-      ])
+    cell: ({ row }) => {
+      return h("div", { class: "flex items-center gap-3" }, [
+        h(VendorAvatar, { vendor: row.original, size: "lg" }),
+        h("div", undefined, [
+          h("p", { class: "font-medium text-highlighted" }, row.original.name),
+        ]),
+      ]);
     },
   },
   {
-    accessorKey: 'number',
-    header: ({column}) => {
-      const isSorted = column.getIsSorted()
+    accessorKey: "number",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
 
       return h(UButton, {
-        color: 'neutral',
-        variant: 'ghost',
-        label: 'Standnummer',
+        color: "neutral",
+        variant: "ghost",
+        label: "Standnummer",
         icon: isSorted
-          ? isSorted === 'asc'
-            ? 'i-lucide-arrow-up-narrow-wide'
-            : 'i-lucide-arrow-down-wide-narrow'
-          : 'i-lucide-arrow-up-down',
-        class: '-mx-2.5',
-        onClick: () => column.toggleSorting(column.getIsSorted() === 'asc'),
-      })
+          ? isSorted === "asc"
+            ? "i-lucide-arrow-up-narrow-wide"
+            : "i-lucide-arrow-down-wide-narrow"
+          : "i-lucide-arrow-up-down",
+        class: "-mx-2.5",
+        onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      });
     },
   },
   {
-    accessorKey: 'district',
-    header: 'Wijk',
-    cell: ({row}) => row.original.district?.name,
+    accessorKey: "district",
+    header: "Wijk",
+    cell: ({ row }) => row.original.district?.name,
   },
   {
-    id: 'actions',
-    cell: ({row}) => {
+    id: "actions",
+    cell: ({ row }) => {
       return h(
-        'div',
-        {class: 'text-right'},
+        "div",
+        { class: "text-right" },
         h(
           UButton,
           {
-            trailingIcon: 'i-lucide-chevron-right',
-            color: 'neutral',
-            variant: 'ghost',
-            class: 'ml-auto',
+            trailingIcon: "i-lucide-chevron-right",
+            color: "neutral",
+            variant: "ghost",
+            class: "ml-auto",
             to: `/vendors/${row.original.id}`,
           },
-          'Bekijken',
+          "Bekijken",
         ),
-      )
+      );
     },
   },
-]
+];
 </script>
 
 <template>
@@ -116,12 +122,12 @@ const columns: TableColumn<Vendor>[] = [
     <template #header>
       <UDashboardNavbar title="Standhouders">
         <template #leading>
-          <UDashboardSidebarCollapse/>
+          <UDashboardSidebarCollapse />
         </template>
 
         <template #right>
           <VendorsAddModal />
-          <VendorsAdminActions @update="refresh()" />
+          <VendorsAdminActions @update="refresh({ cause: 'refresh:manual' })" />
         </template>
       </UDashboardNavbar>
     </template>
@@ -160,15 +166,23 @@ const columns: TableColumn<Vendor>[] = [
         class="shrink-0"
       />
 
-      <div class="flex items-center justify-between gap-3 border-t border-default pt-4 mt-auto">
+      <div
+        class="flex items-center justify-between gap-3 border-t border-default pt-4 mt-auto"
+      >
         <div class="text-sm text-muted">
-          {{ table?.tableApi?.getFilteredSelectedRowModel().rows.length || 0 }} of
-          {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }} row(s) selected.
+          {{
+            table?.tableApi?.getFilteredSelectedRowModel().rows.length || 0
+          }}
+          of
+          {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }} row(s)
+          selected.
         </div>
 
         <div class="flex items-center gap-1.5">
           <UPagination
-            :default-page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
+            :default-page="
+              (table?.tableApi?.getState().pagination.pageIndex || 0) + 1
+            "
             :items-per-page="table?.tableApi?.getState().pagination.pageSize"
             :total="table?.tableApi?.getFilteredRowModel().rows.length"
             @update:page="(p: number) => table?.tableApi?.setPageIndex(p - 1)"

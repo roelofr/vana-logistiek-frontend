@@ -1,22 +1,22 @@
 <script lang="ts" setup>
-import type { DropdownMenuItem } from '@nuxt/ui'
-import type { Member } from '../../types'
+import type { DropdownMenuItem } from "@nuxt/ui";
+import type { Member } from "../../types";
 
 defineProps<{
-  members: Member[]
-}>()
+  members: Member[];
+}>();
 
 const items = [
   {
-    label: 'Edit member',
-    onSelect: () => console.log('Edit member'),
+    label: "Edit member",
+    onSelect: () => console.log("Edit member"),
   },
   {
-    label: 'Remove member',
-    color: 'error' as const,
-    onSelect: () => console.log('Remove member'),
+    label: "Remove member",
+    color: "error" as const,
+    onSelect: () => console.log("Remove member"),
   },
-] satisfies DropdownMenuItem[]
+] satisfies DropdownMenuItem[];
 </script>
 
 <template>
@@ -48,7 +48,11 @@ const items = [
         />
 
         <UDropdownMenu :content="{ align: 'end' }" :items="items">
-          <UButton color="neutral" icon="i-lucide-ellipsis-vertical" variant="ghost" />
+          <UButton
+            color="neutral"
+            icon="i-lucide-ellipsis-vertical"
+            variant="ghost"
+          />
         </UDropdownMenu>
       </div>
     </li>

@@ -1,69 +1,67 @@
 <script setup lang="ts">
-import type {ButtonProps} from "@nuxt/ui/components/Button.vue";
+import type { ButtonProps } from "@nuxt/ui/components/Button.vue";
 
 definePageMeta({
-  middleware: ['guest'],
-})
+  middleware: ["guest"],
+});
 
-const {signIn} = useAuth()
+const { signIn } = useAuth();
 
-const isLoading = ref<boolean>(true)
+const isLoading = ref<boolean>(true);
 
-const requestQuery = useRoute().query
-const userError = ref<string | null>(null)
+const requestQuery = useRoute().query;
+const userError = ref<string | null>(null);
 const errorMessage = computed(() => {
-  if (userError.value)
-    return userError.value
+  if (userError.value) return userError.value;
 
-  const error = requestQuery?.error
-  if (!error) return null
+  const error = requestQuery?.error;
+  if (!error) return null;
 
   switch (error) {
-    case 'please_restart_the_process':
-      return 'De inlogactie is verlopen.'
+    case "please_restart_the_process":
+      return "De inlogactie is verlopen.";
 
-    case 'rejected':
-      return 'Je hebt het inloggen geannuleerd.'
+    case "rejected":
+      return "Je hebt het inloggen geannuleerd.";
 
     default:
-      return `Er is een onbekende fout opgetreden: ${error}.`
+      return `Er is een onbekende fout opgetreden: ${error}.`;
   }
-})
+});
 
-effect(() => (isLoading.value = false))
+effect(() => (isLoading.value = false));
 
 async function doSignIn(): Promise<void> {
   try {
-    isLoading.value = true
-    await signIn()
+    isLoading.value = true;
+    await signIn();
   } catch (err) {
-    userError.value = err instanceof Error ? err.message : 'An unknown error occurred.'
-    isLoading.value = false
+    userError.value =
+      err instanceof Error ? err.message : "An unknown error occurred.";
+    isLoading.value = false;
   }
 }
 
-const providers = computed(() => [
-  {
-    color: 'primary',
-    label: 'Troela Login',
-    onClick: doSignIn,
-    disabled: isLoading.value,
-    icon: 'i-lucide-laugh',
-    size: 'lg',
-  },
-] as ButtonProps[])
-
+const providers = computed(
+  () =>
+    [
+      {
+        color: "primary",
+        label: "Troela Login",
+        onClick: doSignIn,
+        disabled: isLoading.value,
+        icon: "i-lucide-laugh",
+        size: "lg",
+      },
+    ] as ButtonProps[],
+);
 </script>
 
 <template>
-  <UAuthForm
-    :loading="isLoading"
-    :providers="providers"
-    title="Welkom"
-  >
+  <UAuthForm :loading="isLoading" :providers="providers" title="Welkom">
     <template #leading>
       <div class="mb-4 text-center">
-        <Logo/>
+        <Logo />
       </div>
     </template>
     <template #description>
@@ -80,9 +78,7 @@ const providers = computed(() => [
     </template>
 
     <template #footer>
-      <p>
-        Indien je nog geen account hebt, kan je deze aanvragen bij Tessa.
-      </p>
+      <p>Indien je nog geen account hebt, kan je deze aanvragen bij Tessa.</p>
     </template>
   </UAuthForm>
 </template>

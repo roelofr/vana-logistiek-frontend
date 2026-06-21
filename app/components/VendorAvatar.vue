@@ -1,31 +1,41 @@
 <script lang="ts" setup>
-import type { Vendor } from '../types'
+import type { Vendor } from "../types";
 
 const { vendor, size } = defineProps<{
-  vendor: Vendor
-  size: 'md' | '3xs' | '2xs' | 'xs' | 'sm' | 'lg' | 'xl' | '2xl' | '3xl' | undefined
-}>()
+  vendor: Vendor;
+  size:
+    | "md"
+    | "3xs"
+    | "2xs"
+    | "xs"
+    | "sm"
+    | "lg"
+    | "xl"
+    | "2xl"
+    | "3xl"
+    | undefined;
+}>();
 
-const colourComputed = computed(() => vendor?.district?.colour ?? 'zinc')
+const colourComputed = computed(() => vendor?.district?.colour ?? "zinc");
 const iconComputed = computed(() => {
-  const type = vendor?.type?.toLowerCase() ?? 'shop'
+  const type = vendor?.type?.toLowerCase() ?? "shop";
   switch (type) {
-    case 'publisher':
-      return 'i-lucide-book-text'
+    case "publisher":
+      return "i-lucide-book-text";
 
-    case 'food':
-      return 'i-lucide-utensils'
+    case "food":
+      return "i-lucide-utensils";
 
-    case 'entertainment':
-      return 'i-lucide-flame-kindling'
+    case "entertainment":
+      return "i-lucide-flame-kindling";
 
-    case 'art':
-      return 'i-lucide-brush'
+    case "art":
+      return "i-lucide-brush";
 
     default:
-      return 'i-lucide-store'
+      return "i-lucide-store";
   }
-})
+});
 </script>
 
 <template>

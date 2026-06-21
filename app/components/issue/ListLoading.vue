@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { useWindowSize } from '@vueuse/core'
+import { useWindowSize } from "@vueuse/core";
 
-const { height } = useWindowSize()
-const dummyIssues = computed(() => Array(Math.ceil(height.value / 30)).fill(null).map((_, index) => index))
+const { height } = useWindowSize();
+const dummyIssues = computed(() =>
+  Array(Math.ceil(height.value / 30))
+    .fill(null)
+    .map((_, index) => index),
+);
 </script>
 
 <template>
   <div class="overflow-y-auto divide-y divide-default">
-    <div
-      v-for="index in dummyIssues"
-      :key="index"
-    >
+    <div v-for="index in dummyIssues" :key="index">
       <div
         class="p-4 sm:px-6 text-sm cursor-pointer border-l-2 text-toned border-bg"
       >

@@ -1,3 +1,3 @@
-import { getAuth } from './server/lib/auth'
+import { getAuth } from "./server/lib/auth";
 
-export const auth = getAuth()
+export const auth = getAuth();

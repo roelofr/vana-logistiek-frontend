@@ -1,19 +1,22 @@
 <script lang="ts" setup>
-import type { FormSubmitEvent } from '@nuxt/ui'
+import type { FormSubmitEvent } from "@nuxt/ui";
 
-import * as z from 'zod'
-import type { Thread, Vendor } from '../../types'
+import * as z from "zod";
+import type { Thread, Vendor } from "../../types";
 
-const { $api } = useNuxtApp()
-const router = useRouter()
-const route = useRoute()
-const confetti = useConfetti()
+const { $api } = useNuxtApp();
+const router = useRouter();
+const route = useRoute();
+const confetti = useConfetti();
 
-const emits = defineEmits(['close'])
+const emits = defineEmits(["close"]);
 
-const { data: suggestedOptions } = useApi<string[]>('/api/settings/suggested-options', {
-  default: () => ['Bijbestelling', 'Service', 'Techniek', 'Gatorteam'],
-})
+const { data: suggestedOptions } = useApi<string[]>(
+  "/api/settings/suggested-options",
+  {
+    default: () => ["Bijbestelling", "Service", "Techniek", "Gatorteam"],
+  },
+);
 
 const schema = z.object({
   vendor: z.looseObject(
@@ -22,54 +25,58 @@ const schema = z.object({
       name: z.string(),
       number: z.string(),
     },
-    'Standhouder is verplicht',
+    "Standhouder is verplicht",
   ),
   subject: z
-    .string('Onderwerp is verplicht')
-    .min(2, 'Onderwerp moet minimaal 2 tekens zijn')
-    .max(30, 'Onderwerp moet maximaal 30 tekens zijn'),
+    .string("Onderwerp is verplicht")
+    .min(2, "Onderwerp moet minimaal 2 tekens zijn")
+    .max(30, "Onderwerp moet maximaal 30 tekens zijn"),
   message: z.nullish(z.string()),
-})
+});
 
-type Schema = z.output<typeof schema>
+type Schema = z.output<typeof schema>;
 
 const state = reactive<Partial<Schema>>({
   vendor: undefined,
   subject: undefined,
   message: undefined,
-})
+});
 
 useApi<Vendor>(() => `/api/vendors/${route.params?.vendor}`, {
   watch: [() => route.params],
 }).then((vendor) => {
-  console.info('Recieved vendor %o for param ID %s', vendor, route.params.vendor)
-  if (vendor.data) state.vendor = vendor.data as unknown as Schema['vendor']
-})
+  console.info(
+    "Recieved vendor %o for param ID %s",
+    vendor,
+    route.params.vendor,
+  );
+  if (vendor.data) state.vendor = vendor.data as unknown as Schema["vendor"];
+});
 
-const toast = useToast()
+const toast = useToast();
 const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
   try {
-    const data = await $api<Thread>('/api/threads', {
-      method: 'post',
+    const data = await $api<Thread>("/api/threads", {
+      method: "post",
       body: {
         vendorId: state.vendor!.id,
         subject: state.subject,
         message: state.message?.trim() ? state.message : null,
       },
-    })
+    });
 
-    confetti.dispatch()
+    confetti.dispatch();
 
     toast.add({
-      color: 'success',
-      title: 'Melding aangemaakt',
-    })
+      color: "success",
+      title: "Melding aangemaakt",
+    });
 
-    await router.push(`/threads/${data.id}`)
+    await router.push(`/threads/${data.id}`);
   } catch (e) {
-    console.error('Aanmaken melding mislukt: %o', e)
+    console.error("Aanmaken melding mislukt: %o", e);
   }
-}
+};
 </script>
 
 <template>
@@ -104,7 +111,11 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
               @submit="onSubmit"
             >
               <UFormField label="Standhouder" name="vendor" required>
-                <InputsVendorSelect v-model="state.vendor" name="vendor" size="xl" />
+                <InputsVendorSelect
+                  v-model="state.vendor"
+                  name="vendor"
+                  size="xl"
+                />
               </UFormField>
 
               <UFormField
@@ -122,7 +133,9 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
                 />
 
                 <template #help>
-                  <div class="flex flex-row justify-start items-center flex-wrap gap-2">
+                  <div
+                    class="flex flex-row justify-start items-center flex-wrap gap-2"
+                  >
                     <span class="text-sm text-muted"> Suggesties </span>
                     <UButton
                       v-for="value of suggestedOptions"
@@ -153,12 +166,7 @@ const onSubmit = async (_event: FormSubmitEvent<Schema>): Promise<void> => {
                 />
               </UFormField>
 
-              <UButton
-                block
-                size="xl"
-                type="submit"
-                icon="i-lucide-rocket"
-              >
+              <UButton block size="xl" type="submit" icon="i-lucide-rocket">
                 Melding aanmaken
               </UButton>
 

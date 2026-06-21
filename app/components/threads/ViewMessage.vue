@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import type { ListThread, ThreadUpdate } from '../../types'
-import { expand, formattedLocalTime } from '~/utils'
+import type { ListThread, ThreadUpdate } from "../../types";
+import { expand, formattedLocalTime } from "~/utils";
 
 const { thread } = defineProps<{
-  thread: ListThread
-}>()
+  thread: ListThread;
+}>();
 
-const emits = defineEmits(['close'])
+const emits = defineEmits(["close"]);
 
-const reply = ref('')
-const loading = ref(false)
+const reply = ref("");
+const loading = ref(false);
 
 const {
   data: updates,
@@ -18,66 +18,71 @@ const {
 } = useApi<ThreadUpdate[]>(() => `/api/threads/${thread.id}/updates`, {
   lazy: true,
   watch: [() => thread],
-})
+});
 
-const updatesExpanded = computed(() => expand(updates.value, ['user', 'team', 'thread']))
+const updatesExpanded = computed(() =>
+  expand(updates.value, ["user", "team", "thread"]),
+);
 
 const dropdownItems = [
   [
     {
-      label: 'Mark as unread',
-      icon: 'i-lucide-check-circle',
+      label: "Mark as unread",
+      icon: "i-lucide-check-circle",
     },
     {
-      label: 'Mark as important',
-      icon: 'i-lucide-triangle-alert',
+      label: "Mark as important",
+      icon: "i-lucide-triangle-alert",
     },
   ],
   [
     {
-      label: 'Star thread',
-      icon: 'i-lucide-star',
+      label: "Star thread",
+      icon: "i-lucide-star",
     },
     {
-      label: 'Mute thread',
-      icon: 'i-lucide-circle-pause',
+      label: "Mute thread",
+      icon: "i-lucide-circle-pause",
     },
   ],
-]
+];
 
 const reloadUpdatesTimeout = useTimeoutFn(() => {
-  console.info('Updating updates')
-  updatesRefresh()
-}, 2500)
+  console.info("Updating updates");
+  updatesRefresh();
+}, 2500);
 
 watch(
   () => updates,
   () => {
     const hasPendingImages = (updates.value ?? []).find(
-      ({ type, update }) => type == 'Image' && update.fileStatus === 'New',
-    )
+      ({ type, update }) => type == "Image" && update.fileStatus === "New",
+    );
 
-    const isPending = unref(reloadUpdatesTimeout.isPending)
-    if (!hasPendingImages && isPending) reloadUpdatesTimeout.stop()
-    else if (hasPendingImages && !isPending) reloadUpdatesTimeout.start()
+    const isPending = unref(reloadUpdatesTimeout.isPending);
+    if (!hasPendingImages && isPending) reloadUpdatesTimeout.stop();
+    else if (hasPendingImages && !isPending) reloadUpdatesTimeout.start();
   },
-)
+);
 
 watch(
   () => thread,
   () => {
-    reply.value = ''
-    loading.value = false
+    reply.value = "";
+    loading.value = false;
   },
   {
     immediate: false,
   },
-)
+);
 </script>
 
 <template>
   <UDashboardPanel id="inbox-2">
-    <UDashboardNavbar :title="`Melding ${thread?.id ?? thread.id}`" :toggle="false">
+    <UDashboardNavbar
+      :title="`Melding ${thread?.id ?? thread.id}`"
+      :toggle="false"
+    >
       <template #leading>
         <UButton
           class="-ms-1.5"
@@ -98,7 +103,11 @@ watch(
         </UTooltip>
 
         <UDropdownMenu :items="dropdownItems">
-          <UButton color="neutral" icon="i-lucide-ellipsis-vertical" variant="ghost" />
+          <UButton
+            color="neutral"
+            icon="i-lucide-ellipsis-vertical"
+            variant="ghost"
+          />
         </UDropdownMenu>
       </template>
     </UDashboardNavbar>
@@ -129,12 +138,15 @@ watch(
       </div>
 
       <p class="text-muted text-sm sm:mt-2">
-        {{ formattedLocalTime(thread.createdAt, 'dd MMM HH:mm') }}
+        {{ formattedLocalTime(thread.createdAt, "dd MMM HH:mm") }}
       </p>
     </div>
 
     <UScrollArea class="flex-1 p-4 sm:p-6">
-      <ThreadsUpdateList v-if="updatesStatus == 'success'" :updates="updatesExpanded" />
+      <ThreadsUpdateList
+        v-if="updatesStatus == 'success'"
+        :updates="updatesExpanded"
+      />
       <UAlert
         v-else-if="updatesStatus == 'error'"
         color="error"
@@ -143,7 +155,10 @@ watch(
         title="Laden mislukt"
         variant="soft"
       />
-      <div v-else class="my-4 flex flex-row items-center justify-center gap-2 text-dimmed">
+      <div
+        v-else
+        class="my-4 flex flex-row items-center justify-center gap-2 text-dimmed"
+      >
         <UIcon class="animate-spin" name="i-lucide-loader" size="20" />
         <span>Berichten worden opgehaald...</span>
       </div>

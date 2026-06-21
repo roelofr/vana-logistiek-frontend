@@ -1,62 +1,62 @@
 <script lang="ts" setup>
-import type { Thread } from '../../types'
-import type { TabsItem } from '@nuxt/ui/components/Tabs.vue'
-import ReplyToMessage from '~/components/threads/ReplyToMessage.vue'
+import type { Thread } from "../../types";
+import type { TabsItem } from "@nuxt/ui/components/Tabs.vue";
+import ReplyToMessage from "~/components/threads/ReplyToMessage.vue";
 
 const actions: TabsItem[] = [
-  { icon: 'i-lucide-reply', label: 'Reageren' },
-  { icon: 'i-lucide-settings', label: 'Acties' },
-]
+  { icon: "i-lucide-reply", label: "Reageren" },
+  { icon: "i-lucide-settings", label: "Acties" },
+];
 
-const { thread } = defineProps<{ thread: Thread }>()
+const { thread } = defineProps<{ thread: Thread }>();
 
-const emit = defineEmits<{ update: [] }>()
+const emit = defineEmits<{ update: [] }>();
 
-const { $api } = useNuxtApp()
-const toast = useToast()
+const { $api } = useNuxtApp();
+const toast = useToast();
 
-const reply = ref('')
-const loading = ref(false)
-const fileList = ref([])
+const reply = ref("");
+const loading = ref(false);
+const fileList = ref([]);
 
 async function sendMessage() {
-  if (loading.value) return
+  if (loading.value) return;
 
   try {
-    loading.value = true
+    loading.value = true;
 
     await $api(`/api/threads/${thread.id}/message`, {
-      method: 'post',
+      method: "post",
       body: {
         message: reply.value,
         files: fileList,
       },
-    })
+    });
 
     toast.add({
-      color: 'success',
-      title: 'Opgeslagen',
-    })
+      color: "success",
+      title: "Opgeslagen",
+    });
 
-    reply.value = ''
-    await emit('update')
+    reply.value = "";
+    await emit("update");
   } catch (error) {
-    console.error('Fout bij plaatsen comment: %o', error)
+    console.error("Fout bij plaatsen comment: %o", error);
     toast.add({
-      color: 'error',
-      title: 'Toevoegen van opmerking mislukt!',
-    })
+      color: "error",
+      title: "Toevoegen van opmerking mislukt!",
+    });
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 defineShortcuts({
   meta_enter: {
-    usingInput: 'reply-field',
+    usingInput: "reply-field",
     handler: sendMessage,
   },
-})
+});
 </script>
 
 <template>

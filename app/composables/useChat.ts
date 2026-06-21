@@ -1,10 +1,10 @@
-import type { ChatThread } from '~/types'
+import type { ChatThread } from "~/types";
 
 export function useChat() {
-  const { useSession } = useAuth()
+  const { useSession } = useAuth();
 
-  return useFetch<ChatThread>('/api/chat/threads', {
-    method: 'GET',
+  return useFetch<ChatThread>("/api/chat/threads", {
+    method: "GET",
     watch: [() => useSession().value.data],
-  })
+  });
 }

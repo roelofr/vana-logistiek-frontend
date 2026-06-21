@@ -1,19 +1,22 @@
 <script lang="ts" setup>
-import type { ThreadUpdate } from '../../types'
-import { localTime } from '~/utils'
-import { useApiUrl } from '~/composables/useApiUrl'
+import type { ThreadUpdate } from "../../types";
+import { localTime } from "~/utils";
+import { useApiUrl } from "~/composables/useApiUrl";
 
 const { updates } = defineProps<{
-  updates: ThreadUpdate[]
-}>()
+  updates: ThreadUpdate[];
+}>();
 
-const update = computed(() => updates[updates.length - 1]!)
+const update = computed(() => updates[updates.length - 1]!);
 
-const { resolve } = useApiUrl()
+const { resolve } = useApiUrl();
 </script>
 
 <template>
-  <div v-if="update.type == 'System'" class="text-dimmed text-center leading-tight">
+  <div
+    v-if="update.type == 'System'"
+    class="text-dimmed text-center leading-tight"
+  >
     <template v-if="update.updateType == 'Created'">
       {{ update.message.split(update.user.name, 2)[0] }}
       <UserAvatar
@@ -71,13 +74,17 @@ const { resolve } = useApiUrl()
                 :src="src"
                 class="min-w-0 bg-elevated/50 rounded-lg image"
                 v-bind="imgAttrs"
-              >
+              />
 
               <!-- Show skeleton otherwise -->
               <div class="relative">
                 <USkeleton class="image bg-elevated/50 rounded-lg" />
                 <div class="absolute inset-0 flex items-center justify-center">
-                  <UIcon class="animate-spin" name="i-lucide-loader-circle" size="lg" />
+                  <UIcon
+                    class="animate-spin"
+                    name="i-lucide-loader-circle"
+                    size="lg"
+                  />
                 </div>
               </div>
             </NuxtImg>

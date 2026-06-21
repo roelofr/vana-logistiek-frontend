@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import type { ListThread } from '../../types'
+import type { ListThread } from "~/types";
 
 const { threadId, thread } = defineProps<{
-  threadId: number | string
-  thread?: ListThread | null
-}>()
+  threadId: number | string;
+  thread?: ListThread | null;
+}>();
 
-const emits = defineEmits(['close'])
+const emits = defineEmits(["close"]);
 </script>
 
 <template>
   <UDashboardPanel id="inbox-2">
-    <UDashboardNavbar :title="`Melding ${thread?.id ?? threadId}`" :toggle="false">
+    <UDashboardNavbar
+      :title="`Melding ${thread?.id ?? threadId}`"
+      :toggle="false"
+    >
       <template #leading>
         <UButton
           class="-ms-1.5"
@@ -50,7 +53,9 @@ const emits = defineEmits(['close'])
     </div>
 
     <div class="flex-1 p-4 sm:p-6">
-      <div class="my-4 flex flex-row items-center justify-center gap-2 text-dimmed">
+      <div
+        class="my-4 flex flex-row items-center justify-center gap-2 text-dimmed"
+      >
         <UIcon class="animate-spin" name="i-lucide-loader" size="20" />
         <span>Berichten worden opgehaald...</span>
       </div>

@@ -1,50 +1,49 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
-import type { IssueFilter, LoadingType } from '~/types'
-import { breakpointsTailwind } from '@vueuse/core'
+import { computed, ref } from "vue";
+import type { IssueFilter, LoadingType } from "~/types";
+import { breakpointsTailwind } from "@vueuse/core";
 
 definePageMeta({
-  key: 'threads-index',
-  middleware: ['auth'],
-})
+  key: "threads-index",
+  middleware: ["auth"],
+});
 
-const router = useRouter()
+const router = useRouter();
 
-const isPanelOpen = ref(false)
-const activeFilter = ref<IssueFilter>('all')
+const isPanelOpen = ref(false);
+const activeFilter = ref<IssueFilter>("all");
 
-const { activeIssue, issues, loadingState, fetch } = useIssueStore()
+const { activeIssue, issues, loadingState, fetch } = useIssueStore();
 
 onMounted(() => {
-  if (loadingState == LoadingState.Initial)
-    fetch()
-})
+  if (loadingState == LoadingState.Initial) fetch();
+});
 
-const isLoading = computed<boolean>(() => loadingState !== LoadingState.Idle)
+const isLoading = computed<boolean>(() => loadingState !== LoadingState.Idle);
 const loadingType = computed<LoadingType>(() => {
   switch (loadingState) {
     case LoadingState.Update:
-      return 'partial'
+      return "partial";
     case LoadingState.Initial:
-      return 'full'
+      return "full";
     default:
-      return null
+      return null;
   }
-})
+});
 
 // Filter threads based on the selected tab
 const filteredIssues = computed(() => {
-  if (!issues) return []
+  if (!issues) return [];
 
-  if (activeFilter.value !== 'unread') return issues
+  if (activeFilter.value !== "unread") return issues;
 
   // TODO filter
 
-  return issues
-})
+  return issues;
+});
 
-const breakpoints = useBreakpoints(breakpointsTailwind)
-const isMobile = breakpoints.smaller('lg')
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMobile = breakpoints.smaller("lg");
 </script>
 
 <template>
@@ -66,19 +65,19 @@ const isMobile = breakpoints.smaller('lg')
       </template>
     </UDashboardNavbar>
 
-    <div class="p-4">
-      Hello World
-    </div>
+    <div class="p-4">Hello World</div>
   </UDashboardPanel>
 
   <NuxtPage @close="router.push('/threads')">
-    <div class="p-4">
-      Hello World
-    </div>
+    <div class="p-4">Hello World</div>
   </NuxtPage>
 
   <ClientOnly>
-    <USlideover v-if="isMobile" v-model:open="isPanelOpen" @close="router.push('/threads')">
+    <USlideover
+      v-if="isMobile"
+      v-model:open="isPanelOpen"
+      @close="router.push('/threads')"
+    >
       <template #content>
         <NuxtPage @close="router.push('/threads')">
           <ThreadsEmpty />

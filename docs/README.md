@@ -101,4 +101,3 @@ Deze methode checkt of de aanvragende gebruiker lid is van de chat. Als dat niet
 terug.
 
 De afweging tussen beide methoden is voor admins, maar hoe dit in de UI moet worden getoond is niet helemaal duidelijk.
-

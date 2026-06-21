@@ -1,18 +1,20 @@
 <script lang="ts" setup>
-import type { Member } from '../../types'
+import type { Member } from "../../types";
 
-const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [] })
+const { data: members } = await useFetch<Member[]>("/api/members", {
+  default: () => [],
+});
 
-const q = ref('')
+const q = ref("");
 
 const filteredMembers = computed(() => {
   return members.value.filter((member) => {
     return (
-      member.name.search(new RegExp(q.value, 'i')) !== -1
-      || member.username.search(new RegExp(q.value, 'i')) !== -1
-    )
-  })
-})
+      member.name.search(new RegExp(q.value, "i")) !== -1 ||
+      member.username.search(new RegExp(q.value, "i")) !== -1
+    );
+  });
+});
 </script>
 
 <template>

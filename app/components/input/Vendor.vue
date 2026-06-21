@@ -1,71 +1,71 @@
 <script lang="ts" setup>
-import type { Vendor } from '~/types'
-import type { InputMenuItem } from '@nuxt/ui'
-import { expand } from '~/utils'
+import type { Vendor } from "~/types";
+import type { InputMenuItem } from "@nuxt/ui";
+import { expand } from "~/utils";
 
 type InputVendorItem = InputMenuItem & {
-  id: number
-  search: string
-  district: string
-  number: string
-}
+  id: number;
+  search: string;
+  district: string;
+  number: string;
+};
 
 const toNuxtUiList = (vendor: Vendor): InputVendorItem => ({
   id: vendor.id,
-  type: 'item',
+  type: "item",
   label: vendor.name,
   search: `${vendor.number} ${vendor.name}`,
   description: vendor.number,
   district: vendor.district?.name ?? null,
   number: vendor.number,
-})
+});
 
-const vendor = defineModel<Vendor | null | undefined>({ required: true })
-const { defaultId } = defineProps<{ defaultId?: number }>()
+const vendor = defineModel<Vendor | null | undefined>({ required: true });
+const { defaultId = null } = defineProps<{ defaultId?: number }>();
 
 const {
   data: apiVendors,
   status: apiStatus,
   execute: fetchVendors,
-} = useFetch<Vendor[]>('/api/vendors', { immediate: false })
+} = useFetch<Vendor[]>("/api/vendors", { immediate: false });
 
 const vendors = computed(() =>
-  apiVendors.value ? expand(apiVendors.value, ['district']) : [],
-)
-const vendorsMapped = computed(() => vendors.value?.map(toNuxtUiList) ?? [])
+  apiVendors.value ? expand(apiVendors.value, ["district"]) : [],
+);
+const vendorsMapped = computed(() => vendors.value?.map(toNuxtUiList) ?? []);
 const vendorIndexed = computed(
-  () => new Map(vendors.value?.map(v => [v.id, v])),
-)
+  () => new Map(vendors.value?.map((v) => [v.id, v])),
+);
 
 watch(vendors, (newValue, oldValue) => {
   if (
-    oldValue == undefined
-    && newValue != undefined
-    && defaultId
-    && !vendor.value
+    oldValue == undefined &&
+    newValue != undefined &&
+    defaultId &&
+    !vendor.value
   ) {
-    vendor.value = newValue.find(v => v.id === defaultId) ?? null
+    vendor.value = newValue.find((v) => v.id === defaultId) ?? null;
   }
-})
+});
 
 const uiVendor = computed<InputVendorItem | undefined>({
   get() {
-    return vendor.value ? toNuxtUiList(vendor.value) : undefined
+    return vendor.value ? toNuxtUiList(vendor.value) : undefined;
   },
   set(value) {
     if (!value) {
-      vendor.value = null
-      return
+      vendor.value = null;
+      return;
     }
 
-    vendor.value = vendorIndexed.value!.get(value.id) ?? null
+    vendor.value = vendorIndexed.value!.get(value.id) ?? null;
     if (vendor.value == null)
-      console.error('Could not find %o in %o', value.id, vendorIndexed.value)
+      console.error("Could not find %o in %o", value.id, vendorIndexed.value);
   },
-})
+});
 
 function fetchVendorsOnInitialOpen() {
-  if (apiStatus.value == 'idle') fetchVendors()
+  if (apiStatus.value == "idle") fetchVendors();
 }
 </script>
 

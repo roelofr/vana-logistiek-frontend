@@ -1,29 +1,31 @@
 <script setup lang="ts">
-import type { Thread } from '../../types'
+import type { Thread } from "../../types";
 
-const NUMBERS_ONLY = /^[1-9][0-9]*$/
+const NUMBERS_ONLY = /^[1-9][0-9]*$/;
 
 definePageMeta({
   validate({ params }) {
-    return typeof params.id === 'string' && NUMBERS_ONLY.test(params.id)
+    return typeof params.id === "string" && NUMBERS_ONLY.test(params.id);
   },
   keepalive: {
     max: 5,
   },
-})
+});
 
-const threadId = computed(() => useRoute().params.id as string)
+const threadId = computed(() => useRoute().params.id as string);
 
-const ticketStore = useTicketStore()
-onMounted(() => ticketStore.setActiveTicket(Number.parseInt(threadId.value, 10)))
+const ticketStore = useTicketStore();
+onMounted(() =>
+  ticketStore.setActiveTicket(Number.parseInt(threadId.value, 10)),
+);
 
-const closeAction = () => ticketStore.setActiveTicket(null)
+const closeAction = () => ticketStore.setActiveTicket(null);
 
 const {
   data: thread,
   status,
   refresh,
-} = useApi<Thread>(() => `/api/threads/${threadId.value}`, { lazy: true })
+} = useApi<Thread>(() => `/api/threads/${threadId.value}`, { lazy: true });
 </script>
 
 <template>
@@ -61,5 +63,9 @@ const {
     :thread-id="threadId"
     @close="closeAction()"
   />
-  <ThreadsViewMessage v-else-if="thread" :thread="thread" @close="closeAction()" />
+  <ThreadsViewMessage
+    v-else-if="thread"
+    :thread="thread"
+    @close="closeAction()"
+  />
 </template>

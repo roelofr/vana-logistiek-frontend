@@ -1,49 +1,50 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { breakpointsTailwind } from '@vueuse/core'
+import { computed, ref, watch } from "vue";
+import { breakpointsTailwind } from "@vueuse/core";
 
-const { issues, fetch, loadingState, activeIssue } = useIssueStore()
-onMounted(() => loadingState === LoadingState.Initial && fetch())
+const { issues, fetch, loadingState, activeIssue } = useIssueStore();
+onMounted(() => loadingState === LoadingState.Initial && fetch());
 
-const activeFilter = ref('all')
+const activeFilter = ref("all");
 
 // Filter issues based on the selected tab
 const filteredIssues = computed(() => {
-  if (!issues.value)
-    return []
+  if (!issues.value) return [];
 
-  if (activeFilter.value === 'unread') {
-    return issues.value.filter(issue => !!issue.unread)
+  if (activeFilter.value === "unread") {
+    return issues.value.filter((issue) => !!issue.unread);
   }
 
-  return issues.value
-})
+  return issues.value;
+});
 
 const selectedIssue = computed<ListIssue>({
   get: () => activeIssue,
-  set: value => setActiveIssue(value),
-})
+  set: (value) => setActiveIssue(value),
+});
 
 const isMailPanelOpen = computed({
   get() {
-    return !!selectedIssue.value
+    return !!selectedIssue.value;
   },
   set(value: boolean) {
     if (!value) {
-      selectedIssue.value = null
+      selectedIssue.value = null;
     }
   },
-})
+});
 
 // Reset selected issue if it's not in the filtered issues
 watch(filteredIssues, () => {
-  if (!filteredIssues.value.find(issue => issue.id === selectedIssue.value?.id)) {
-    selectedIssue.value = null
+  if (
+    !filteredIssues.value.find((issue) => issue.id === selectedIssue.value?.id)
+  ) {
+    selectedIssue.value = null;
   }
-})
+});
 
-const breakpoints = useBreakpoints(breakpointsTailwind)
-const isMobile = breakpoints.smaller('lg')
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMobile = breakpoints.smaller("lg");
 </script>
 
 <template>
@@ -69,7 +70,11 @@ const isMobile = breakpoints.smaller('lg')
     <IssueList v-model="selectedIssue" :issues="filteredIssues" />
   </UDashboardPanel>
 
-  <IssueBody v-if="selectedIssue" :issue="selectedIssue" @close="selectedIssue = null" />
+  <IssueBody
+    v-if="selectedIssue"
+    :issue="selectedIssue"
+    @close="selectedIssue = null"
+  />
   <div v-else class="hidden lg:flex flex-1 items-center justify-center">
     <UIcon name="i-lucide-inbox" class="size-32 text-dimmed" />
   </div>
@@ -77,7 +82,11 @@ const isMobile = breakpoints.smaller('lg')
   <ClientOnly>
     <USlideover v-if="isMobile" v-model:open="isMailPanelOpen">
       <template #content>
-        <IssueBody v-if="selectedMail" :issue="selectedMail" @close="selectedMail = null" />
+        <IssueBody
+          v-if="selectedMail"
+          :issue="selectedMail"
+          @close="selectedMail = null"
+        />
       </template>
     </USlideover>
   </ClientOnly>

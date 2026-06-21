@@ -1,74 +1,75 @@
 // server/lib/auth.ts
-import type { Auth } from 'better-auth'
-import { betterAuth } from 'better-auth'
-import { genericOAuth } from 'better-auth/plugins'
-import Database from 'better-sqlite3'
+import type { Auth } from "better-auth";
+import { betterAuth } from "better-auth";
+import { genericOAuth } from "better-auth/plugins";
+import Database from "better-sqlite3";
 
 // We export a factory function or a singleton.
 // For Nuxt, a singleton initialized once is usually best.
-let authInstance: Auth<any> | undefined // eslint-disable-line @typescript-eslint/no-explicit-any
+let authInstance: Auth<any> | undefined; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 export function getAuth() {
-  if (authInstance) return authInstance
+  if (authInstance) return authInstance;
 
-  authInstance = betterAuth(getAuthConfig())
+  authInstance = betterAuth(getAuthConfig());
 
-  return authInstance
+  return authInstance;
 }
 
 const createSecret = (bytes: number): string => {
-  const data = new Uint8Array(bytes)
-  crypto.getRandomValues(data)
+  const data = new Uint8Array(bytes);
+  crypto.getRandomValues(data);
   return Array.from(data)
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('')
-}
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+};
 
 function getRuntimeConfig() {
-  return (typeof useRuntimeConfig === 'function')
+  return typeof useRuntimeConfig === "function"
     ? useRuntimeConfig()
     : {
-      authBase: 'http://localhost:3000',
-      authSecret: createSecret(32),
-      authCache: {
-        version: '1',
-        maxAge: 300,
-      },
-      pocketId: {
-        clientId: 'string',
-        clientSecret: 'string',
-        issuer: 'https://example.com',
-        scopes: ['openid', 'groups', 'profile'],
-      },
-    }
+        authBase: "http://localhost:3000",
+        authSecret: createSecret(32),
+        authCache: {
+          version: "1",
+          maxAge: 300,
+        },
+        pocketId: {
+          clientId: "string",
+          clientSecret: "string",
+          issuer: "https://example.com",
+          scopes: ["openid", "groups", "profile"],
+        },
+      };
 }
 
 function buildBaseUrl(baseUrl: string) {
-  const baseUrls = process.env.BETTER_AUTH_ORIGINS ?? ''
-  if (!baseUrls)
-    return process.env.BETTER_AUTH_URL || baseUrl
+  const baseUrls = process.env.BETTER_AUTH_ORIGINS ?? "";
+  if (!baseUrls) return process.env.BETTER_AUTH_URL || baseUrl;
 
-  const origins = baseUrls.split(',').map(origin => new URL(origin.trim()))
+  const origins = baseUrls.split(",").map((origin) => new URL(origin.trim()));
 
   return {
-    allowedHosts: origins.map(origin => origin.port ? `${origin.hostname}:${origin.port}` : origin.hostname),
-    protocol: origins[0]!.protocol.replace(/:$/, ''),
+    allowedHosts: origins.map((origin) =>
+      origin.port ? `${origin.hostname}:${origin.port}` : origin.hostname,
+    ),
+    protocol: origins[0]!.protocol.replace(/:$/, ""),
     fallback: baseUrl ?? origins[0]!.origin,
-  }
+  };
 }
 
 export function getAuthConfig() {
-  const config = getRuntimeConfig()
-  const baseUrlConfig = buildBaseUrl(config.authBase)
+  const config = getRuntimeConfig();
+  const baseUrlConfig = buildBaseUrl(config.authBase);
 
   return {
-    appName: 'Penis Logistiekapp',
+    appName: "Penis Logistiekapp",
 
     baseUrl: baseUrlConfig,
     secret: process.env.BETTER_AUTH_SECRET || config.authSecret,
 
     // Use SQLite for storage
-    database: new Database('data/database.sqlite'),
+    database: new Database("data/database.sqlite"),
 
     // Session configuration
     session: {
@@ -77,7 +78,7 @@ export function getAuthConfig() {
 
       cookieCache: {
         enabled: true,
-        version: config.authCache.version ?? '1',
+        version: config.authCache.version ?? "1",
         maxAge: 30, // 30 seconds
       },
     },
@@ -85,7 +86,7 @@ export function getAuthConfig() {
     // Error page formatting
     onAPIError: {
       throw: true,
-      errorURL: '/auth/login',
+      errorURL: "/auth/login",
     },
 
     // OpenID plugin
@@ -93,15 +94,18 @@ export function getAuthConfig() {
       genericOAuth({
         config: [
           {
-            providerId: 'pocket',
+            providerId: "pocket",
             clientId: config.pocketId.clientId,
             clientSecret: config.pocketId.clientSecret,
-            discoveryUrl: new URL('/.well-known/openid-configuration', config.pocketId.issuer).toString(),
+            discoveryUrl: new URL(
+              "/.well-known/openid-configuration",
+              config.pocketId.issuer,
+            ).toString(),
             scopes: config.pocketId.scopes,
             pkce: true,
           },
         ],
       }),
     ],
-  }
+  };
 }

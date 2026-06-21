@@ -1,21 +1,21 @@
 <script lang="ts" setup>
-import type { DropdownMenuItem } from '@nuxt/ui'
+import type { DropdownMenuItem } from "@nuxt/ui";
 
 definePageMeta({
-  middleware: ['auth'],
-})
+  middleware: ["auth"],
+});
 
-const { user } = useAuth()
+// const { user } = useAuth()
 
 const items = [
   [
     {
-      label: 'Nieuwe melding',
-      icon: 'i-lucide-send',
-      to: '/threads/create',
+      label: "Nieuwe melding",
+      icon: "i-lucide-send",
+      to: "/threads/create",
     },
   ],
-] satisfies DropdownMenuItem[][]
+] satisfies DropdownMenuItem[][];
 </script>
 
 <template>

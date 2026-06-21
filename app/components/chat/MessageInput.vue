@@ -1,45 +1,45 @@
 <script lang="ts" setup>
-const { disabled } = defineProps<{ disabled: boolean }>()
-const emit = defineEmits<{ send: [string, FileList] }>()
+const { disabled } = defineProps<{ disabled: boolean }>();
+const emit = defineEmits<{ send: [string, FileList] }>();
 
 const {
   files,
   open: fileOpen,
   reset: fileReset,
 } = useFileDialog({
-  accept: 'image/*',
+  accept: "image/*",
   directory: false,
-})
+});
 
-const reply = ref('')
+const reply = ref("");
 
 function reset() {
-  reply.value = ''
-  fileReset()
+  reply.value = "";
+  fileReset();
 }
 
-defineExpose({ reset })
+defineExpose({ reset });
 
 async function sendMessage() {
-  if (disabled) return
+  if (disabled) return;
 
-  emit('send', reply.value, (files.value ?? []) as FileList)
+  emit("send", reply.value, (files.value ?? []) as FileList);
 }
 
 function addFiles() {
-  const initialFiles = files.value
+  const initialFiles = files.value;
   fileOpen({
     initialFiles: initialFiles ?? [],
     multiple: true,
-  })
+  });
 }
 
 defineShortcuts({
   meta_enter: {
-    usingInput: 'reply-field',
+    usingInput: "reply-field",
     handler: sendMessage,
   },
-})
+});
 </script>
 
 <template>

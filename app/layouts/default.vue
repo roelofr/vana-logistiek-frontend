@@ -1,78 +1,78 @@
 <script lang="ts" setup>
-import type { NavigationMenuItem } from '@nuxt/ui'
+import type { NavigationMenuItem } from "@nuxt/ui";
 
-const menuOpen = ref(false)
+const menuOpen = ref(false);
 const closeMenu = () => {
-  menuOpen.value = false
-}
+  menuOpen.value = false;
+};
 
-const confetti = useConfetti()
+const confetti = useConfetti();
 
 const links = [
   [
     {
-      label: 'Start',
-      icon: 'i-lucide-house',
-      to: '/',
+      label: "Start",
+      icon: "i-lucide-house",
+      to: "/",
       onSelect: closeMenu,
     },
     {
-      label: 'Meldingen',
-      icon: 'i-lucide-inbox',
-      to: '/issues',
+      label: "Meldingen",
+      icon: "i-lucide-inbox",
+      to: "/issues",
       exact: false,
-      exactQuery: 'partial',
+      exactQuery: "partial",
       onSelect: closeMenu,
     },
     {
-      label: 'Standhouders',
-      icon: 'i-lucide-store',
-      to: '/vendors',
+      label: "Standhouders",
+      icon: "i-lucide-store",
+      to: "/vendors",
       exact: false,
-      exactQuery: 'partial',
+      exactQuery: "partial",
       onSelect: closeMenu,
     },
     {
-      label: 'Instellingen',
-      to: '/settings',
-      icon: 'i-lucide-settings',
+      label: "Instellingen",
+      to: "/settings",
+      icon: "i-lucide-settings",
       defaultOpen: true,
-      type: 'trigger',
+      type: "trigger",
       children: [
         {
-          label: 'Profiel',
-          to: '/settings',
+          label: "Profiel",
+          to: "/settings",
           exact: true,
           onSelect: closeMenu,
         },
         {
-          label: 'Gebruikers',
-          to: '/settings/users',
+          label: "Gebruikers",
+          to: "/settings/users",
           onSelect: closeMenu,
         },
       ],
     },
     {
-      label: 'Systeem',
-      to: '/admin',
-      icon: 'i-lucide-settings',
+      label: "Systeem",
+      to: "/admin",
+      icon: "i-lucide-settings",
       defaultOpen: true,
-      type: 'trigger',
+      type: "trigger",
       children: [
         {
-          label: 'Algemeen',
-          to: '/admin',
+          label: "Algemeen",
+          to: "/admin",
           exact: true,
           onSelect: closeMenu,
         },
         {
-          label: 'Wijken',
-          to: '/admin/districts',
+          label: "Wijken",
+          to: "/admin/districts",
           onSelect: closeMenu,
         },
         {
-          label: 'Gebruikers',
-          to: '/admin/users',
+          label: "Gebruikers",
+          to: "/admin/users",
           onSelect: closeMenu,
         },
       ],
@@ -80,32 +80,32 @@ const links = [
   ],
   [
     {
-      label: 'Feest',
-      icon: 'i-lucide-party-popper',
-      type: 'trigger',
-      onSelect: () => confetti.dispatch('dino'),
+      label: "Feest",
+      icon: "i-lucide-party-popper",
+      type: "trigger",
+      onSelect: () => confetti.dispatch("dino"),
     },
     {
-      label: 'Emotional Support',
-      icon: 'i-lucide-info',
-      to: 'https://pornhub.com/',
-      target: '_blank',
+      label: "Emotional Support",
+      icon: "i-lucide-info",
+      to: "https://pornhub.com/",
+      target: "_blank",
     },
   ],
-] satisfies NavigationMenuItem[][]
+] satisfies NavigationMenuItem[][];
 
 const groups = computed(() => [
   {
-    id: 'links',
-    label: 'Snel naar...',
+    id: "links",
+    label: "Snel naar...",
     items: links.flat(),
   },
-])
+]);
 
-const showCreateIssue = ref(false)
+const showCreateIssue = ref(false);
 const createIssue = () => {
-  showCreateIssue.value = true
-}
+  showCreateIssue.value = true;
+};
 </script>
 
 <template>

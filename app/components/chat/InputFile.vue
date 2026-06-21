@@ -1,38 +1,40 @@
 <script lang="ts" setup>
-import type { AvatarProps } from '#ui/components/Avatar.vue'
+import type { AvatarProps } from "#ui/components/Avatar.vue";
 
-const { file } = defineProps<{ file: File }>()
-const emit = defineEmits<{ remove: [] }>()
+const { file } = defineProps<{ file: File }>();
+const emit = defineEmits<{ remove: [] }>();
 
-const thumbnail = ref<string | null>(null)
+const thumbnail = ref<string | null>(null);
 
 const avatar = computed(
   () =>
     ({
-      ...(thumbnail.value ? { src: thumbnail.value } : { icon: 'i-lucide-paperclip' }),
+      ...(thumbnail.value
+        ? { src: thumbnail.value }
+        : { icon: "i-lucide-paperclip" }),
       ui: {
-        root: 'rounded-sm',
+        root: "rounded-sm",
       },
     }) as AvatarProps,
-)
+);
 
 onMounted(async () => {
-  if (!file) return
+  if (!file) return;
 
   const bitmap = await createImageBitmap(file, {
-    imageOrientation: 'from-image',
+    imageOrientation: "from-image",
     resizeHeight: 64,
     resizeWidth: 64,
-    resizeQuality: 'medium',
-  })
+    resizeQuality: "medium",
+  });
 
-  const canvas = new OffscreenCanvas(bitmap.width, bitmap.height)
-  const renderer = canvas.getContext('bitmaprenderer')
-  renderer?.transferFromImageBitmap(bitmap)
+  const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+  const renderer = canvas.getContext("bitmaprenderer");
+  renderer?.transferFromImageBitmap(bitmap);
 
-  const blob = await canvas.convertToBlob({ type: 'image/webp' })
-  thumbnail.value = URL.createObjectURL(blob).toString()
-})
+  const blob = await canvas.convertToBlob({ type: "image/webp" });
+  thumbnail.value = URL.createObjectURL(blob).toString();
+});
 </script>
 
 <template>

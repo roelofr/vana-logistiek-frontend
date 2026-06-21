@@ -39,7 +39,7 @@ jobs:
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v4.5.0
         with:
-          versionSpec: '6.5.x'
+          versionSpec: "6.5.x"
 
       - name: Determine Version
         id: version_step
@@ -62,7 +62,7 @@ jobs:
       - name: Set up Node LTS
         uses: actions/setup-node@v6
         with:
-          node-version: 'lts/*'
+          node-version: "lts/*"
           cache: npm
           cache-dependency-path: package-lock.json
 

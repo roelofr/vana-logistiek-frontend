@@ -1,37 +1,37 @@
 <script lang="ts" setup>
-import type { DropdownMenuItem } from '@nuxt/ui'
+import type { DropdownMenuItem } from "@nuxt/ui";
 
 defineProps<{
-  collapsed?: boolean
-}>()
+  collapsed?: boolean;
+}>();
 
-const { user, isLoading, signOut } = useAuth()
+const { user, isLoading, signOut } = useAuth();
 
-const userPending = computed(() => isLoading.value && user.value == null)
-const menuDisabled = computed(() => user.value == null)
+const userPending = computed(() => isLoading.value && user.value == null);
+const menuDisabled = computed(() => user.value == null);
 
 const items = computed<DropdownMenuItem[][]>(() => [
   [
     {
-      type: 'label',
+      type: "label",
       label: user.value?.name,
     },
   ],
   [
     {
-      label: 'Profiel',
-      icon: 'i-lucide-user',
+      label: "Profiel",
+      icon: "i-lucide-user",
     },
     {
-      label: 'Uitloggen',
-      icon: 'i-lucide-log-out',
+      label: "Uitloggen",
+      icon: "i-lucide-log-out",
       onClick: async () => {
-        await signOut()
-        reloadNuxtApp()
+        await signOut();
+        reloadNuxtApp();
       },
     },
   ],
-])
+]);
 </script>
 
 <template>
@@ -39,7 +39,9 @@ const items = computed<DropdownMenuItem[][]>(() => [
     :content="{ align: 'center', collisionPadding: 12 }"
     :disabled="menuDisabled"
     :items="items"
-    :ui="{ content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)' }"
+    :ui="{
+      content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)',
+    }"
   >
     <UButton
       :square="collapsed"
@@ -50,7 +52,8 @@ const items = computed<DropdownMenuItem[][]>(() => [
       class="data-[state=open]:bg-elevated"
       color="neutral"
       v-bind="{
-        trailingIcon: collapsed || userPending ? undefined : 'i-lucide-chevrons-up-down',
+        trailingIcon:
+          collapsed || userPending ? undefined : 'i-lucide-chevrons-up-down',
       }"
       variant="ghost"
     >
@@ -64,7 +67,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
           alt="Profielfoto"
           class="h-6 w-6"
         />
-        {{ user?.name ?? 'Onbekende gebruiker' }}
+        {{ user?.name ?? "Onbekende gebruiker" }}
       </span>
     </UButton>
 

@@ -1,11 +1,11 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 const { chatId, showHeader = true } = defineProps<{
-  chatId: number
-  showHeader?: boolean
-}>()
+  chatId: number;
+  showHeader?: boolean;
+}>();
 
-effect(() => console.info('Chat Id = %o', chatId))
+effect(() => console.info("Chat Id = %o", chatId));
 </script>
 
 <template>

@@ -1,47 +1,52 @@
 <script setup lang="ts">
-import { format, isToday } from 'date-fns'
-import type { Issue } from '~/types'
+import { format, isToday } from "date-fns";
+import type { Issue } from "~/types";
 
 const props = defineProps<{
-  issues: Issue[]
-}>()
+  issues: Issue[];
+}>();
 
-const issuesRefs = ref<Record<number, Element | null>>({})
+const issuesRefs = ref<Record<number, Element | null>>({});
 
-const selectedIssue = defineModel<Issue | null>()
+const selectedIssue = defineModel<Issue | null>();
 
 watch(selectedIssue, () => {
   if (!selectedIssue.value) {
-    return
+    return;
   }
-  const ref = issuesRefs.value[selectedIssue.value.id]
+  const ref = issuesRefs.value[selectedIssue.value.id];
   if (ref) {
-    ref.scrollIntoView({ block: 'nearest' })
+    ref.scrollIntoView({ block: "nearest" });
   }
-})
+});
 
 defineShortcuts({
   arrowdown: () => {
-    const index = props.issues.findIndex((issue: Issue) => issue.id === selectedIssue.value?.id)
+    const index = props.issues.findIndex(
+      (issue: Issue) => issue.id === selectedIssue.value?.id,
+    );
 
     if (index === -1) {
-      selectedIssue.value = props.issues[0]
+      selectedIssue.value = props.issues[0];
     } else if (index < props.issues.length - 1) {
-      selectedIssue.value = props.issues[index + 1]
+      selectedIssue.value = props.issues[index + 1];
     }
   },
   arrowup: () => {
-    const index = props.issues.findIndex((issue: Issue) => issue.id === selectedIssue.value?.id)
+    const index = props.issues.findIndex(
+      (issue: Issue) => issue.id === selectedIssue.value?.id,
+    );
 
     if (index === -1) {
-      selectedIssue.value = props.issues[props.issues.length - 1]
+      selectedIssue.value = props.issues[props.issues.length - 1];
     } else if (index > 0) {
-      selectedIssue.value = props.issues[index - 1]
+      selectedIssue.value = props.issues[index - 1];
     }
   },
-})
+});
 
-const formatDate = (date: Date) => isToday(date) ? format(date, 'HH:mm') : format(date, 'dd MMM HH:mm')
+const formatDate = (date: Date) =>
+  isToday(date) ? format(date, "HH:mm") : format(date, "dd MMM HH:mm");
 </script>
 
 <template>
@@ -57,19 +62,26 @@ const formatDate = (date: Date) => isToday(date) ? format(date, 'HH:mm') : forma
       v-for="(issue, index) in issues"
       v-else
       :key="index"
-      :ref="(el) => { issuesRefs[issue.id] = el as Element | null }"
+      :ref="
+        (el) => {
+          issuesRefs[issue.id] = el as Element | null;
+        }
+      "
     >
       <div
         class="p-4 sm:px-6 text-sm cursor-pointer border-l-2 transition-colors"
         :class="[
-          issue.read ?'text-toned' : 'text-highlighted',
+          issue.read ? 'text-toned' : 'text-highlighted',
           selectedIssue && selectedIssue.id === issue.id
             ? 'border-primary bg-primary/10'
             : 'border-bg hover:border-primary hover:bg-primary/5',
         ]"
         @click="selectedIssue = issue"
       >
-        <div class="flex items-center justify-between" :class="{ 'font-semibold': !issue.read }">
+        <div
+          class="flex items-center justify-between"
+          :class="{ 'font-semibold': !issue.read }"
+        >
           <div class="flex items-center gap-3">
             {{ issue.vendor?.name ?? issue.user }}
 
@@ -81,9 +93,7 @@ const formatDate = (date: Date) => isToday(date) ? format(date, 'HH:mm') : forma
         <p class="truncate" :class="{ 'font-semibold': !issue.read }">
           {{ issue.subject }}
         </p>
-        <p class="text-dimmed line-clamp-1">
-          Tagline
-        </p>
+        <p class="text-dimmed line-clamp-1">Tagline</p>
       </div>
     </div>
   </div>
