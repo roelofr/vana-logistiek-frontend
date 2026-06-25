@@ -34,47 +34,41 @@ export interface Vendor {
   name: string;
   number: string;
   type: string;
-  district?: Only<"id" | "name", District>;
+  district?: Pick<District, "id" | "name">;
 }
 
-export interface Issue {
-  id: number;
-  subject: string;
-  read: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  resolvedAt: null | Date;
-  vendor: Vendor | null;
-  user: User;
-  group: Group;
-  assignedUser: null | User;
-  assignedGroup: null | Group;
+export type ChatType = "regular" | "group" | "issue"
+
+export type ChatState ="active" | "permanent" | "closed"
+
+export interface Chat {
+  id: number
+  title: string
+  type: string
+  state: string
+  users: Pick<User,"id" | "name">;
+  groups: Pick<Group, "id" | "name">;
+  createdAt: Date
+  updatedAt: Date
 }
 
-export type ListIssue = Only<
-  | "id"
-  | "subject"
-  | "createdAt"
-  | "updatedAt"
-  | "resolvedAt"
-  | "vendor"
-  | "user"
-  | "group",
-  Issue
->;
+export type ListChat = Omit<Chat, "users" | "groups">;
 
 export type IssueUpdateType = "System" | "Chat" | "Image" | "Resolved";
 
-export interface IssueUpdate {
+export interface ChatEntry {
   id: number;
+  chat: Pick<Chat, "id">;
+  createdAt: Date;
+
   message: string;
   type: IssueUpdateType;
   updateType: string;
   date: Date;
   me: boolean;
-  user: null | Only<"id" | "name", User>;
-  group: null | Only<"id" | "name", Group>;
-  thread: Only<"id", Issue>;
+  user: null | Pick<User, "id" | "name">;
+  group: null | Pick<Group, "id" | "name">;
+  thread: Pick<Issue, "id">;
   update: {
     id: number;
     groupKey: string;
