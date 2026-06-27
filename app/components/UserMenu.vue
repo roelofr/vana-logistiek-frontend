@@ -5,16 +5,16 @@ defineProps<{
   collapsed?: boolean;
 }>();
 
-const { user, isLoading, signOut } = useAuth();
+const { loggedIn, logout, user, name, avatar} = useSession()
 
-const userPending = computed(() => isLoading.value && user.value == null);
-const menuDisabled = computed(() => user.value == null);
+const userPending = computed(() => !user.value);
+const menuDisabled = computed(() => !loggedIn || user.value == null);
 
 const items = computed<DropdownMenuItem[][]>(() => [
   [
     {
       type: "label",
-      label: user.value?.name,
+      label: user.value?.userName,
     },
   ],
   [
@@ -26,8 +26,8 @@ const items = computed<DropdownMenuItem[][]>(() => [
       label: "Uitloggen",
       icon: "i-lucide-log-out",
       onClick: async () => {
-        await signOut();
-        reloadNuxtApp();
+        const redirectUrl = new URL('/', document.location.origin).toString();
+        await logout('oidc', redirectUrl);
       },
     },
   ],
@@ -63,11 +63,12 @@ const items = computed<DropdownMenuItem[][]>(() => [
       </div>
       <span v-else class="flex items-center gap-2">
         <UAvatar
-          :src="user?.image ?? undefined"
-          alt="Profielfoto"
+          :src="avatar"
+          :alt="name"
           class="h-6 w-6"
+          loading="lazy"
         />
-        {{ user?.name ?? "Onbekende gebruiker" }}
+        {{ name ?? "Onbekende gebruiker" }}
       </span>
     </UButton>
 

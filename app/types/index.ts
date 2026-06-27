@@ -92,4 +92,5 @@ export interface ChatIssue {
   type: ChatIssueType;
 }
 
-export type ConfettiVariant = "normal" | "dino";
+export {type ConfettiVariant} from '~/plugins/confetti.client'
+

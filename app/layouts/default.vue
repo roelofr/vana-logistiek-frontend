@@ -17,9 +17,9 @@ const links = [
       onSelect: closeMenu,
     },
     {
-      label: "Meldingen",
+      label: "Inbox",
       icon: "i-lucide-inbox",
-      to: "/issues",
+      to: "/inbox",
       exact: false,
       exactQuery: "partial",
       onSelect: closeMenu,
@@ -75,6 +75,11 @@ const links = [
           to: "/admin/users",
           onSelect: closeMenu,
         },
+        {
+          label: "Sessie",
+          to: "/janken",
+          onSelect: closeMenu,
+        },
       ],
     },
   ],
@@ -84,6 +89,12 @@ const links = [
       icon: "i-lucide-party-popper",
       type: "trigger",
       onSelect: () => confetti.dispatch("dino"),
+    },
+    {
+      label: "Noodknop",
+      icon: "i-lucide-rainbow",
+      type: "trigger",
+      onSelect: () => confetti.dispatch("gay"),
     },
     {
       label: "Emotional Support",

@@ -8,6 +8,8 @@ function env<T>(
   return defaultValue;
 }
 
+const authUrl = (path: string): string => new URL(path, 'https://login.troela.fun').toString();
+
 export default defineNuxtConfig({
   modules: [
     "@nuxt/eslint",
@@ -16,7 +18,7 @@ export default defineNuxtConfig({
     "@nuxt/ui",
     "@vueuse/nuxt",
     "@pinia/nuxt",
-    "./server/modules/better-auth-migrate",
+    "nuxt-oidc-auth"
   ],
 
   $development: {
@@ -45,6 +47,37 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/main.css"],
 
+  // OpenID
+  oidc: {
+    enabled: true,
+    defaultProvider: 'oidc',
+    providers: {
+      oidc: {
+        clientId: 'logistiek-nuxt-dev',
+        clientSecret: '',
+        redirectUri: 'http://localhost:3000/auth/oidc/callback',
+        authorizationUrl: authUrl('/authorize'),
+        logoutUrl: authUrl('/api/oidc/end-session'),
+        tokenUrl: authUrl('/api/oidc/token'),
+        userInfoUrl: authUrl('/api/oidc/userinfo'),
+        openIdConfiguration: authUrl('/.well-known/openid-configuration'),
+        scope: ['openid', 'email', 'profile', 'groups'],
+        pkce: true,
+        state: true,
+        exposeAccessToken: true,
+        exposeIdToken: true,
+      }
+    },
+    session: {
+      expirationCheck: true,
+      automaticRefresh: true,
+      expirationThreshold: 3600,
+    },
+    middleware: {
+      globalMiddlewareEnabled: false,
+    }
+  },
+
   runtimeConfig: {
     upstreamUrl: env("UPSTREAM_URL", "https://api.logistiek.myvana.dev"),
     authBase: env("BETTER_AUTH_URL", "http://localhost:3000"),
@@ -52,14 +85,6 @@ export default defineNuxtConfig({
     authCache: {
       version: "1",
       maxAge: 300, // Seconds
-    },
-    pocketId: {
-      issuer: env("POCKET_SERVER", "https://login.troela.fun"),
-      clientId: env("POCKET_CLIENT_ID", "logistiek-nuxt-dev"),
-      clientSecret: env("POCKET_CLIENT_SECRET", "secret"),
-      scopes: env("POCKET_SCOPES", ["email", "profile", "groups"], (value) =>
-        value.split(",").map((scope) => scope.trim()),
-      ),
     },
     public: {
       // noop
@@ -69,6 +94,12 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-12-20",
 
   nitro: {
+    storage: { // Use local file system storage for dev quick setup
+      oidc: {
+        driver: 'fs',
+        base: 'storage/oidc',
+      },
+    },
     hooks: {
       "prerender:generate"(route) {
         const routesToSkip = ["/200.html"];
