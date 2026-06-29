@@ -6,7 +6,7 @@ const confettiTypes: Record<string, IAddConfettiConfig[]> = {
   dino: [
     {confettiNumber: 100},
     {
-      emojis: ["🦖", "🦕", "🌴"],
+      emojis: ["🦖", "🦕", "🌴", "🐸", "🐔"],
       confettiNumber: 20,
     }
   ],
