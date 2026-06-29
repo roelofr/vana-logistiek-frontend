@@ -68,7 +68,6 @@ export interface ChatEntry {
   me: boolean;
   user: null | Pick<User, "id" | "name">;
   group: null | Pick<Group, "id" | "name">;
-  thread: Pick<Issue, "id">;
   update: {
     id: number;
     groupKey: string;

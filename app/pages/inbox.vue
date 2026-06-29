@@ -1,43 +1,43 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { breakpointsTailwind } from "@vueuse/core";
+import {computed, ref, watch} from "vue";
+import {breakpointsTailwind} from "@vueuse/core";
+import type {Chat, ListChat} from "~/types";
 
-const { issues, fetch, loadingState, activeIssue } = useIssueStore();
-onMounted(() => loadingState === LoadingState.Initial && fetch());
+const {data, pending, refresh} = useLazyFetch<{ chats: ListChat[] }>("/api/chats");
+const chats = computed<ListChat[]>(() => (data.value?.chats ?? [])
+  .map(chat => ({
+    ...chat,
+    createdAt: new Date(chat.createdAt),
+    updatedAt: new Date(chat.updatedAt),
+  })))
 
 const activeFilter = ref("all");
 
 // Filter issues based on the selected tab
-const filteredIssues = computed(() => {
-  if (!issues.value) return [];
+const filteredChats = computed<ListChat[]>(() => {
+  if (!chats.value)
+    return [];
+  else if (activeFilter.value === "unread")
+    return chats.value.filter(() => false);
+  else
+    return chats.value;
+})
 
-  if (activeFilter.value === "unread") {
-    return issues.value.filter((issue) => !!issue.unread);
-  }
-
-  return issues.value;
-});
-
-const selectedIssue = computed<ListIssue>({
-  get: () => activeIssue,
-  set: (value) => setActiveIssue(value),
+const selectedIssueId = ref<number | null>(null);
+const selectedIssue = computed<ListChat | null>({
+  get: () => chats.value?.find((issue) => issue.id === selectedIssueId.value) ?? null,
+  set: (chat: Chat | ListChat | null) => selectedIssueId.value = chat?.id ?? null,
 });
 
 const isMailPanelOpen = computed({
-  get() {
-    return !!selectedIssue.value;
-  },
-  set(value: boolean) {
-    if (!value) {
-      selectedIssue.value = null;
-    }
-  },
+  get: () => !!selectedIssue.value,
+  set: (value: boolean) => (!value) ? selectedIssue.value = null : null,
 });
 
 // Reset selected issue if it's not in the filtered issues
-watch(filteredIssues, () => {
+watch(filteredChats, () => {
   if (
-    !filteredIssues.value.find((issue) => issue.id === selectedIssue.value?.id)
+    !filteredChats.value.find((issue) => issue.id === selectedIssue.value?.id)
   ) {
     selectedIssue.value = null;
   }
@@ -57,17 +57,22 @@ const isMobile = breakpoints.smaller("lg");
   >
     <UDashboardNavbar title="Inbox">
       <template #leading>
-        <UDashboardSidebarCollapse />
+        <UDashboardSidebarCollapse/>
       </template>
       <template #trailing>
-        <UBadge :label="filteredIssues.length" variant="subtle" />
+        <UBadge :label="filteredChats.length" variant="subtle"/>
+        <UButton
+          icon="i-lucide-refresh-cw"
+          size="md"
+          variant="ghost"
+          @click="refresh()"/>
       </template>
 
       <template #right>
-        <IssueListFilter v-model="activeFilter" />
+        <IssueListFilter v-model="activeFilter"/>
       </template>
     </UDashboardNavbar>
-    <IssueList v-model="selectedIssue" :issues="filteredIssues" />
+    <IssueList v-model="selectedIssue" :issues="filteredChats"/>
   </UDashboardPanel>
 
   <IssueBody
@@ -76,16 +81,16 @@ const isMobile = breakpoints.smaller("lg");
     @close="selectedIssue = null"
   />
   <div v-else class="hidden lg:flex flex-1 items-center justify-center">
-    <UIcon name="i-lucide-inbox" class="size-32 text-dimmed" />
+    <UIcon name="i-lucide-inbox" class="size-32 text-dimmed"/>
   </div>
 
   <ClientOnly>
     <USlideover v-if="isMobile" v-model:open="isMailPanelOpen">
       <template #content>
         <IssueBody
-          v-if="selectedMail"
-          :issue="selectedMail"
-          @close="selectedMail = null"
+          v-if="selectedIssue"
+          :issue="selectedIssue"
+          @close="selectedIssue = null"
         />
       </template>
     </USlideover>

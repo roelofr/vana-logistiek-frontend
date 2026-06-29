@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { format, isToday } from "date-fns";
-import type { Issue } from "~/types";
+import {format, isToday} from "date-fns";
+import type {Issue} from "~/types";
 
 const props = defineProps<{
   issues: Issue[];
@@ -16,7 +16,7 @@ watch(selectedIssue, () => {
   }
   const ref = issuesRefs.value[selectedIssue.value.id];
   if (ref) {
-    ref.scrollIntoView({ block: "nearest" });
+    ref.scrollIntoView({block: "nearest"});
   }
 });
 
@@ -45,8 +45,13 @@ defineShortcuts({
   },
 });
 
-const formatDate = (date: Date) =>
-  isToday(date) ? format(date, "HH:mm") : format(date, "dd MMM HH:mm");
+const formatDate = (date: Date) => {
+  try {
+    return isToday(date) ? format(date, "HH:mm") : format(date, "dd MMM HH:mm");
+  } catch {
+    return '';
+  }
+}
 </script>
 
 <template>
@@ -85,10 +90,10 @@ const formatDate = (date: Date) =>
           <div class="flex items-center gap-3">
             {{ issue.vendor?.name ?? issue.user }}
 
-            <UChip v-if="!issue.read" />
+            <UChip v-if="!issue.read"/>
           </div>
 
-          <span>{{ formatDate(new Date(issue.updatedAt)) }}</span>
+          <span>{{ formatDate(issue.updatedAt) }}</span>
         </div>
         <p class="truncate" :class="{ 'font-semibold': !issue.read }">
           {{ issue.subject }}

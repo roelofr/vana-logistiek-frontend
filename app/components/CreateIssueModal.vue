@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { Vendor } from "~/types";
-import { boolean, type InferType, object, string } from "yup";
-import type { RadioGroupItem } from "@nuxt/ui/components/RadioGroup.vue";
-import type { FormSubmitEvent } from "@nuxt/ui";
+import type {Vendor} from "~/types";
+import {boolean, type InferType, object, string} from "yup";
+import type {RadioGroupItem} from "@nuxt/ui/components/RadioGroup.vue";
+import type {FormSubmitEvent} from "@nuxt/ui";
 
-const modalOpen = defineModel<boolean>("open", { default: false });
+const modalOpen = defineModel<boolean>("open", {default: false});
 const modalDesc = ref<string | undefined>(undefined);
 
 const schema = object({
@@ -14,42 +14,54 @@ const schema = object({
     then: () => object().required(),
     otherwise: () => object().nullable(),
   }),
-  subject: string().required("Verplicht"),
-  description: string().min(10, "Minimaal 10 karakters").optional(),
+  subject: string().required("Verplicht").min(2, "Minimaal 2 tekens"),
 });
 
 type Schema = InferType<typeof schema>;
 type SchemaAndVendor = Omit<Schema, "vendor"> & { vendor: Vendor | null };
 
-const hasVendorOpts = ref<RadioGroupItem[]>([
-  {
-    value: 0,
-    label: "Nee",
-    description: "Dit is een algemeen bericht aan de CP.",
-  },
-  {
-    value: 1,
-    label: "Ja",
-    description: "Dit is een bericht over een specifieke standhouder.",
-  },
-]);
-
 const issue = reactive<SchemaAndVendor>({
-  hasVendor: false,
+  hasVendor: true,
   vendor: null as Vendor | null,
   subject: "",
-  description: "",
 });
 
+const loading = ref(false);
 const toast = useToast();
 
 async function onSubmit(event: FormSubmitEvent<SchemaAndVendor>) {
-  toast.add({
-    title: "Success",
-    description: "The form has been submitted.",
-    color: "success",
-  });
-  console.log(event.data);
+  loading.value = true;
+
+  const { data } = event
+
+  try {
+    console.log('Data is %o', data)
+    const result = await $fetch('/api/issues', {
+      method: 'POST',
+      body: {
+        title: data.subject,
+        vendorId: data.vendor?.id ?? null,
+      }
+    })
+
+    console.log("Result = %o", result);
+
+    toast.add({
+      color: "success",
+      title: "Melding aangemaakt",
+      description: "De melding is succesvol aangemaakt.",
+    })
+  } catch {
+    toast.add({
+      id: "create-issue-error",
+      color: "error",
+      title: "Melding aanmaken mislukt",
+      description: "De melding kon niet worden aangemaakt.",
+      duration: 0,
+    })
+  } finally {
+    loading.value = false;
+  }
 }
 </script>
 
@@ -60,6 +72,7 @@ async function onSubmit(event: FormSubmitEvent<SchemaAndVendor>) {
     :description="modalDesc"
     class="w-175 max-w-[90vw]"
     :dismissible="false"
+    :close="!loading"
   >
     <template #body>
       <LazyUForm
@@ -69,11 +82,11 @@ async function onSubmit(event: FormSubmitEvent<SchemaAndVendor>) {
         @submit="onSubmit"
       >
         <UFormField
-          label="Is er een standhouder?"
-          name="hasVendor"
-          description="Heeft deze melding betrekking op één standhouder?"
+          name="subject"
+          label="Onderwerp"
+          description="Waar gaat deze melding over?"
         >
-          <URadioGroup v-model="issue.hasVendor" :items="hasVendorOpts" />
+          <UInput v-model="issue.subject"/>
         </UFormField>
 
         <UFormField
@@ -82,26 +95,10 @@ async function onSubmit(event: FormSubmitEvent<SchemaAndVendor>) {
           description="Welke standhouder is betrokken bij deze melding?"
           name="vendor"
         >
-          <InputVendor v-model="issue.vendor" />
+          <InputVendor v-model="issue.vendor"/>
         </UFormField>
 
-        <UFormField
-          name="subject"
-          label="Onderwerp"
-          description="Waar gaat deze melding over?"
-        >
-          <UInput v-model="issue.subject" />
-        </UFormField>
-
-        <UFormField
-          name="description"
-          label="Beschrijving (optioneel)"
-          description="Als je wilt, kan je alvast het eerste bericht in de chat hier typen."
-        >
-          <UTextarea v-model="issue.description" />
-        </UFormField>
-
-        <UButton type="submit"> Melding aanmaken </UButton>
+        <UButton type="submit" :loading="loading">Melding aanmaken</UButton>
       </LazyUForm>
     </template>
   </UModal>

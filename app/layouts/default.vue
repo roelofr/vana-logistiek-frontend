@@ -75,11 +75,6 @@ const links = [
           to: "/admin/users",
           onSelect: closeMenu,
         },
-        {
-          label: "Sessie",
-          to: "/janken",
-          onSelect: closeMenu,
-        },
       ],
     },
   ],

@@ -83,8 +83,6 @@ export default defineEventHandler(async (event) => {
   proxyHeaders.set("Authorization", `Bearer ${maybeUseIdToken(event.context.sessionIdToken, event.context.sessionAccessToken)}`)
   proxyHeaders.set("X-User-Id", event.context.userId);
 
-  console.log("Proxying %s %s to %s, with headers %o", event.method, event.path, targetUrl, proxyHeaders);
-
   // 6. Proxy the Request
   try {
     return proxyRequest(event, targetUrl.toString(), {headers: proxyHeaders})

@@ -164,7 +164,13 @@ const columns: TableColumn<Vendor>[] = [
           separator: 'h-0',
         }"
         class="shrink-0"
-      />
+      >
+        <template #empty>
+          <div class="px-1">
+          <UEmpty icon="i-lucide-store" title="Geen standhouders bekend" description="Importeer een bestand, of maak een losse standhouder aan om door te gaan." />
+          </div>
+        </template>
+      </UTable>
 
       <div
         class="flex items-center justify-between gap-3 border-t border-default pt-4 mt-auto"
@@ -173,9 +179,9 @@ const columns: TableColumn<Vendor>[] = [
           {{
             table?.tableApi?.getFilteredSelectedRowModel().rows.length || 0
           }}
-          of
-          {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }} row(s)
-          selected.
+          van
+          {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }} rij(en)
+          geselecteerd.
         </div>
 
         <div class="flex items-center gap-1.5">
