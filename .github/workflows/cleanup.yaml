@@ -26,8 +26,3 @@ jobs:
           type: container
           keep: 5
           names: vana-logistiek-frontend
-
-      - name: Delete orphan and untagged versions of frontend
-        run: .github/prune-package.sh roelofr vana-logistiek-frontend
-        env:
-          GH_TOKEN: ${{ github.token }}
