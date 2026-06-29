@@ -28,6 +28,14 @@ export default defineNuxtConfig({
     devtools: {
       enabled: true,
     },
+    nitro: {
+      storage: {
+        oidc: {
+          driver: 'fs',
+          base: '.data/nitro/oidc',
+        },
+      },
+    },
     vite: {
       optimizeDeps: {
         include: [
@@ -94,10 +102,11 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-12-20",
 
   nitro: {
-    storage: { // Use local file system storage for dev quick setup
+    // Use local file system storage for dev quick setup
+    storage: {
       oidc: {
         driver: 'fs',
-        base: 'storage/oidc',
+        base: '/app/data/oidc',
       },
     },
     hooks: {

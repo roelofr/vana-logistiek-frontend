@@ -22,6 +22,7 @@ COPY --from=build-node /app/.output/ /app/
 COPY --from=build-node /app/data/ /app/data/
 
 VOLUME /app/data/
+
 ENV PORT=80 \
     HOST=0.0.0.0
 
