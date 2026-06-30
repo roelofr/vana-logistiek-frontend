@@ -9,7 +9,7 @@ export interface ListChat extends Pick<
   | "createdAt"
   | "updatedAt"
 > {
-  read: boolean;
+  unread: boolean;
 }
 
 interface ChatListResponse {

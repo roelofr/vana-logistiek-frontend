@@ -19,6 +19,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  avatar: string | null;
   group?: Group;
   roles?: string[];
 }
@@ -50,6 +51,7 @@ export interface Chat {
   groups: Pick<Group, "id" | "name">;
   createdAt: Date
   updatedAt: Date
+  unread: boolean;
 }
 
 export type ListChat = Omit<Chat, "users" | "groups">;

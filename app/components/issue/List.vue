@@ -99,6 +99,8 @@ const formatDate = (date: Date) => {
           {{ issue.subject }}
         </p>
         <p class="text-dimmed line-clamp-1">Tagline</p>
+
+        <pre><code class="text-wrap max-w-full">{{ JSON.stringify(issue, undefined , 2)}}</code></pre>
       </div>
     </div>
   </div>

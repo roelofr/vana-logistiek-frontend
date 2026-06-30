@@ -13,33 +13,33 @@ const chats = computed<ListChat[]>(() => (data.value?.chats ?? [])
 
 const activeFilter = ref("all");
 
-// Filter issues based on the selected tab
+// Filter chats based on the selected tab
 const filteredChats = computed<ListChat[]>(() => {
   if (!chats.value)
     return [];
   else if (activeFilter.value === "unread")
-    return chats.value.filter(() => false);
+    return chats.value.filter(chat => chat.unread);
   else
     return chats.value;
 })
 
-const selectedIssueId = ref<number | null>(null);
-const selectedIssue = computed<ListChat | null>({
-  get: () => chats.value?.find((issue) => issue.id === selectedIssueId.value) ?? null,
-  set: (chat: Chat | ListChat | null) => selectedIssueId.value = chat?.id ?? null,
+const selectedChatId = ref<number | null>(null);
+const selectedChat = computed<ListChat | null>({
+  get: () => chats.value?.find((issue) => issue.id === selectedChatId.value) ?? null,
+  set: (chat: Chat | ListChat | null) => selectedChatId.value = chat?.id ?? null,
 });
 
 const isMailPanelOpen = computed({
-  get: () => !!selectedIssue.value,
-  set: (value: boolean) => (!value) ? selectedIssue.value = null : null,
+  get: () => !!selectedChat.value,
+  set: (value: boolean) => (!value) ? selectedChat.value = null : null,
 });
 
-// Reset selected issue if it's not in the filtered issues
+// Reset selected issue if it's not in the filtered chats
 watch(filteredChats, () => {
   if (
-    !filteredChats.value.find((issue) => issue.id === selectedIssue.value?.id)
+    !filteredChats.value.find((issue) => issue.id === selectedChat.value?.id)
   ) {
-    selectedIssue.value = null;
+    selectedChat.value = null;
   }
 });
 
@@ -61,24 +61,19 @@ const isMobile = breakpoints.smaller("lg");
       </template>
       <template #trailing>
         <UBadge :label="filteredChats.length" variant="subtle"/>
-        <UButton
-          icon="i-lucide-refresh-cw"
-          size="md"
-          variant="ghost"
-          @click="refresh()"/>
       </template>
 
       <template #right>
-        <IssueListFilter v-model="activeFilter"/>
+        <ChatListFilter v-model="activeFilter"/>
       </template>
     </UDashboardNavbar>
-    <IssueList v-model="selectedIssue" :issues="filteredChats"/>
+    <ChatList v-model="selectedChat" :chats="filteredChats"/>
   </UDashboardPanel>
 
-  <IssueBody
-    v-if="selectedIssue"
-    :issue="selectedIssue"
-    @close="selectedIssue = null"
+  <ChatBody
+    v-if="selectedChat"
+    :issue="selectedChat"
+    @close="selectedChat = null"
   />
   <div v-else class="hidden lg:flex flex-1 items-center justify-center">
     <UIcon name="i-lucide-inbox" class="size-32 text-dimmed"/>
@@ -87,10 +82,10 @@ const isMobile = breakpoints.smaller("lg");
   <ClientOnly>
     <USlideover v-if="isMobile" v-model:open="isMailPanelOpen">
       <template #content>
-        <IssueBody
-          v-if="selectedIssue"
-          :issue="selectedIssue"
-          @close="selectedIssue = null"
+        <ChatBody
+          v-if="selectedChat"
+          :issue="selectedChat"
+          @close="selectedChat = null"
         />
       </template>
     </USlideover>
