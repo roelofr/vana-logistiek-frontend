@@ -4,6 +4,8 @@ import {type InferType, object, string} from "yup";
 import type {FormSubmitEvent} from "@nuxt/ui";
 import type {UForm} from "#components";
 
+const confetti = useConfetti();
+
 const modalOpen = defineModel<boolean>("open", {default: false});
 const modalDesc = ref<string | undefined>(undefined);
 
@@ -107,6 +109,9 @@ const submit = async () => {
       title: "Melding aangemaakt",
       description: "De melding is succesvol aangemaakt.",
     })
+
+    modalOpen.value = false;
+    confetti.dispatch('normal')
   } catch {
     toast.add({
       id: "create-issue-error",
@@ -127,6 +132,12 @@ function reset() {
   issue.location = null as Location | null
   currentPage.value = 1
 }
+
+watch(modalOpen, (newVal, oldVal) => {
+  if (! oldVal && newVal) {
+    reset()
+  }
+})
 
 </script>
 

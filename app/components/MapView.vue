@@ -26,7 +26,7 @@ const mapInstance = ref<MapLibre.Map | null>(null);
 const mapRef = useTemplateRef('map');
 const mapMarkerInstance = ref(null);
 
-const authenticatedResources = ['Style', 'Tile', 'Sprite']
+const authenticatedResources = ['Style', 'Tile', 'Sprite', 'Source']
 const authenticatedDomains = ['https://map.logistiek.myvana.dev/', document.location.origin];
 
 const mapProps = ref({

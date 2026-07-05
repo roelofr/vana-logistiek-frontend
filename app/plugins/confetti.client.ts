@@ -1,8 +1,8 @@
-import JSConfetti, {type IAddConfettiConfig} from "js-confetti";
+import JSConfetti from "js-confetti";
 
-import type {ConfettiVariant} from "~/types";
+type AddConfettiType = Parameters<typeof JSConfetti.prototype.addConfetti>[0];
 
-const confettiTypes: Record<string, IAddConfettiConfig[]> = {
+const confettiTypes: Record<string, AddConfettiType[]> = {
   dino: [
     {confettiNumber: 100},
     {
@@ -11,7 +11,7 @@ const confettiTypes: Record<string, IAddConfettiConfig[]> = {
     }
   ],
   gay: [
-    {confettiNumer: 200},
+    {confettiNumber: 200},
     {
       emojis: ["🌈", "🏳️‍🌈", "🦄", "✨", "🍆", "🍑"],
       confettiNumber: 20,
@@ -20,7 +20,7 @@ const confettiTypes: Record<string, IAddConfettiConfig[]> = {
   normal: [{}]
 }
 
-export type ConfettiVariant = Keyof<typeof ConfettiTypes>
+export type ConfettiVariant = keyof typeof confettiTypes;
 
 export default defineNuxtPlugin((_) => {
   const confettiApi = new JSConfetti();
@@ -28,7 +28,7 @@ export default defineNuxtPlugin((_) => {
   const confettiBacklog = ref<ConfettiVariant[]>([]);
 
   const dispatchConfetti = (variant: ConfettiVariant): void => {
-    const confettiType = confettiTypes[variant] ?? confettiTypes.normal
+    const confettiType = (confettiTypes[variant] ?? confettiTypes.normal)!
 
     confettiType.forEach(config => confettiApi.addConfetti(config));
   };
