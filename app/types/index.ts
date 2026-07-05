@@ -40,17 +40,24 @@ export interface Vendor {
 
 export type ChatType = "regular" | "group" | "issue"
 
-export type ChatState ="active" | "permanent" | "closed"
+export type ChatState = "active" | "permanent" | "closed"
+
+export interface ChatSubject {
+  id: number;
+  vendor: null | Pick<Vendor, "id" | "name" | "number">;
+  location: null | Location;
+}
 
 export interface Chat {
   id: number
   title: string
   type: string
   state: string
-  users: Pick<User,"id" | "name">;
-  groups: Pick<Group, "id" | "name">;
+  users: Pick<User, "id" | "name" | "avatar">[];
+  groups: Pick<Group, "id" | "name" | "icon" | "colour">[];
   createdAt: Date
   updatedAt: Date
+  subject: ChatSubject | null
   unread: boolean;
 }
 
@@ -95,3 +102,7 @@ export interface ChatIssue {
 
 export {type ConfettiVariant} from '~/plugins/confetti.client'
 
+export interface Location {
+  lat: number;
+  lng: number;
+}

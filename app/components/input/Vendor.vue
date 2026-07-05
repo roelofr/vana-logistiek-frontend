@@ -1,72 +1,46 @@
 <script lang="ts" setup>
-import type { Vendor } from "~/types";
-import type { InputMenuItem } from "@nuxt/ui";
-import { expand } from "~/utils";
+import type {Vendor} from "~/types";
+import type {InputMenuItem} from "@nuxt/ui";
+import {expand} from "~/utils";
+import type {UInputMenu} from "#components";
+
+const emit = defineEmits<{ (e: "update:modelValue", value: Vendor | null): void }>();
 
 type InputVendorItem = InputMenuItem & {
-  id: number;
+  vendor: Vendor;
   search: string;
-  district: string;
   number: string;
+  district: string;
 };
 
 const toNuxtUiList = (vendor: Vendor): InputVendorItem => ({
-  id: vendor.id,
+  vendor: vendor,
   type: "item",
   label: vendor.name,
   search: `${vendor.number} ${vendor.name}`,
   description: vendor.number,
-  district: vendor.district?.name ?? null,
   number: vendor.number,
+  district: vendor.district?.name ?? "",
 });
 
-const vendor = defineModel<Vendor | null | undefined>({ required: true });
-const { defaultId = null } = defineProps<{ defaultId?: number }>();
+const vendor = defineModel<Vendor | null | undefined>({required: true});
 
-const {
-  data: apiVendors,
-  status: apiStatus,
-  execute: fetchVendors,
-} = useFetch<Vendor[]>("/api/vendors", { immediate: false });
+const {data: apiVendors, pending: apiPending} = useFetch<Vendor[]>("/api/vendors");
 
 const vendors = computed(() =>
   apiVendors.value ? expand(apiVendors.value, ["district"]) : [],
 );
 const vendorsMapped = computed(() => vendors.value?.map(toNuxtUiList) ?? []);
-const vendorIndexed = computed(
-  () => new Map(vendors.value?.map((v) => [v.id, v])),
-);
 
-watch(vendors, (newValue, oldValue) => {
-  if (
-    oldValue == undefined &&
-    newValue != undefined &&
-    defaultId &&
-    !vendor.value
-  ) {
-    vendor.value = newValue.find((v) => v.id === defaultId) ?? null;
-  }
+const uiVendor = computed<Vendor | undefined>({
+  get: () => vendor.value ?? undefined,
+  set: (value) => (vendor.value = value ?? null),
 });
 
-const uiVendor = computed<InputVendorItem | undefined>({
-  get() {
-    return vendor.value ? toNuxtUiList(vendor.value) : undefined;
-  },
-  set(value) {
-    if (!value) {
-      vendor.value = null;
-      return;
-    }
-
-    vendor.value = vendorIndexed.value!.get(value.id) ?? null;
-    if (vendor.value == null)
-      console.error("Could not find %o in %o", value.id, vendorIndexed.value);
-  },
-});
-
-function fetchVendorsOnInitialOpen() {
-  if (apiStatus.value == "idle") fetchVendors();
-}
+watch(() => vendorsMapped.value, (newValue, oldValue) => {
+  if (!oldValue?.length && newValue?.length && uiVendor.value)
+    setTimeout(() => (uiVendor.value = {...uiVendor.value!}), 150)
+})
 </script>
 
 <template>
@@ -74,18 +48,16 @@ function fetchVendorsOnInitialOpen() {
     v-model="uiVendor"
     :filter-fields="['search']"
     :items="vendorsMapped"
-    :loading="apiStatus == 'pending'"
+    :loading="apiPending"
     :ui="{ content: 'min-w-fit' }"
+    value-key="vendor"
     icon="i-lucide-store"
     open-on-focus
     placeholder="Selecteer standhouder"
     virtualize
-    @update:open="fetchVendorsOnInitialOpen"
   >
     <template #trailing="{ modelValue }">
-      <span v-if="modelValue" class="text-muted pr-1">{{
-        modelValue.number
-      }}</span>
+      <span v-if="modelValue" class="text-muted pr-1">{{ modelValue?.number }}</span>
       <UIcon
         class="text-dimmed"
         name="i-lucide-chevron-down"

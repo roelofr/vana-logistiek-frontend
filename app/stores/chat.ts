@@ -6,6 +6,9 @@ export interface ListChat extends Pick<
   | "title"
   | "type"
   | "state"
+  | "subject"
+  | "groups"
+  | "users"
   | "createdAt"
   | "updatedAt"
 > {

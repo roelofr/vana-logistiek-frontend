@@ -5,6 +5,10 @@ import type {Chat, ListChat} from "~/types";
 
 const {data, pending, refresh} = useLazyFetch<{ chats: ListChat[] }>("/api/chats");
 const chats = computed<ListChat[]>(() => (data.value?.chats ?? [])
+  .map((chat, index) => {
+    console.log('%d: %o', index, chat)
+    return chat
+  })
   .map(chat => ({
     ...chat,
     createdAt: new Date(chat.createdAt),

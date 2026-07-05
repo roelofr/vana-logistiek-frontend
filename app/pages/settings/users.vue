@@ -1,17 +1,16 @@
 <script lang="ts" setup>
-import type { Member } from "../../types";
+import type {User} from "~/types";
 
-const { data: members } = await useFetch<Member[]>("/api/members", {
+const {data: members} = await useFetch<User[]>("/api/users", {
   default: () => [],
 });
 
-const q = ref("");
+const query = ref("");
 
-const filteredMembers = computed(() => {
+const filteredUsers = computed(() => {
   return members.value.filter((member) => {
     return (
-      member.name.search(new RegExp(q.value, "i")) !== -1 ||
-      member.username.search(new RegExp(q.value, "i")) !== -1
+      member.name.search(new RegExp(query.value, "i")) !== -1
     );
   });
 });
@@ -21,12 +20,18 @@ const filteredMembers = computed(() => {
   <div>
     <UPageCard
       class="mb-4"
-      description="Invite new members by email address."
+      description="Nieuwe gebruikers kunnen via Troela Authenticatie worden uitgenodigd."
       orientation="horizontal"
-      title="Members"
+      title="Gebruikers"
       variant="naked"
     >
-      <UButton class="w-fit lg:ms-auto" color="neutral" label="Invite people" />
+      <UButton
+        class="w-fit lg:ms-auto"
+        color="neutral"
+        label="Uitnodigen"
+        trailing-icon="i-lucide-external-link"
+        href="https://login.troela.fun/settings/admin/users"
+        target="_blank"/>
     </UPageCard>
 
     <UPageCard
@@ -39,15 +44,15 @@ const filteredMembers = computed(() => {
     >
       <template #header>
         <UInput
-          v-model="q"
+          v-model="query"
           autofocus
           class="w-full"
           icon="i-lucide-search"
-          placeholder="Search members"
+          placeholder="Zoek naar gebruikers"
         />
       </template>
 
-      <SettingsMembersList :members="filteredMembers" />
+      <SettingsUserList :users="filteredUsers"/>
     </UPageCard>
   </div>
 </template>

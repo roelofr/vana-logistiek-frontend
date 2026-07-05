@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import 'maplibre-gl/dist/maplibre-gl.css'
+
 const colorMode = useColorMode();
 const color = computed(() =>
   colorMode.value === "dark" ? "#1b1718" : "white",

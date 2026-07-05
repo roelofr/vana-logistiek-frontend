@@ -54,27 +54,13 @@ const formatDate = (date: Date) => {
   }
 }
 
-const userAvatar = (user: Pick<User, "name" | "avatar">): AvatarProps => {
-  return {
-    alt: user.name,
-    src: user.avatar ?? undefined,
-  }
-}
-
-const groupAvatar = (group: Pick<Group, "name" | "icon" | "colour">): AvatarProps => {
-  return {
-    icon: group.name,
-    color: group.colour,
-    alt: group.name,
-  }
-}
-
 const chatAvatars = (chat: ListChat) => {
-  if (chat.users?.length >= 2) {
-    return [
-
-    ]
-  }
+  return [...chat.users, ...chat.groups].slice(0, 2).map(user => ({
+    alt: user.name,
+    src: (user as unknown as Record<string, string | null>).avatar ?? undefined,
+    icon: (user as unknown as Record<string, string | null>).icon ?? undefined,
+    color: (user as unknown as Record<string, string | null>).colour ?? undefined,
+  }))
 }
 
 </script>
@@ -109,7 +95,11 @@ const chatAvatars = (chat: ListChat) => {
         @click="selectedChat = chat"
       >
         <div class="grid grid-message max-w-full gap-4">
-          <UAvatar size="lg" alt="Tom Klaas"/>
+          <UAvatarGroup size="lg">
+            <template v-for="avatar in chatAvatars(chat)" :key="avatar.name">
+              <UAvatar loading="lazy" v-bind="avatar" />
+            </template>
+          </UAvatarGroup>
           <div class="grid">
             <div
               class="flex items-center justify-between"
@@ -124,12 +114,19 @@ const chatAvatars = (chat: ListChat) => {
               <span>{{ formatDate(chat.updatedAt) }}</span>
             </div>
             <p class="truncate max-w-full text-dimmed line-clamp-1">
-              Lorem ipsum dolor sit amet, many more words that I don't get.
+              <template v-if="chat.subject && chat.subject.vendor">
+                {{ chat.subject.vendor.name }} ({{ chat.subject.vendor.number }})
+              </template>
+              <template v-else-if="chat.subject && chat.subject.location">
+                Op locatie
+              </template>
+              <template v-else>
+                Reguliere chat
+              </template>
             </p>
           </div>
         </div>
       </div>
-      <pre><code>{{ JSON.stringify(chat, undefined, 2 )}}</code></pre>
     </div>
   </div>
 </template>

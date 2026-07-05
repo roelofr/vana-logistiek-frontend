@@ -1,20 +1,20 @@
 <script lang="ts" setup>
-import type { DropdownMenuItem } from "@nuxt/ui";
-import type { Member } from "../../types";
+import type {DropdownMenuItem} from "@nuxt/ui";
+import type {User} from "~/types";
 
 defineProps<{
-  members: Member[];
+  users: User[];
 }>();
 
 const items = [
   {
-    label: "Edit member",
-    onSelect: () => console.log("Edit member"),
+    label: "Bewerk gebruiker",
+    onSelect: () => console.log("Bewerk gebruiker"),
   },
   {
-    label: "Remove member",
+    label: "Verwijder gebruiker",
     color: "error" as const,
-    onSelect: () => console.log("Remove member"),
+    onSelect: () => console.log("Verwijder gebruiker"),
   },
 ] satisfies DropdownMenuItem[];
 </script>
@@ -22,19 +22,19 @@ const items = [
 <template>
   <ul class="divide-y divide-default" role="list">
     <li
-      v-for="(member, index) in members"
+      v-for="(member, index) in users"
       :key="index"
       class="flex items-center justify-between gap-3 py-3 px-4 sm:px-6"
     >
       <div class="flex items-center gap-3 min-w-0">
-        <UAvatar size="md" v-bind="member.avatar" />
+        <UAvatar size="md" :alt="member.name" :src="member.avatar"/>
 
         <div class="text-sm min-w-0">
           <p class="text-highlighted font-medium truncate">
             {{ member.name }}
           </p>
           <p class="text-muted truncate">
-            {{ member.username }}
+            {{ member.roles }}
           </p>
         </div>
       </div>
@@ -42,7 +42,7 @@ const items = [
       <div class="flex items-center gap-3">
         <USelect
           :items="['member', 'owner']"
-          :model-value="member.role"
+          :model-value="member.roles"
           :ui="{ value: 'capitalize', item: 'capitalize' }"
           color="neutral"
         />

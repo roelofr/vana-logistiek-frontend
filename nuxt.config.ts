@@ -18,7 +18,7 @@ export default defineNuxtConfig({
     "@nuxt/ui",
     "@vueuse/nuxt",
     "@pinia/nuxt",
-    "nuxt-oidc-auth"
+    "nuxt-oidc-auth",
   ],
 
   $development: {
@@ -34,21 +34,6 @@ export default defineNuxtConfig({
           driver: 'fs',
           base: '.data/nitro/oidc',
         },
-      },
-    },
-    vite: {
-      optimizeDeps: {
-        include: [
-          "@tanstack/table-core",
-          "@vue/devtools-core",
-          "@vue/devtools-kit",
-          "better-auth/client/plugins",
-          "better-auth/vue",
-          "date-fns",
-          "js-confetti",
-          "yup",
-          "zod",
-        ],
       },
     },
   },
@@ -123,10 +108,9 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: [
         "@tanstack/table-core",
-        "better-auth/client/plugins",
-        "better-auth/vue",
         "date-fns",
         "js-confetti",
+        "maplibre-gl",
         "yup",
         "zod",
       ],

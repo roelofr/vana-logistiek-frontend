@@ -1,27 +1,50 @@
 <script lang="ts" setup>
 import * as z from "zod";
-import type { FormSubmitEvent } from "@nuxt/ui";
+import type {FormSubmitEvent} from "@nuxt/ui";
 
 const fileRef = ref<HTMLInputElement>();
+
+interface ProfileResponse {
+  id: number
+  name: string
+  email: string;
+  roles: string[];
+  groups: string[]
+  avatarUrl: string | null;
+}
 
 const profileSchema = z.object({
   name: z.string().min(2, "Too short"),
   email: z.string().email("Invalid email"),
-  username: z.string().min(2, "Too short"),
-  avatar: z.string().optional(),
-  bio: z.string().optional(),
 });
 
-type ProfileSchema = z.output<typeof profileSchema>;
+type ProfileSchema = z.output<typeof profileSchema> & { "avatar": string | null }
+
+const {data: userData, refresh} = await useFetch<ProfileResponse>("/api/profile")
+const avatarUrl = computed(() => {
+  const avatar = userData.value!.avatarUrl ?? null
+  if (!avatar)
+    return null
+
+  const avatarUrl = new URL(avatar, 'https://example.com');
+  avatarUrl.searchParams.set('_', Date.now().toString());
+  return avatarUrl.toString()
+})
 
 const profile = reactive<Partial<ProfileSchema>>({
-  name: "Benjamin Canac",
-  email: "ben@nuxtlabs.com",
-  username: "benjamincanac",
-  avatar: undefined,
-  bio: undefined,
+  name: userData.value!.name,
+  email: userData.value!.email,
+  avatar: avatarUrl.value,
 });
 const toast = useToast();
+
+watch(userData, () => {
+  if (!userData.value)
+    return
+
+  profile.name = userData.value!.name
+  profile.email = userData.value!.email
+})
 
 async function onSubmit(_event: FormSubmitEvent<ProfileSchema>) {
   toast.add({
@@ -32,103 +55,85 @@ async function onSubmit(_event: FormSubmitEvent<ProfileSchema>) {
   });
 }
 
-function onFileChange(event: Event) {
-  const input = event.target as HTMLInputElement;
+const avatarUploading = ref(false)
+const {files, open: selectFile, onChange} = useFileDialog({
+  accept: 'image/webp,image/jpeg,image/png',
+})
 
-  if (!input.files?.length) {
-    return;
+onChange(async () => {
+  const pickedFile = files.value?.item(0);
+  if (pickedFile == null)
+    return
+
+  avatarUploading.value = true
+
+  try {
+    const formData = new FormData()
+    formData.set('picture', pickedFile)
+
+    await $fetch("/api/profile/picture", {
+      method: 'PUT',
+      body: formData
+    })
+
+    toast.add({
+      color: 'success',
+      title: 'Profielafbeelding aangepast!',
+      description: 'Het kan even duren voordat de wijziging overal zichtbaar is.',
+    })
+
+    refresh()
+  } finally {
+    avatarUploading.value = false
   }
-
-  profile.avatar = URL.createObjectURL(input.files[0]!);
-}
-
-function onFileClick() {
-  fileRef.value?.click();
-}
+})
 </script>
 
 <template>
-  <UForm
-    id="settings"
-    :schema="profileSchema"
-    :state="profile"
-    @submit="onSubmit"
-  >
+  <UForm>
     <UPageCard
       class="mb-4"
-      description="These informations will be displayed publicly."
+      description="Deze informatie is zichtbaar voor alle gebruikers in de app."
       orientation="horizontal"
-      title="Profile"
+      title="Profiel"
       variant="naked"
     >
-      <UButton
-        class="w-fit lg:ms-auto"
-        color="neutral"
-        form="settings"
-        label="Save changes"
-        type="submit"
-      />
+      &nbsp;
     </UPageCard>
 
-    <UPageCard variant="subtle">
+    <UPageCard variant="subtle" class="mb-4">
       <UFormField
         class="flex max-sm:flex-col justify-between items-start gap-4"
-        description="Will appear on receipts, invoices, and other communication."
-        label="Name"
+        description="Wordt door de hele applicatie getoond."
+        label="Naam"
         name="name"
-        required
       >
-        <UInput v-model="profile.name" autocomplete="off" />
+
+        <UInput disabled v-model="profile.name" autocomplete="off"/>
       </UFormField>
-      <USeparator />
+      <USeparator/>
       <UFormField
         class="flex max-sm:flex-col justify-between items-start gap-4"
-        description="Used to sign in, for email receipts and product updates."
-        label="Email"
+        description="Wordt gebruikt om in te loggen in de LogistiekApp."
+        label="E-mailadres"
         name="email"
-        required
       >
-        <UInput v-model="profile.email" autocomplete="off" type="email" />
-      </UFormField>
-      <USeparator />
-      <UFormField
-        class="flex max-sm:flex-col justify-between items-start gap-4"
-        description="Your unique username for logging in and your profile URL."
-        label="Username"
-        name="username"
-        required
-      >
-        <UInput v-model="profile.username" autocomplete="off" type="username" />
-      </UFormField>
-      <USeparator />
-      <UFormField
-        class="flex max-sm:flex-col justify-between sm:items-center gap-4"
-        description="JPG, GIF or PNG. 1MB Max."
-        label="Avatar"
-        name="avatar"
-      >
-        <div class="flex flex-wrap items-center gap-3">
-          <UAvatar :alt="profile.name" :src="profile.avatar" size="lg" />
-          <UButton color="neutral" label="Choose" @click="onFileClick" />
-          <input
-            ref="fileRef"
-            accept=".jpg, .jpeg, .png, .gif"
-            class="hidden"
-            type="file"
-            @change="onFileChange"
-          />
-        </div>
-      </UFormField>
-      <USeparator />
-      <UFormField
-        :ui="{ container: 'w-full' }"
-        class="flex max-sm:flex-col justify-between items-start gap-4"
-        description="Brief description for your profile. URLs are hyperlinked."
-        label="Bio"
-        name="bio"
-      >
-        <UTextarea v-model="profile.bio" :rows="5" autoresize class="w-full" />
+
+        <UInput disabled v-model="profile.email" autocomplete="off" type="email"/>
       </UFormField>
     </UPageCard>
   </UForm>
+
+  <UPageCard variant="subtle">
+    <UFormField
+      class="flex max-sm:flex-col justify-between sm:items-center gap-4"
+      description="JPEG, PNG of WEBP. Maximaal 15 MB."
+      label="Profielfoto"
+    >
+      <div class="flex flex-wrap items-center gap-3">
+        <UAvatar :alt="profile.name" :src="profile.avatar" size="lg"/>
+        <UButton color="neutral" label="Kiezen" @click="selectFile" :disabled="avatarUploading"/>
+      </div>
+    </UFormField>
+  </UPageCard>
 </template>
