@@ -202,8 +202,6 @@ watch(modalOpen, (newVal, oldVal) => {
       <template v-else>
         How did you get here?
       </template>
-
-      <pre><code>{{ JSON.stringify(issue, undefined, 2) }}</code></pre>
     </template>
 
     <template #footer>
