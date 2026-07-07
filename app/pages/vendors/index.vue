@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { TableColumn } from "@nuxt/ui";
 import { getPaginationRowModel } from "@tanstack/table-core";
-import type { Vendor } from "../../types";
+import type { Vendor } from "~/types";
 import { h, computed, resolveComponent } from "vue";
 import { VendorAvatar } from "#components";
 

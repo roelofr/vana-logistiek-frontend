@@ -111,6 +111,7 @@ const groups = computed(() => [
 const showCreateIssue = ref(false);
 const createIssue = () => {
   showCreateIssue.value = true;
+  menuOpen.value = false;
 };
 </script>
 

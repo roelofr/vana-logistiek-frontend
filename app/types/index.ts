@@ -102,6 +102,13 @@ export interface ChatIssue {
   type: ChatIssueType;
 }
 
+export interface Issue {
+  id: number;
+  chat: Chat;
+  vendor: null | Vendor;
+  location: null | Location;
+}
+
 export { type ConfettiVariant } from "~/plugins/confetti.client";
 
 export interface Location {

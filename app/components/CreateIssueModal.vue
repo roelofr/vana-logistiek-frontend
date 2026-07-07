@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import type { Vendor, Location } from "~/types";
+import type { Issue, Location, Vendor } from "~/types";
 import { type InferType, object, string } from "yup";
 
 const confetti = useConfetti();
+const router = useRouter();
 
 const modalOpen = defineModel<boolean>("open", { default: false });
 const modalDesc = ref<string | undefined>(undefined);
@@ -79,7 +80,6 @@ const typeItems = [
 ];
 
 const continueOrSubmit = async (event: Event) => {
-  console.log("Continue or submit", issue, event);
   if (issue.issueType != "standalone" && currentPage.value == 1) {
     event.stopPropagation();
     currentPage.value = 2;
@@ -103,8 +103,7 @@ const submit = async () => {
   const data = validData as unknown as CompleteSchema;
 
   try {
-    console.log("Data is %o", data);
-    const result = await $fetch("/api/issues", {
+    const result = await $fetch<Issue>("/api/issues", {
       method: "POST",
       body: {
         title: data.subject,
@@ -113,16 +112,16 @@ const submit = async () => {
       },
     });
 
-    console.log("Result = %o", result);
-
     toast.add({
       color: "success",
-      title: "Melding aangemaakt",
+      title: `Melding ${result.id} aangemaakt`,
       description: "De melding is succesvol aangemaakt.",
     });
 
     modalOpen.value = false;
     confetti.dispatch("normal");
+
+    await router.push(`/chats/${result.chat.id}`);
   } catch {
     toast.add({
       id: "create-issue-error",
@@ -239,7 +238,7 @@ watch(modalOpen, (newVal, oldVal) => {
         />
       </LazyUForm>
 
-      <template v-else> How did you get here? </template>
+      <template v-else> How did you get here?</template>
 
       <DevOnly>
         <pre><code>{{ JSON.stringify(issue, undefined, 2) }}</code></pre>
