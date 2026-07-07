@@ -11,7 +11,7 @@ interface ProfileResponse {
 interface ProfileSchema {
   name: string;
   email: string;
-  avatar: string;
+  avatar: string | null;
 }
 
 const { data: userData, refresh } =

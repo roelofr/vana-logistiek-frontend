@@ -233,6 +233,7 @@ watch(modalOpen, (newVal, oldVal) => {
         <MapView
           v-model="issue.location"
           :disabled="isLoading"
+          editable
           class="grow"
           type="picker"
         />

@@ -3,8 +3,6 @@ import type { Location } from "~/types";
 import { useOidcAuth } from "#imports";
 import MapLibre from "maplibre-gl";
 
-export type MapType = "picker" | "display";
-
 interface MapEvent extends Event {
   lngLat: {
     lat: number;
@@ -20,12 +18,14 @@ interface NamedLocation extends Location {
 const { user } = useOidcAuth();
 
 const {
-  type = "display",
   markers = [],
+  editable = false,
+  interactive = true,
   disabled = false,
 } = defineProps<{
-  type?: MapType;
   markers?: NamedLocation[];
+  editable?: boolean;
+  interactive?: boolean;
   disabled?: boolean;
 }>();
 const chosenLocation = defineModel<Location | null>();
@@ -40,7 +40,7 @@ const authenticatedDomains = [
 ];
 
 const clickMap = (event: MapEvent) => {
-  if (type !== "picker") return;
+  if (!editable) return;
 
   chosenLocation.value = {
     lat: event.lngLat.lat,
@@ -59,7 +59,7 @@ function renderMap() {
 
   const map = (mapInstance.value = new MapLibre.Map({
     container: mapRef.value!,
-    interactive: type != "display",
+    interactive: interactive,
     style: {
       version: 8,
       sources: {
@@ -114,21 +114,31 @@ function renderMap() {
 }
 
 watch(
-  () => type,
+  () => interactive,
   () => renderMap(),
 );
 
+const markerInstances = ref<MapLibre.Marker[]>([]);
 watch(
-  () => [markers, mapInstance],
+  () => [markers, mapInstance.value],
   () => {
-    if (!mapInstance.value) return;
+    // Always reset the markers
+    markerInstances.value.forEach((marker) => marker.remove());
+
+    // Do not re-add if no markers are present
+    if (!mapInstance.value || !markers.length) return;
+
+    const createdMarkers = markers.map((marker) => {
+      return new MapLibre.Marker()
+        .setLngLat([marker.lng, marker.lat])
+        .addTo(mapInstance.value!);
+    });
+
+    markerInstances.value = createdMarkers;
   },
 );
 
-onMounted(() => {
-  renderMap();
-});
-
+onMounted(() => renderMap());
 onUnmounted(() => {
   if (mapInstance.value) {
     mapInstance.value.remove();
