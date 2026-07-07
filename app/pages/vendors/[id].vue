@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { computed } from "@vue/reactivity";
 import type { Vendor } from "~/types";
 
 definePageMeta({
@@ -28,7 +29,7 @@ const vendorTableColumns = ref([
   }
 ])
 
-useHead({ title: `${vendor.value?.name} - Standhouders` })
+useHead({ title: computed(() => `${vendor.value?.name} - Standhouders`) })
 </script>
 
 <template>
@@ -41,7 +42,7 @@ useHead({ title: `${vendor.value?.name} - Standhouders` })
       </UDashboardNavbar>
 
       <UDashboardToolbar>
-        <UUser :avatar="{ icon: 'i-lucide-shop' }" :name="vendor.name" :number="vendor.number" />
+        <VendorAvatar :vendor="vendor" size="lg" />
       </UDashboardToolbar>
     </template>
 

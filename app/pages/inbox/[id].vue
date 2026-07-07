@@ -32,7 +32,7 @@ function leaveMessage() {
   </UDashboardPanel>
   <UDashboardPanel v-else>
     <template #header>
-      <UDashboardNavbar :title="messageTitle">
+      <UDashboardNavbar :toggle="false" :title="messageTitle">
         <template #leading>
           <UButton
             icon="i-lucide-x"
