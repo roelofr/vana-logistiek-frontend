@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { Vendor } from "../types";
+import type { Vendor } from "~/types";
 
-const { vendor, size } = defineProps<{
+const { vendor, size = undefined } = defineProps<{
   vendor: Vendor;
-  size:
+  size?:
     | "md"
     | "3xs"
     | "2xs"
@@ -16,7 +16,7 @@ const { vendor, size } = defineProps<{
     | undefined;
 }>();
 
-const colourComputed = computed(() => vendor?.district?.colour ?? "zinc");
+const colourComputed = computed(() => vendor?.colour ?? "zinc");
 const iconComputed = computed(() => {
   const type = vendor?.type?.toLowerCase() ?? "shop";
   switch (type) {
@@ -40,11 +40,9 @@ const iconComputed = computed(() => {
 
 <template>
   <UAvatar
-    class="bg-(--chip-light) dark:bg-(--chip-dark)"
+    :class="`bg-${colourComputed}-700) dark:bg-${colourComputed}-500)`"
     :style="{
       '--ui-text-muted': 'var(--ui-text-inverted)',
-      '--chip-light': `var(--color-${colourComputed}-700)`,
-      '--chip-dark': `var(--color-${colourComputed}-500)`,
     }"
     :icon="iconComputed"
     :alt="`${vendor.name} (${vendor.number})`"

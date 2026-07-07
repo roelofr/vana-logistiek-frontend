@@ -33,6 +33,12 @@ const links = [
       onSelect: closeMenu,
     },
     {
+      label: "Kaart",
+      icon: "i-lucide-map",
+      to: "/map",
+      onSelect: closeMenu,
+    },
+    {
       label: "Instellingen",
       to: "/settings",
       icon: "i-lucide-settings",

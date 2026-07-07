@@ -56,8 +56,10 @@ watch(
 );
 
 onMounted(() => {
-  if (route.params.id && String(route.params.id).match(/^\d+$/))
+  if (route.params.id && String(route.params.id).match(/^\d+$/)) {
     selectedChatId.value = Number.parseInt(route.params.id as string, 10);
+    isMailPanelOpen.value = true;
+  }
 });
 
 // Reset selected issue if it's not in the filtered chats

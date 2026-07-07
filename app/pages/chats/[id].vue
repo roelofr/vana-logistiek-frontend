@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Chat } from "~/types";
 import { computed } from "vue";
+import type { ChatMessageList } from "#components";
 
 definePageMeta({
   middleware: ["auth"],
@@ -8,6 +9,9 @@ definePageMeta({
 
 const route = useRoute();
 const router = useRouter();
+
+const messageList =
+  useTemplateRef<InstanceType<typeof ChatMessageList>>("messageList");
 
 // Fetches new data every time you switch messages
 const { data: chat } = await useFetch<Chat>(
@@ -24,6 +28,10 @@ useHead({
 
 function leaveMessage() {
   router.push("/chats");
+}
+
+function onSendReply() {
+  messageList.value.refresh();
 }
 </script>
 
@@ -53,10 +61,10 @@ function leaveMessage() {
     </template>
 
     <template #body>
-      <ChatMessageList :chat="chat!" />
+      <ChatMessageList ref="messageList" :chat="chat!" />
     </template>
     <template #footer>
-      <ChatMessageInput :chat="chat!" />
+      <ChatMessageInput :chat="chat!" @send="onSendReply()" />
     </template>
   </UDashboardPanel>
 </template>

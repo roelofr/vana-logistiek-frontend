@@ -1,35 +1,40 @@
 <script lang="ts" setup>
-import { object, string } from "yup";
-import type { Chat } from "~/types";
+import { object, array, string } from "yup";
+import type { Chat, ChatEntry } from "~/types";
 
-const { chat, disabled } = defineProps<{ chat: Chat; disabled: boolean }>();
-const emit = defineEmits<{ send: [string, FileList] }>();
+const { chat, disabled = false } = defineProps<{
+  chat: Chat;
+  disabled?: boolean;
+}>();
+const emit = defineEmits<{ send: [ChatEntry[]] }>();
 
 const schema = object({
+  files: array<File>(),
   message: string().when("files", {
-    is: (files) => files?.length > 0,
+    is: (files: File[]) => files?.length > 0,
     then: () => string().required("Je moet een reactie invullen"),
     otherwise: () => string().nullable(),
   }),
-  files: object().nullable(),
 });
 
 const formState = reactive({
   message: "",
-  files: null as FileList | null,
+  files: [] as File[],
 });
 
 const {
   files,
   open: fileOpen,
   reset: fileReset,
-  onChange: fileChange,
+  onChange: onFileChange,
 } = useFileDialog({
   accept: "image/*",
   directory: false,
 });
 
-fileChange((files) => (formState.files = files));
+onFileChange((files) => {
+  if (files) formState.files = [...formState.files, ...Array.from(files)];
+});
 
 function reset() {
   formState.files = [];
@@ -49,10 +54,13 @@ async function sendMessage() {
     for (const file of formState.files) data.append("files", file);
 
   try {
-    const response = await $fetch(`/api/chats/by-id/${chat.id}/entries`, {
-      method: "POST",
-      body: data,
-    });
+    const response = await $fetch<ChatEntry[]>(
+      `/api/chats/by-id/${chat.id}/entries`,
+      {
+        method: "POST",
+        body: data,
+      },
+    );
 
     console.log("Response = %o", response);
 
@@ -65,11 +73,15 @@ async function sendMessage() {
 }
 
 function addFiles() {
-  const initialFiles = files.value;
+  console.log("Adding from %o", files.value);
   fileOpen({
-    initialFiles: initialFiles ?? [],
+    initialFiles: files.value ?? undefined,
     multiple: true,
   });
+}
+
+function removeFile(file: File) {
+  formState.files = formState.files.filter((f) => f !== file);
 }
 
 defineShortcuts({
@@ -82,10 +94,8 @@ defineShortcuts({
 
 <template>
   <UForm
-    :state="formState"
-    :schema="schema"
     :disabled="isLoading"
-    class="p-4 grid grid-cols-1 gap-2"
+    class="p-4 grid grid-cols-1 gap-4"
     @submit.prevent="sendMessage"
   >
     <UTextarea
@@ -100,17 +110,17 @@ defineShortcuts({
       color="neutral"
       name="reply-field"
       placeholder="Typ een gevatte reactie, of wat doms..."
-      required
       variant="outline"
     />
 
     <div class="flex items-center justify-between">
       <div class="flex flex-row flex-wrap gap-2 items-center">
-        <template v-if="formState.files != null">
+        <template v-if="formState.files.length > 0">
           <ChatInputFile
             v-for="file of formState.files"
             :key="file.name"
             :file="file"
+            @remove-file="removeFile"
           />
 
           <UTooltip text="Bijlage toevoegen">

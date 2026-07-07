@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import type { Issue, Location, Vendor } from "~/types";
 import { type InferType, object, string } from "yup";
+import { breakpointsTailwind } from "@vueuse/core";
 
 const confetti = useConfetti();
 const router = useRouter();
+const toast = useToast();
+
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMobile = breakpoints.smaller("lg");
 
 const modalOpen = defineModel<boolean>("open", { default: false });
 const modalDesc = ref<string | undefined>(undefined);
@@ -54,7 +59,6 @@ const issue = reactive<CompleteSchema>({
 });
 
 const loading = ref(false);
-const toast = useToast();
 
 const currentPage = ref(1);
 const isMap = computed(
@@ -112,11 +116,13 @@ const submit = async () => {
       },
     });
 
-    toast.add({
-      color: "success",
-      title: `Melding ${result.id} aangemaakt`,
-      description: "De melding is succesvol aangemaakt.",
-    });
+    if (!isMobile) {
+      toast.add({
+        color: "success",
+        title: `Melding ${result.id} aangemaakt`,
+        description: "De melding is succesvol aangemaakt.",
+      });
+    }
 
     modalOpen.value = false;
     confetti.dispatch("normal");

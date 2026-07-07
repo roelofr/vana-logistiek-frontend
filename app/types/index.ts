@@ -86,10 +86,29 @@ export interface ChatMessage extends ChatEntryBase {
 
 export interface ChatFile extends ChatEntryBase {
   type: "file";
-  file: File;
+  filename: string;
+  mimetype: string;
+  fileStatus: "new" | "ready" | "corrupted";
+  fileType: "image" | "binary" | "unknown";
+  url: string;
 }
 
-export type ChatEntry = ChatMessage | ChatFile;
+export interface ChatLocation extends ChatEntryBase {
+  type: "location";
+  latitude: number;
+  longitude: number;
+}
+
+export type ChatEntry = ChatMessage | ChatFile | ChatLocation;
+
+export type ChatEntryGroup = {
+  id: string;
+  role: "user" | "system";
+  isMe: boolean;
+  user: Pick<User, "id" | "providerId" | "name" | "avatar"> | null;
+  group: Pick<Group, "id" | "name" | "colour" | "icon"> | null;
+  entries: ChatEntry[];
+};
 
 export type ChatIssueType = "system" | "user";
 

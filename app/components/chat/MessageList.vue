@@ -1,81 +1,62 @@
 <script setup lang="ts">
 import type { Chat, ChatEntry, User } from "~/types";
+import type { ChatMessageProps } from "@nuxt/ui/components/ChatMessage.vue";
+import { groupChatMessages } from "~/utils/message-converter";
 
 const { chat } = defineProps<{ chat: Chat }>();
 const { user } = useOidcAuth();
 
-const { data: messages } = useLazyFetch<ChatEntry[]>(
-  `/api/chats/by-id/${chat.id}/entries`,
-);
+const skels = ["l", "r", "c", "r", "r", "l", "c", "r"];
 
-/*
-"id": 1,
-"chat": {
-  "id": 3
-},
-"createdAt": "2026-07-06T22:55:22.135325",
-"updatedAt": "2026-07-06T22:55:22.135342",
-"groupingKey": "90b67b68-b957-4129-97e9-b3dcf5081cde",
-"user": {
-  "id": 1,
-  "providerId": "394e2a58-d8cc-44f4-84e6-0705c24e9e7b",
-  "name": "Roelof Roos",
-  "avatar": "https://login.troela.fun/api/users/394e2a58-d8cc-44f4-84e6-0705c24e9e7b/profile-picture.png"
-},
-"group": null,
-"message": "Wat doms!",
-"type": "message"
- */
+const {
+  data: messages,
+  status,
+  refresh,
+} = useLazyFetch<ChatEntry[]>(`/api/chats/by-id/${chat.id}/entries`);
 
-watch(
-  () => user.value,
-  (v) => console.log(v),
-);
-
-function isMe(targetUser: User | null) {
-  return (
-    targetUser != null && targetUser.providerId == user.value?.userInfo?.sub
-  );
-}
+const isLoading = computed(() => ["pending", "idle"].includes(status.value));
 
 const chatMessages = computed(() => {
-  const messagesValue = messages.value;
+  const messagesValue = expand(messages.value, ["user", "group"]);
+
   if (!messagesValue) return [];
 
-  const groups = [];
-  let grouping: string | null = null;
-  let grouped = null;
-
-  messagesValue.forEach((message) => {
-    if (!grouping || message.groupingKey !== grouping) {
-      grouping = message.groupingKey;
-      grouped = {
-        id: message.groupingKey,
-        role: "user",
-        avatar: message.user?.avatar,
-        side: isMe(message.user) ? "right" : "left",
-        parts: [],
-      };
-
-      groups.push(grouped);
-    }
-
-    if (message.type === "message")
-      grouped.parts.push({
-        type: "text",
-        mesage: message.message,
-      });
-  });
-
-  return groups;
+  return groupChatMessages(messagesValue);
 });
+
+defineExpose({ refresh });
 </script>
 
 <template>
-  <UChatMessages :messages="chatMessages" />
+  <div v-if="isLoading">
+    <div v-for="(side, index) in skels" :key="index" class="w-full mb-4">
+      <div v-if="side == 'r'" class="flex justify-end gap-2">
+        <USkeleton class="h-12 w-75" />
+        <USkeleton class="size-8 rounded-full" />
+      </div>
+      <div v-else-if="side == 'l'" class="flex gap-2">
+        <USkeleton class="size-8 rounded-full" />
+        <USkeleton class="h-12 w-75" />
+      </div>
+      <USkeleton v-else class="h-6 w-80 mx-auto" />
+    </div>
+  </div>
+  <UChatMessages v-else>
+    <ChatMessageGroup
+      v-for="group of chatMessages"
+      :key="group.id"
+      :group="group"
+    />
+  </UChatMessages>
   <DevOnly>
-    <pre><code>{{ JSON.stringify(messages, undefined, 2) }}</code></pre>
-    <pre><code>{{ JSON.stringify(chatMessages, undefined, 2)}}</code></pre>
+    <details>
+      <summary>Raw response</summary>
+      <pre><code>{{ JSON.stringify(messages, undefined, 2)}}</code></pre>
+    </details>
+    <details>
+      <summary>Mapped response</summary>
+      <pre><code>{{ JSON.stringify(chatMessages, undefined, 2)}}</code></pre>
+    </details>
   </DevOnly>
 </template>
 

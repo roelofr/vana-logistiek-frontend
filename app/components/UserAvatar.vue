@@ -1,10 +1,14 @@
 <script lang="ts" setup>
-import type { Team, User } from "../types";
+import type { Group, User } from "~/types";
 
-const { user, team, size } = defineProps<{
-  user: User;
-  team: Team | undefined;
-  size:
+const {
+  user,
+  group = undefined,
+  size = undefined,
+} = defineProps<{
+  user: Partial<User>;
+  group?: Partial<Group> | undefined;
+  size?:
     | "md"
     | "3xs"
     | "2xs"
@@ -17,22 +21,23 @@ const { user, team, size } = defineProps<{
     | undefined;
 }>();
 
-const teamComputed = computed<Team>(() => team ?? user.team!);
-const colourComputed = computed(() => teamComputed.value.colour ?? "pink");
+const groupComputed = computed<Partial<Group> | null>(
+  () => group ?? user.group ?? null,
+);
+const colourComputed = computed(() => groupComputed.value?.colour ?? "pink");
 </script>
 
 <template>
   <UAvatarGroup>
-    <UAvatar :alt="user.name" :size="size" />
+    <UAvatar :src="user.avatar ?? undefined" :alt="user.name" :size="size" />
     <UAvatar
-      class="bg-(--chip-light) dark:bg-(--chip-dark)"
+      v-if="groupComputed"
+      :class="`bg-${colourComputed}-700) dark:bg-${colourComputed}-500)`"
       :style="{
         '--ui-text-muted': 'var(--ui-text-inverted)',
-        '--chip-light': `var(--color-${colourComputed}-700)`,
-        '--chip-dark': `var(--color-${colourComputed}-500)`,
       }"
-      :icon="teamComputed.icon"
-      :alt="teamComputed.name"
+      :icon="groupComputed.icon"
+      :alt="groupComputed.name"
       :size="size"
     />
   </UAvatarGroup>
