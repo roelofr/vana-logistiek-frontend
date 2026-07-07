@@ -7,7 +7,7 @@ const color = computed(() =>
 );
 
 useHead({
-  meta: [{ name: "theme-color", content: color }],
+  meta: [{name: "theme-color", content: color}],
 });
 
 const title = "Penis LogistiekApp";
@@ -22,10 +22,14 @@ useSeoMeta({
 
 <template>
   <UApp>
-    <NuxtLoadingIndicator />
+    <NuxtLoadingIndicator/>
 
     <NuxtLayout>
-      <NuxtPage />
+      <NuxtPage/>
     </NuxtLayout>
   </UApp>
 </template>
+
+<style>
+@source inline("{bg,fill}-{amber,stone,red,blue,yellow,lime,pink}-{500,600,700}")
+</style>

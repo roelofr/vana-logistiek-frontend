@@ -3,8 +3,10 @@ import {computed, ref, watch} from "vue";
 import {breakpointsTailwind} from "@vueuse/core";
 import type {Chat, ListChat} from "~/types";
 
-const {data, pending, refresh} = useLazyFetch<{ chats: ListChat[] }>("/api/chats");
-const chats = computed<ListChat[]>(() => (data.value?.chats ?? [])
+const route = useRoute();
+
+const {data: rawChats} = useLazyFetch<{ chats: ListChat[] }>("/api/chats");
+const chats = computed<ListChat[]>(() => (rawChats.value?.chats ?? [])
   .map((chat, index) => {
     console.log('%d: %o', index, chat)
     return chat
@@ -29,7 +31,10 @@ const filteredChats = computed<ListChat[]>(() => {
 
 const selectedChatId = ref<number | null>(null);
 const selectedChat = computed<ListChat | null>({
-  get: () => chats.value?.find((issue) => issue.id === selectedChatId.value) ?? null,
+  get: () => {
+    const selectedChat = selectedChatId.value // Assign here so Vue can resolve the usage on an empty list
+    return chats.value?.find((issue) => issue.id === selectedChat) ?? null
+  },
   set: (chat: Chat | ListChat | null) => selectedChatId.value = chat?.id ?? null,
 });
 
@@ -37,6 +42,24 @@ const isMailPanelOpen = computed({
   get: () => !!selectedChat.value,
   set: (value: boolean) => (!value) ? selectedChat.value = null : null,
 });
+
+// Change the selected chat if an ID is present as param
+watch(() => route.params, (newParams, oldParams) => {
+  if (!newParams.id && oldParams.id) {
+    selectedChatId.value = null
+    return
+  }
+
+  if ( newParams.id && String(newParams.id).match(/^\d+$/)) {
+    selectedChatId.value = Number.parseInt(newParams.id as string, 10)
+    isMailPanelOpen.value = true
+  }
+})
+
+onMounted(() => {
+  if (route.params.id && String(route.params.id).match(/^\d+$/))
+    selectedChatId.value = Number.parseInt(route.params.id as string, 10)
+})
 
 // Reset selected issue if it's not in the filtered chats
 watch(filteredChats, () => {
@@ -74,23 +97,12 @@ const isMobile = breakpoints.smaller("lg");
     <ChatList v-model="selectedChat" :chats="filteredChats"/>
   </UDashboardPanel>
 
-  <ChatBody
-    v-if="selectedChat"
-    :issue="selectedChat"
-    @close="selectedChat = null"
-  />
-  <div v-else class="hidden lg:flex flex-1 items-center justify-center">
-    <UIcon name="i-lucide-inbox" class="size-32 text-dimmed"/>
-  </div>
+  <NuxtPage/>
 
   <ClientOnly>
     <USlideover v-if="isMobile" v-model:open="isMailPanelOpen">
       <template #content>
-        <ChatBody
-          v-if="selectedChat"
-          :issue="selectedChat"
-          @close="selectedChat = null"
-        />
+        <NuxtPage/>
       </template>
     </USlideover>
   </ClientOnly>

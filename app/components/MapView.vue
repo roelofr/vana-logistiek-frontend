@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {Location} from "~/types";
 import {useOidcAuth} from "#imports";
-import {default as MapLibre, ResourceType} from 'maplibre-gl'
+import MapLibre from 'maplibre-gl'
 
 export type MapType = 'picker' | 'display';
 
@@ -19,25 +19,14 @@ interface NamedLocation extends Location {
 
 const {user} = useOidcAuth()
 
-const {type = 'display', markers = []} = defineProps<{ type?: MapType, markers?: NamedLocation[] }>()
+const {type = 'display', markers = [], disabled = false} = defineProps<{ type?: MapType, markers?: NamedLocation[], disabled?: boolean }>()
 const chosenLocation = defineModel<Location | null>()
 
-const mapInstance = ref<MapLibre.Map | null>(null);
+const mapInstance = ref<MapLibre.Map | undefined>();
 const mapRef = useTemplateRef('map');
-const mapMarkerInstance = ref(null);
+const mapMarkerInstance = ref<MapLibre.Marker | undefined>();
 
-const authenticatedResources = ['Style', 'Tile', 'Sprite', 'Source']
 const authenticatedDomains = ['https://map.logistiek.myvana.dev/', document.location.origin];
-
-const mapProps = ref({
-  interactive: type != 'display',
-  style: 'https://map.logistiek.myvana.dev/styles/castlefest/style.json',
-  center: [4.540827673262811, 52.268359222840786],
-  maxBounds: [4.526901644057006, 52.26344783696234, 4.558530252760903, 52.27387403440119],
-  zoom: 17,
-  minZoom: 14,
-  maxZoom: 20,
-})
 
 const clickMap = (event: MapEvent) => {
   if (type !== 'picker')
@@ -48,61 +37,69 @@ const clickMap = (event: MapEvent) => {
     lng: event.lngLat.lng
   }
 
-  console.log('Click on point %o', event.lngLat)
+  if (mapMarkerInstance.value)
+    mapMarkerInstance.value.remove();
+
+  mapMarkerInstance.value = new MapLibre.Marker()
+    .setLngLat([event.lngLat.lng, event.lngLat.lat])
+    .addTo(mapInstance.value!);
 }
 
-const renderMap = () => {
+const blockIfDisabled = (event: Event) => disabled ? event.preventDefault() : null
+
+function renderMap() {
   if (mapInstance.value != null)
     mapInstance.value.remove()
 
   const map = mapInstance.value = new MapLibre.Map({
     container: mapRef.value!,
     interactive: type != 'display',
-    style: 'https://map.logistiek.myvana.dev/styles/castlefest/style.json',
+    style: {
+      version: 8,
+      sources: {
+        castlefest: {
+          type: 'raster',
+          url: 'https://map.logistiek.myvana.dev/data/castlefest.json',
+          tileSize: 256,
+          maxzoom: 20
+        }
+      },
+      layers: [
+        {
+          id: 'castlefest',
+          type: 'raster',
+          source: 'castlefest'
+        }
+      ]
+    },
     center: [4.54307, 52.27004],
-    // maxBounds: [4.531109, 52.264237, 4.548113, 52.272678],
+    maxBounds: [4.525850, 52.262308, 4.560406, 52.273979],
     zoom: 15,
     minZoom: 14,
     maxZoom: 20,
-    attributionControl: {
-      compact: false,
-      customAttribution: '<a href="https://vana-events.nl/">© Vana Events B.V.</a>'
-    },
-    transformRequest: (url, resourceType) => {
-      if (authenticatedResources.includes(resourceType! as string) && authenticatedDomains.some(domain => url.startsWith(domain))) {
+    attributionControl: false,
+    transformRequest: (url) => {
+      if (authenticatedDomains.some(domain => url.startsWith(domain))) {
         return {
           url,
-          headers: {'authorization': `Bearer ${user.value?.accessToken}`},
-          credentials: 'include'  // Include cookies for cross-origin requests
+          headers: {'Authorization': `Bearer ${user.value?.accessToken}`},
+          credentials: 'include'
         }
       }
     }
   })
-  // disable map rotation using right click + drag
-  // map.dragRotate.disable();
 
-// disable map rotation using keyboard
+  // Add Vana attribution
+  map.addControl(new MapLibre.AttributionControl({compact: true}), 'bottom-right')
+  map.addControl(new MapLibre.GeolocateControl({showUserLocation: true}), 'top-right')
+
+  // Disable rotation
+  map.dragRotate.disable();
   map.keyboard.disable();
-
-// disable map rotation using touch rotation gesture
   map.touchZoomRotate.disableRotation();
 
+
   map.on('click', clickMap)
-}
-
-const spriteMap = new Map<Location, string>();
-const allMarkers = computed<Location[]>(() => {
-  return [
-    ...markers,
-    ...(chosenLocation.value ? [chosenLocation.value] : [])
-  ] as Location[]
-})
-const updateMarkers = () => {
-  for (const marker of allMarkers.value) {
-    if (! spriteMap.has(marker)) {
-
-    }
-  }
 }
 
 watch(() => type, () => renderMap())
@@ -119,13 +116,13 @@ onMounted(() => {
 onUnmounted(() => {
   if (mapInstance.value) {
     mapInstance.value.remove()
-    mapInstance.value = null
+    mapInstance.value = undefined
   }
 })
 </script>
 
 <template>
-  <div ref="map" class="h-full w-full bg-muted" />
+  <div ref="map" class="h-full w-full bg-muted relative" :class="{'opacity-50': disabled}" />
 </template>
 
 <style scoped>

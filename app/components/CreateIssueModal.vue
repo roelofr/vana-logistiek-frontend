@@ -133,8 +133,10 @@ function reset() {
   currentPage.value = 1
 }
 
+const isLoading = ref(false);
+
 watch(modalOpen, (newVal, oldVal) => {
-  if (! oldVal && newVal) {
+  if (!oldVal && newVal) {
     reset()
   }
 })
@@ -191,17 +193,21 @@ watch(modalOpen, (newVal, oldVal) => {
       <LazyUForm
         v-else-if="currentPage == 2 && issue.issueType == 'with-location'"
         id="createIssueForm"
-        :schema="vendorSchema"
+        :schema="locationSchema"
         :state="issue"
         class="space-y-4 h-full flex flex-col grow"
         @submit="continueOrSubmit">
         <p>Selecteer de locatie van de melding, en klik rechtsonderin om te bevestigen.</p>
-        <MapView v-model="issue.location" class="grow" type="picker"/>
+        <MapView :disabled="isLoading" v-model="issue.location" class="grow" type="picker"/>
       </LazyUForm>
 
       <template v-else>
         How did you get here?
       </template>
+
+      <DevOnly>
+        <pre><code>{{ JSON.stringify(issue, undefined, 2) }}</code></pre>
+      </DevOnly>
     </template>
 
     <template #footer>

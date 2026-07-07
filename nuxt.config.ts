@@ -59,6 +59,7 @@ export default defineNuxtConfig({
         state: true,
         exposeAccessToken: true,
         exposeIdToken: true,
+
       }
     },
     session: {
@@ -67,7 +68,7 @@ export default defineNuxtConfig({
       expirationThreshold: 3600,
     },
     middleware: {
-      globalMiddlewareEnabled: false,
+      globalMiddlewareEnabled: true,
     }
   },
 
@@ -106,6 +107,7 @@ export default defineNuxtConfig({
 
   vite: {
     optimizeDeps: {
+      noDiscovery: true,
       include: [
         "@tanstack/table-core",
         "date-fns",

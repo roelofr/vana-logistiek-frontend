@@ -84,14 +84,16 @@ const chatAvatars = (chat: ListChat) => {
         }
       "
     >
-      <div
-        class="p-4 sm:pr-6 text-sm cursor-pointer border-l-2 transition-colors"
+      <NuxtLink
+        as="div"
+        class="block p-4 sm:pr-6 text-sm cursor-pointer border-l-2 transition-colors"
         :class="[
           chat.unread ? 'text-highlighted' : 'text-toned',
           selectedChat && selectedChat.id === chat.id
             ? 'border-primary bg-primary/10'
             : 'border-bg hover:border-primary hover:bg-primary/5',
         ]"
+        :to="`/inbox/${chat.id}`"
         @click="selectedChat = chat"
       >
         <div class="grid grid-message max-w-full gap-4">
@@ -126,7 +128,7 @@ const chatAvatars = (chat: ListChat) => {
             </p>
           </div>
         </div>
-      </div>
+      </NuxtLink>
     </div>
   </div>
 </template>
