@@ -29,7 +29,3 @@ useSeoMeta({
     </NuxtLayout>
   </UApp>
 </template>
-
-<style>
-@source inline("{bg,fill}-{amber,stone,red,blue,yellow,lime,pink}-{500,600,700}")
-</style>
