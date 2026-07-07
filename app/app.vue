@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import 'maplibre-gl/dist/maplibre-gl.css'
+import "maplibre-gl/dist/maplibre-gl.css";
 
 const colorMode = useColorMode();
 const color = computed(() =>
@@ -7,7 +7,7 @@ const color = computed(() =>
 );
 
 useHead({
-  meta: [{name: "theme-color", content: color}],
+  meta: [{ name: "theme-color", content: color }],
 });
 
 const title = "Penis LogistiekApp";
@@ -22,10 +22,10 @@ useSeoMeta({
 
 <template>
   <UApp>
-    <NuxtLoadingIndicator/>
+    <NuxtLoadingIndicator />
 
     <NuxtLayout>
-      <NuxtPage/>
+      <NuxtPage />
     </NuxtLayout>
   </UApp>
 </template>

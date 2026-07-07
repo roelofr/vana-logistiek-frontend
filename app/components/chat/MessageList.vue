@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import type {Chat, ChatEntry, User} from "~/types";
+import type { Chat, ChatEntry, User } from "~/types";
 
-const {chat} = defineProps<{ chat: Chat }>();
+const { chat } = defineProps<{ chat: Chat }>();
 const { user } = useOidcAuth();
 
-const {data: messages} = useLazyFetch<ChatEntry[]>(`/api/chats/by-id/${chat.id}/entries`)
+const { data: messages } = useLazyFetch<ChatEntry[]>(
+  `/api/chats/by-id/${chat.id}/entries`,
+);
 
 /*
 "id": 1,
@@ -25,45 +27,48 @@ const {data: messages} = useLazyFetch<ChatEntry[]>(`/api/chats/by-id/${chat.id}/
 "type": "message"
  */
 
-watch(() => user.value, v => console.log(v))
+watch(
+  () => user.value,
+  (v) => console.log(v),
+);
 
 function isMe(targetUser: User | null) {
-  return (targetUser != null && targetUser.providerId == user.value?.userInfo?.sub);
+  return (
+    targetUser != null && targetUser.providerId == user.value?.userInfo?.sub
+  );
 }
 
 const chatMessages = computed(() => {
   const messagesValue = messages.value;
-  if (! messagesValue)
-    return [];
+  if (!messagesValue) return [];
 
   const groups = [];
   let grouping: string | null = null;
   let grouped = null;
 
-  messagesValue.forEach(message => {
+  messagesValue.forEach((message) => {
     if (!grouping || message.groupingKey !== grouping) {
       grouping = message.groupingKey;
       grouped = {
         id: message.groupingKey,
-        role: 'user',
+        role: "user",
         avatar: message.user?.avatar,
-        side: isMe(message.user) ? 'right' : 'left',
-        parts: []
-      }
+        side: isMe(message.user) ? "right" : "left",
+        parts: [],
+      };
 
-      groups.push(grouped)
+      groups.push(grouped);
     }
 
-    if (message.type === 'message')
-    grouped.parts.push({
-      type: 'text',
-      mesage: message.message,
-    })
-  })
+    if (message.type === "message")
+      grouped.parts.push({
+        type: "text",
+        mesage: message.message,
+      });
+  });
 
   return groups;
-})
-
+});
 </script>
 
 <template>
@@ -74,6 +79,4 @@ const chatMessages = computed(() => {
   </DevOnly>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

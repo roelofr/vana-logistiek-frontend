@@ -7,24 +7,26 @@ export async function convertToWebP(files: File[]): Promise<File[]> {
       const img = await loadImage(file);
 
       // Create invisible canvas
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
 
       // Draw image to canvas
-      const ctx = canvas.getContext('2d')!;
+      const ctx = canvas.getContext("2d")!;
       ctx.drawImage(img, 0, 0);
 
       // Export as WebP
       const webpData = await new Promise<Blob | null>((resolve) => {
-        canvas.toBlob((blob) => resolve(blob), 'image/webp', 0.95);
+        canvas.toBlob((blob) => resolve(blob), "image/webp", 0.95);
       });
 
       if (webpData)
-        results.push(new File([webpData], file.name, {
-          type: 'image/webp',
-          lastModified: Date.now(),
-        }))
+        results.push(
+          new File([webpData], file.name, {
+            type: "image/webp",
+            lastModified: Date.now(),
+          }),
+        );
     } catch (error) {
       console.error(`Failed to process ${file.name}:`, error);
     }

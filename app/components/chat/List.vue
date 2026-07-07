@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {format, isToday} from "date-fns";
+import { format, isToday } from "date-fns";
 
 const props = defineProps<{
   chats: ListChat[];
@@ -15,7 +15,7 @@ watch(selectedChat, () => {
   }
   const ref = issuesRefs.value[selectedChat.value.id];
   if (ref) {
-    ref.scrollIntoView({block: "nearest"});
+    ref.scrollIntoView({ block: "nearest" });
   }
 });
 
@@ -48,19 +48,19 @@ const formatDate = (date: Date) => {
   try {
     return isToday(date) ? format(date, "HH:mm") : format(date, "dd MMM HH:mm");
   } catch {
-    return '';
+    return "";
   }
-}
+};
 
 const chatAvatars = (chat: ListChat) => {
-  return [...chat.users, ...chat.groups].slice(0, 2).map(user => ({
+  return [...chat.users, ...chat.groups].slice(0, 2).map((user) => ({
     alt: user.name,
     src: (user as unknown as Record<string, string | null>).avatar ?? undefined,
     icon: (user as unknown as Record<string, string | null>).icon ?? undefined,
-    color: (user as unknown as Record<string, string | null>).colour ?? undefined,
-  }))
-}
-
+    color:
+      (user as unknown as Record<string, string | null>).colour ?? undefined,
+  }));
+};
 </script>
 
 <template>
@@ -108,21 +108,21 @@ const chatAvatars = (chat: ListChat) => {
               <div class="flex items-center gap-3">
                 {{ chat.title }}
 
-                <UChip v-if="chat.unread"/>
+                <UChip v-if="chat.unread" />
               </div>
 
               <span>{{ formatDate(chat.updatedAt) }}</span>
             </div>
             <p class="truncate max-w-full text-dimmed line-clamp-1">
               <template v-if="chat.subject && chat.subject.vendor">
-                {{ chat.subject.vendor.name }} ({{ chat.subject.vendor.number }})
+                {{ chat.subject.vendor.name }} ({{
+                  chat.subject.vendor.number
+                }})
               </template>
               <template v-else-if="chat.subject && chat.subject.location">
                 Op locatie
               </template>
-              <template v-else>
-                Reguliere chat
-              </template>
+              <template v-else> Reguliere chat </template>
             </p>
           </div>
         </div>

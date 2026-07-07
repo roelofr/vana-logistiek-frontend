@@ -9,7 +9,7 @@ definePageMeta({
   middleware: ["auth"],
 });
 
-useHead({title: 'Standhouders'})
+useHead({ title: "Standhouders" });
 
 const UButton = resolveComponent("UButton");
 const NuxtLink = resolveComponent("NuxtLink");
@@ -67,7 +67,14 @@ const columns: TableColumn<Vendor>[] = [
       return h("div", { class: "flex items-center gap-3" }, [
         h(VendorAvatar, { vendor: row.original, size: "lg" }),
         h("div", undefined, [
-          h(NuxtLink, { class: "font-medium text-highlighted", to: `/vendors/${row.getValue('id')}` }, () => row.getValue('name')),
+          h(
+            NuxtLink,
+            {
+              class: "font-medium text-highlighted",
+              to: `/vendors/${row.getValue("id")}`,
+            },
+            () => row.getValue("name"),
+          ),
         ]),
       ]);
     },
@@ -169,7 +176,11 @@ const columns: TableColumn<Vendor>[] = [
       >
         <template #empty>
           <div class="px-1">
-          <UEmpty icon="i-lucide-store" title="Geen standhouders bekend" description="Importeer een bestand, of maak een losse standhouder aan om door te gaan." />
+            <UEmpty
+              icon="i-lucide-store"
+              title="Geen standhouders bekend"
+              description="Importeer een bestand, of maak een losse standhouder aan om door te gaan."
+            />
           </div>
         </template>
       </UTable>
@@ -178,9 +189,7 @@ const columns: TableColumn<Vendor>[] = [
         class="flex items-center justify-between gap-3 border-t border-default pt-4 mt-auto"
       >
         <div class="text-sm text-muted">
-          {{
-            table?.tableApi?.getFilteredSelectedRowModel().rows.length || 0
-          }}
+          {{ table?.tableApi?.getFilteredSelectedRowModel().rows.length || 0 }}
           van
           {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }} rij(en)
           geselecteerd.

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from "vue";
-import type { IssueFilter, LoadingType } from "~/types";
+import { ref } from "vue";
 import { breakpointsTailwind } from "@vueuse/core";
 
 definePageMeta({
@@ -11,14 +10,12 @@ definePageMeta({
 const router = useRouter();
 
 const isPanelOpen = ref(false);
-const activeFilter = ref<IssueFilter>("all");
 
-const { activeIssue, issues, loadingState, fetch } = useIssueStore();
+const { activeIssue, loadingState, fetch } = useIssueStore();
 
 onMounted(() => {
   if (loadingState == LoadingState.Initial) fetch();
 });
-
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller("lg");
@@ -27,15 +24,15 @@ const isMobile = breakpoints.smaller("lg");
 <template>
   <UDashboardPanel
     id="inbox-1"
-    :default-size="25"
-    :max-size="30"
-    :min-size="20"
-    resizable
     :class="{
       'message-list': true,
       'message-list--mobile': isMobile,
       'message-list--with-message': activeIssue != null,
     }"
+    :default-size="25"
+    :max-size="30"
+    :min-size="20"
+    resizable
   >
     <UDashboardNavbar title="Meldingen">
       <template #leading>

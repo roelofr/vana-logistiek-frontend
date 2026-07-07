@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type {DropdownMenuItem} from "@nuxt/ui";
+import type { DropdownMenuItem } from "@nuxt/ui";
 
 definePageMeta({
   middleware: ["auth"],
@@ -21,12 +21,12 @@ const items = [
     <template #header>
       <UDashboardNavbar :ui="{ right: 'gap-3' }" title="Home">
         <template #leading>
-          <UDashboardSidebarCollapse/>
+          <UDashboardSidebarCollapse />
         </template>
 
         <template #right>
           <UDropdownMenu :items="items">
-            <UButton class="rounded-full" icon="i-lucide-plus" size="md"/>
+            <UButton class="rounded-full" icon="i-lucide-plus" size="md" />
           </UDropdownMenu>
         </template>
       </UDashboardNavbar>
@@ -38,7 +38,7 @@ const items = [
         title="Nope, nog niks"
       >
         <template #leading>
-          <UIcon :size="64" name="i-lucide-swords"/>
+          <UIcon :size="64" name="i-lucide-swords" />
         </template>
       </UEmpty>
     </template>

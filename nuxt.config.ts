@@ -8,7 +8,8 @@ function env<T>(
   return defaultValue;
 }
 
-const authUrl = (path: string): string => new URL(path, 'https://login.troela.fun').toString();
+const authUrl = (path: string): string =>
+  new URL(path, "https://login.troela.fun").toString();
 
 export default defineNuxtConfig({
   modules: [
@@ -31,8 +32,8 @@ export default defineNuxtConfig({
     nitro: {
       storage: {
         oidc: {
-          driver: 'fs',
-          base: '.data/nitro/oidc',
+          driver: "fs",
+          base: ".data/nitro/oidc",
         },
       },
     },
@@ -43,24 +44,23 @@ export default defineNuxtConfig({
   // OpenID
   oidc: {
     enabled: true,
-    defaultProvider: 'oidc',
+    defaultProvider: "oidc",
     providers: {
       oidc: {
-        clientId: 'logistiek-nuxt-dev',
-        clientSecret: '',
-        redirectUri: 'http://localhost:3000/auth/oidc/callback',
-        authorizationUrl: authUrl('/authorize'),
-        logoutUrl: authUrl('/api/oidc/end-session'),
-        tokenUrl: authUrl('/api/oidc/token'),
-        userInfoUrl: authUrl('/api/oidc/userinfo'),
-        openIdConfiguration: authUrl('/.well-known/openid-configuration'),
-        scope: ['openid', 'email', 'profile', 'groups'],
+        clientId: "logistiek-nuxt-dev",
+        clientSecret: "",
+        redirectUri: "http://localhost:3000/auth/oidc/callback",
+        authorizationUrl: authUrl("/authorize"),
+        logoutUrl: authUrl("/api/oidc/end-session"),
+        tokenUrl: authUrl("/api/oidc/token"),
+        userInfoUrl: authUrl("/api/oidc/userinfo"),
+        openIdConfiguration: authUrl("/.well-known/openid-configuration"),
+        scope: ["openid", "email", "profile", "groups"],
         pkce: true,
         state: true,
         exposeAccessToken: true,
         exposeIdToken: true,
-
-      }
+      },
     },
     session: {
       expirationCheck: true,
@@ -69,7 +69,7 @@ export default defineNuxtConfig({
     },
     middleware: {
       globalMiddlewareEnabled: true,
-    }
+    },
   },
 
   runtimeConfig: {
@@ -91,8 +91,8 @@ export default defineNuxtConfig({
     // Use local file system storage for dev quick setup
     storage: {
       oidc: {
-        driver: 'fs',
-        base: '/app/data/oidc',
+        driver: "fs",
+        base: "/app/data/oidc",
       },
     },
     hooks: {

@@ -41,9 +41,9 @@ export interface Vendor {
   district?: Pick<District, "id" | "name">;
 }
 
-export type ChatType = "regular" | "group" | "issue"
+export type ChatType = "regular" | "group" | "issue";
 
-export type ChatState = "active" | "permanent" | "closed"
+export type ChatState = "active" | "permanent" | "closed";
 
 export interface ChatSubject {
   id: number;
@@ -52,15 +52,15 @@ export interface ChatSubject {
 }
 
 export interface Chat {
-  id: number
-  title: string
-  type: string
-  state: string
+  id: number;
+  title: string;
+  type: string;
+  state: string;
   users: Pick<User, "id" | "providerId" | "name" | "avatar">[];
   groups: Pick<Group, "id" | "name" | "icon" | "colour">[];
-  createdAt: Date
-  updatedAt: Date
-  subject: ChatSubject | null
+  createdAt: Date;
+  updatedAt: Date;
+  subject: ChatSubject | null;
   unread: boolean;
 }
 
@@ -80,16 +80,16 @@ interface ChatEntryBase {
 }
 
 export interface ChatMessage extends ChatEntryBase {
-  type: "message"
+  type: "message";
   message: string;
 }
 
 export interface ChatFile extends ChatEntryBase {
-  type: "file"
+  type: "file";
   file: File;
 }
 
-export type ChatEntry = ChatMessage | ChatFile
+export type ChatEntry = ChatMessage | ChatFile;
 
 export type ChatIssueType = "system" | "user";
 
@@ -102,7 +102,7 @@ export interface ChatIssue {
   type: ChatIssueType;
 }
 
-export {type ConfettiVariant} from '~/plugins/confetti.client'
+export { type ConfettiVariant } from "~/plugins/confetti.client";
 
 export interface Location {
   lat: number;

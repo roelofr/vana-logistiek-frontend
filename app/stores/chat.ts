@@ -1,4 +1,4 @@
-import type {Chat} from "~/types";
+import type { Chat } from "~/types";
 
 export interface ListChat extends Pick<
   Chat,
@@ -17,11 +17,11 @@ export interface ListChat extends Pick<
 
 interface ChatListResponse {
   statistics: {
-    totalItems: number
-    totalPages: number
-    currentPage: number
-  }
-  chats: ListChat[]
+    totalItems: number;
+    totalPages: number;
+    currentPage: number;
+  };
+  chats: ListChat[];
 }
 
 export enum LoadingState {
@@ -41,8 +41,7 @@ export const useChatStore = defineStore("chatStore", {
   getters: {
     activeChat(state): ListChat | null {
       return state.activeChatId !== null
-        ? (state.chats.find((chat) => chat.id === state.activeChatId) ??
-          null)
+        ? (state.chats.find((chat) => chat.id === state.activeChatId) ?? null)
         : null;
     },
   },
@@ -56,15 +55,23 @@ export const useChatStore = defineStore("chatStore", {
       if (this.loadingState == LoadingState.Idle)
         this.loadingState = LoadingState.Update;
 
-      const {statistics, chats} = await $fetch<ChatListResponse>("/api/chats");
+      const { statistics, chats } =
+        await $fetch<ChatListResponse>("/api/chats");
 
-      console.log("Recieved page %d / %d (%d chats)", statistics.currentPage, statistics.totalPages, statistics.totalItems)
-      console.log('Chats = %o', chats)
+      console.log(
+        "Recieved page %d / %d (%d chats)",
+        statistics.currentPage,
+        statistics.totalPages,
+        statistics.totalItems,
+      );
+      console.log("Chats = %o", chats);
 
-      const mappedChats = expand(chats, [])
-        .map((chat) => ({...chat, read: true}));
+      const mappedChats = expand(chats, []).map((chat) => ({
+        ...chat,
+        read: true,
+      }));
 
-      console.log('Mapped Chats = %o', mappedChats)
+      console.log("Mapped Chats = %o", mappedChats);
 
       this.chats = mappedChats;
 

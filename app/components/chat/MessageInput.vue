@@ -1,23 +1,23 @@
 <script lang="ts" setup>
-import {object, string} from "yup";
-import type {Chat} from "~/types";
+import { object, string } from "yup";
+import type { Chat } from "~/types";
 
-const {chat, disabled} = defineProps<{ chat: Chat, disabled: boolean }>();
+const { chat, disabled } = defineProps<{ chat: Chat; disabled: boolean }>();
 const emit = defineEmits<{ send: [string, FileList] }>();
 
 const schema = object({
-  message: string().when('files', {
+  message: string().when("files", {
     is: (files) => files?.length > 0,
-    then: () => string().required('Je moet een reactie invullen'),
+    then: () => string().required("Je moet een reactie invullen"),
     otherwise: () => string().nullable(),
   }),
   files: object().nullable(),
-})
+});
 
 const formState = reactive({
-  message: '',
+  message: "",
   files: null as FileList | null,
-})
+});
 
 const {
   files,
@@ -29,38 +29,36 @@ const {
   directory: false,
 });
 
-fileChange((files) => formState.files = files)
+fileChange((files) => (formState.files = files));
 
 function reset() {
   formState.files = [];
-  formState.message = '';
+  formState.message = "";
   fileReset();
 }
 
-defineExpose({reset});
+defineExpose({ reset });
 
 const isLoading = ref(false);
 async function sendMessage() {
   if (disabled || isLoading.value) return;
 
   const data = new FormData();
-  data.append('message', formState.message);
+  data.append("message", formState.message);
   if (formState.files)
-    for (const file of formState.files)
-      data.append('files', file);
+    for (const file of formState.files) data.append("files", file);
 
   try {
     const response = await $fetch(`/api/chats/by-id/${chat.id}/entries`, {
-      method: 'POST',
-      body: data
-    })
+      method: "POST",
+      body: data,
+    });
 
-    console.log('Response = %o', response)
+    console.log("Response = %o", response);
 
-    if (response)
-      emit('send', response)
+    if (response) emit("send", response);
 
-    reset()
+    reset();
   } finally {
     isLoading.value = false;
   }
@@ -88,7 +86,8 @@ defineShortcuts({
     :schema="schema"
     :disabled="isLoading"
     class="p-4 grid grid-cols-1 gap-2"
-    @submit.prevent="sendMessage">
+    @submit.prevent="sendMessage"
+  >
     <UTextarea
       ref="reply-field"
       v-model="formState.message"
@@ -97,7 +96,7 @@ defineShortcuts({
       autoresize
       class="w-full"
       size="xl"
-      :ui="{ root: 'max-w-full', base: 'w-full', }"
+      :ui="{ root: 'max-w-full', base: 'w-full' }"
       color="neutral"
       name="reply-field"
       placeholder="Typ een gevatte reactie, of wat doms..."
@@ -108,7 +107,11 @@ defineShortcuts({
     <div class="flex items-center justify-between">
       <div class="flex flex-row flex-wrap gap-2 items-center">
         <template v-if="formState.files != null">
-          <ChatInputFile v-for="file of formState.files" :key="file.name" :file="file"/>
+          <ChatInputFile
+            v-for="file of formState.files"
+            :key="file.name"
+            :file="file"
+          />
 
           <UTooltip text="Bijlage toevoegen">
             <UButton

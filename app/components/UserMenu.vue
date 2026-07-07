@@ -5,7 +5,7 @@ defineProps<{
   collapsed?: boolean;
 }>();
 
-const { loggedIn, logout, user, name, avatar} = useSession()
+const { loggedIn, logout, user, name, avatar } = useSession();
 
 const userPending = computed(() => !user.value);
 const menuDisabled = computed(() => !loggedIn || user.value == null);
@@ -26,8 +26,8 @@ const items = computed<DropdownMenuItem[][]>(() => [
       label: "Uitloggen",
       icon: "i-lucide-log-out",
       onClick: async () => {
-        const redirectUrl = new URL('/', document.location.origin).toString();
-        await logout('oidc', redirectUrl);
+        const redirectUrl = new URL("/", document.location.origin).toString();
+        await logout("oidc", redirectUrl);
       },
     },
   ],
@@ -62,12 +62,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
         <USkeleton class="h-4 w-[70%]" />
       </div>
       <span v-else class="flex items-center gap-2">
-        <UAvatar
-          :src="avatar"
-          :alt="name"
-          class="h-6 w-6"
-          loading="lazy"
-        />
+        <UAvatar :src="avatar" :alt="name" class="h-6 w-6" loading="lazy" />
         {{ name ?? "Onbekende gebruiker" }}
       </span>
     </UButton>

@@ -8,8 +8,8 @@
     "start": "nuxt dev",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "eslint .",
-    "format": "eslint --fix .",
+    "lint": "eslint . && prettier --check .",
+    "format": "eslint --fix . && prettier --write .",
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {

@@ -1,35 +1,34 @@
 <script lang="ts" setup>
-import { computed } from "@vue/reactivity";
+import { computed } from "vue";
 import type { Vendor } from "~/types";
 
 definePageMeta({
   middleware: ["auth"],
 });
 
-
 const route = useRoute();
 
 // Fetches new data every time you switch messages
 const { data: vendor } = await useFetch<Vendor>(
-  () => `/api/vendors/${route.params.id}`
+  () => `/api/vendors/${route.params.id}`,
 );
 
 const vendorTableColumns = ref([
   {
-    accessorKey: 'id',
-    header: '#'
+    accessorKey: "id",
+    header: "#",
   },
   {
-    accessorKey: 'title',
-    header: 'Onderwerp'
+    accessorKey: "title",
+    header: "Onderwerp",
   },
   {
-    accessorKey: 'participants',
-    header: 'Betrokkenen'
-  }
-])
+    accessorKey: "participants",
+    header: "Betrokkenen",
+  },
+]);
 
-useHead({ title: computed(() => `${vendor.value?.name} - Standhouders`) })
+useHead({ title: computed(() => `${vendor.value?.name} - Standhouders`) });
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {Chat} from "~/types";
+import type { Chat } from "~/types";
 import { computed } from "vue";
 
 definePageMeta({
@@ -10,24 +10,30 @@ const route = useRoute();
 const router = useRouter();
 
 // Fetches new data every time you switch messages
-const {data: chat} = await useFetch<Chat>(
-  () => `/api/chats/by-id/${route.params.id}`
+const { data: chat } = await useFetch<Chat>(
+  () => `/api/chats/by-id/${route.params.id}`,
 );
 
-const messageTitle = computed(() => chat.value?.title ?? 'Chat')
+const messageTitle = computed(() => chat.value?.title ?? "Chat");
 
 useHead({
-  title: computed(() => chat.value?.title ? `${chat.value!.title} - Bekijk Chat` : `Bekijk Chat`)
-})
+  title: computed(() =>
+    chat.value?.title ? `${chat.value!.title} - Bekijk Chat` : `Bekijk Chat`,
+  ),
+});
 
 function leaveMessage() {
-  router.push('/inbox')
+  router.push("/inbox");
 }
 </script>
 
 <template>
   <UDashboardPanel v-if="!chat" class="flex align-center justify-center">
-    <UEmpty icon="i-lucide-circle-x" title="Bericht niet gevonden" description="Het bericht dat u zoekt bestaat niet."/>
+    <UEmpty
+      icon="i-lucide-circle-x"
+      title="Bericht niet gevonden"
+      description="Het bericht dat u zoekt bestaat niet."
+    />
   </UDashboardPanel>
   <UDashboardPanel v-else>
     <template #header>
@@ -38,15 +44,16 @@ function leaveMessage() {
             aria-label="Sluit bericht"
             variant="ghost"
             color="neutral"
-            @click="leaveMessage()"/>
+            @click="leaveMessage()"
+          />
         </template>
       </UDashboardNavbar>
 
-      <ChatHeader :chat="chat!"/>
+      <ChatHeader :chat="chat!" />
     </template>
 
     <template #body>
-      <ChatMessageList :chat="chat!"/>
+      <ChatMessageList :chat="chat!" />
     </template>
     <template #footer>
       <ChatMessageInput :chat="chat!" />

@@ -1,20 +1,18 @@
 // server/middleware/proxy-useAuth.ts
-import {createError, defineEventHandler, proxyRequest} from "h3";
-import {jwtDecode} from "jwt-decode";
-import {getUserSession} from "nuxt-oidc-auth/runtime/server/utils/session.js";
+import { createError, defineEventHandler, proxyRequest } from "h3";
+import { jwtDecode } from "jwt-decode";
+import { getUserSession } from "nuxt-oidc-auth/runtime/server/utils/session.js";
 
 const acceptedRequestTypes = ["GET", "HEAD", "PATCH", "POST", "PUT", "DELETE"];
 type HttpMethod = "GET" | "HEAD" | "PATCH" | "POST" | "PUT" | "DELETE";
 
 function maybeUseIdToken(idToken: string | null, accessToken: string): string {
-  if (!idToken)
-    return accessToken;
+  if (!idToken) return accessToken;
 
   try {
-    const parsed = jwtDecode(idToken)
+    const parsed = jwtDecode(idToken);
 
-    if (parsed!.exp < (Date.now() / 1000))
-      return accessToken;
+    if (parsed!.exp < Date.now() / 1000) return accessToken;
 
     return idToken;
   } catch {
@@ -28,7 +26,7 @@ export default defineEventHandler(async (event) => {
   if (!acceptedRequestTypes.includes(checkMethod))
     throw createError({
       statusCode: 405,
-      message: "API does not support this method type"
+      message: "API does not support this method type",
     });
 
   const method = checkMethod as HttpMethod;
@@ -47,13 +45,13 @@ export default defineEventHandler(async (event) => {
 
   // 3. Local Validation
   try {
-    const session = await getUserSession(event)
+    const session = await getUserSession(event);
 
     event.context.sessionAccessToken = session.accessToken ?? null;
     event.context.sessionIdToken = session.idToken ?? null;
     event.context.userId = session.userInfo?.sub ?? null;
   } catch (e) {
-    console.error("Failed to fetch session %o", e)
+    console.error("Failed to fetch session %o", e);
     // noop
   }
 
@@ -68,15 +66,18 @@ export default defineEventHandler(async (event) => {
   const targetUrl = new URL(event.path, upstreamUrl);
 
   // 5. Prepare headers
-  const proxyHeaders = new Headers()
-  proxyHeaders.set("Authorization", `Bearer ${maybeUseIdToken(event.context.sessionIdToken, event.context.sessionAccessToken)}`)
+  const proxyHeaders = new Headers();
+  proxyHeaders.set(
+    "Authorization",
+    `Bearer ${maybeUseIdToken(event.context.sessionIdToken, event.context.sessionAccessToken)}`,
+  );
   proxyHeaders.set("X-User-Id", event.context.userId);
 
   // 6. Proxy the Request
   try {
-    return proxyRequest(event, targetUrl.toString(), {headers: proxyHeaders})
+    return proxyRequest(event, targetUrl.toString(), { headers: proxyHeaders });
   } catch (error) {
-    console.log(`Proxy %s %s: ERROR %s`, method, targetUrl, error)
+    console.log(`Proxy %s %s: ERROR %s`, method, targetUrl, error);
 
     console.error("Error = %o", error);
 

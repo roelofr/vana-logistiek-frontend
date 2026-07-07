@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type {User} from "~/types";
+import type { User } from "~/types";
 
-const {data: members} = await useFetch<User[]>("/api/users", {
+const { data: members } = await useFetch<User[]>("/api/users", {
   default: () => [],
 });
 
@@ -9,9 +9,7 @@ const query = ref("");
 
 const filteredUsers = computed(() => {
   return members.value.filter((member) => {
-    return (
-      member.name.search(new RegExp(query.value, "i")) !== -1
-    );
+    return member.name.search(new RegExp(query.value, "i")) !== -1;
   });
 });
 </script>
@@ -31,7 +29,8 @@ const filteredUsers = computed(() => {
         label="Uitnodigen"
         trailing-icon="i-lucide-external-link"
         href="https://login.troela.fun/settings/admin/users"
-        target="_blank"/>
+        target="_blank"
+      />
     </UPageCard>
 
     <UPageCard
@@ -52,7 +51,7 @@ const filteredUsers = computed(() => {
         />
       </template>
 
-      <SettingsUserList :users="filteredUsers"/>
+      <SettingsUserList :users="filteredUsers" />
     </UPageCard>
   </div>
 </template>

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type {Vendor} from "~/types";
-import type {InputMenuItem} from "@nuxt/ui";
-import {expand} from "~/utils";
-import type {UInputMenu} from "#components";
+import type { Vendor } from "~/types";
+import type { InputMenuItem } from "@nuxt/ui";
+import { expand } from "~/utils";
+import type { UInputMenu } from "#components";
 
 type InputVendorItem = InputMenuItem & {
   vendor: Vendor;
@@ -21,9 +21,10 @@ const toNuxtUiList = (vendor: Vendor): InputVendorItem => ({
   district: vendor.district?.name ?? "",
 });
 
-const vendor = defineModel<Vendor | null | undefined>({required: true});
+const vendor = defineModel<Vendor | null | undefined>({ required: true });
 
-const {data: apiVendors, pending: apiPending} = useFetch<Vendor[]>("/api/vendors");
+const { data: apiVendors, pending: apiPending } =
+  useFetch<Vendor[]>("/api/vendors");
 
 const vendors = computed(() =>
   apiVendors.value ? expand(apiVendors.value, ["district"]) : [],
@@ -35,10 +36,13 @@ const uiVendor = computed<Vendor | undefined>({
   set: (value) => (vendor.value = value ?? null),
 });
 
-watch(() => vendorsMapped.value, (newValue, oldValue) => {
-  if (!oldValue?.length && newValue?.length && uiVendor.value)
-    setTimeout(() => (uiVendor.value = {...uiVendor.value!}), 150)
-})
+watch(
+  () => vendorsMapped.value,
+  (newValue, oldValue) => {
+    if (!oldValue?.length && newValue?.length && uiVendor.value)
+      setTimeout(() => (uiVendor.value = { ...uiVendor.value! }), 150);
+  },
+);
 </script>
 
 <template>
@@ -55,7 +59,9 @@ watch(() => vendorsMapped.value, (newValue, oldValue) => {
     virtualize
   >
     <template #trailing="{ modelValue }">
-      <span v-if="modelValue" class="text-muted pr-1">{{ modelValue?.number }}</span>
+      <span v-if="modelValue" class="text-muted pr-1">{{
+        modelValue?.number
+      }}</span>
       <UIcon
         class="text-dimmed"
         name="i-lucide-chevron-down"

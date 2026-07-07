@@ -4,21 +4,21 @@ type AddConfettiType = Parameters<typeof JSConfetti.prototype.addConfetti>[0];
 
 const confettiTypes: Record<string, AddConfettiType[]> = {
   dino: [
-    {confettiNumber: 100},
+    { confettiNumber: 100 },
     {
       emojis: ["🦖", "🦕", "🌴", "🐸", "🐔"],
       confettiNumber: 20,
-    }
+    },
   ],
   gay: [
-    {confettiNumber: 200},
+    { confettiNumber: 200 },
     {
       emojis: ["🌈", "🏳️‍🌈", "🦄", "✨", "🍆", "🍑"],
       confettiNumber: 20,
-    }
+    },
   ],
-  normal: [{}]
-}
+  normal: [{}],
+};
 
 export type ConfettiVariant = keyof typeof confettiTypes;
 
@@ -28,9 +28,9 @@ export default defineNuxtPlugin((_) => {
   const confettiBacklog = ref<ConfettiVariant[]>([]);
 
   const dispatchConfetti = (variant: ConfettiVariant): void => {
-    const confettiType = (confettiTypes[variant] ?? confettiTypes.normal)!
+    const confettiType = (confettiTypes[variant] ?? confettiTypes.normal)!;
 
-    confettiType.forEach(config => confettiApi.addConfetti(config));
+    confettiType.forEach((config) => confettiApi.addConfetti(config));
   };
 
   const addConfetti = (variant: ConfettiVariant): void => {
@@ -45,7 +45,7 @@ export default defineNuxtPlugin((_) => {
         addConfetti(confettiBacklog.value.shift()!);
       }
     },
-    {allowRecurse: false},
+    { allowRecurse: false },
   );
 
   onUnmounted(() => {
@@ -54,7 +54,7 @@ export default defineNuxtPlugin((_) => {
 
   return {
     provide: {
-      confetti: {dispatch: dispatchConfetti, clear: clearConfetti},
+      confetti: { dispatch: dispatchConfetti, clear: clearConfetti },
     },
   };
 });
