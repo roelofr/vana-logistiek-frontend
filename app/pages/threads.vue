@@ -19,28 +19,6 @@ onMounted(() => {
   if (loadingState == LoadingState.Initial) fetch();
 });
 
-const isLoading = computed<boolean>(() => loadingState !== LoadingState.Idle);
-const loadingType = computed<LoadingType>(() => {
-  switch (loadingState) {
-    case LoadingState.Update:
-      return "partial";
-    case LoadingState.Initial:
-      return "full";
-    default:
-      return null;
-  }
-});
-
-// Filter threads based on the selected tab
-const filteredIssues = computed(() => {
-  if (!issues) return [];
-
-  if (activeFilter.value !== "unread") return issues;
-
-  // TODO filter
-
-  return issues;
-});
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller("lg");

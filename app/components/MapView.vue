@@ -45,8 +45,6 @@ const clickMap = (event: MapEvent) => {
     .addTo(mapInstance.value!);
 }
 
-const blockIfDisabled = (event: Event) => disabled ? event.preventDefault() : null
-
 function renderMap() {
   if (mapInstance.value != null)
     mapInstance.value.remove()

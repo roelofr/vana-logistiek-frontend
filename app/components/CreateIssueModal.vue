@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type {Vendor, Location} from "~/types";
 import {type InferType, object, string} from "yup";
-import type {FormSubmitEvent} from "@nuxt/ui";
-import type {UForm} from "#components";
 
 const confetti = useConfetti();
 
@@ -35,6 +33,13 @@ const completeSchema = object({
 
 type MainSchema = InferType<typeof mainSchema>;
 type CompleteSchema = MainSchema & { vendor: Vendor | null } & { location: Location | null };
+
+const { data: suggestedOptions } = useLazyFetch<string[]>(
+  "/api/settings/suggested-options",
+  {
+    default: () => ["Bijbestelling", "Service", "Techniek", "Gatorteam"],
+  },
+);
 
 const issue = reactive<CompleteSchema>({
   subject: "",
@@ -170,6 +175,19 @@ watch(modalOpen, (newVal, oldVal) => {
           <UInput v-model="issue.subject"/>
         </UFormField>
 
+        <div class="flex flex-row justify-start items-center flex-wrap gap-2">
+          <span class="text-sm text-muted"> Suggesties </span>
+          <UButton
+            v-for="value of suggestedOptions"
+            :key="value"
+            size="xs"
+            variant="soft"
+            @click="issue.subject = value"
+          >
+            {{ value }}
+          </UButton>
+        </div>
+
         <URadioGroup v-model="issue.issueType" variant="table" :items="typeItems"/>
       </LazyUForm>
 
@@ -198,7 +216,8 @@ watch(modalOpen, (newVal, oldVal) => {
         class="space-y-4 h-full flex flex-col grow"
         @submit="continueOrSubmit">
         <p>Selecteer de locatie van de melding, en klik rechtsonderin om te bevestigen.</p>
-        <MapView :disabled="isLoading" v-model="issue.location" class="grow" type="picker"/>
+        <MapView v-model="issue.location" :disabled="isLoading" class="grow" 
+          type="picker"/>
       </LazyUForm>
 
       <template v-else>

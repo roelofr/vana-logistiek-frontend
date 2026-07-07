@@ -4,7 +4,7 @@ import type {Chat, ChatEntry, User} from "~/types";
 const {chat} = defineProps<{ chat: Chat }>();
 const { user } = useOidcAuth();
 
-const {data: messages, refresh} = useLazyFetch<ChatEntry[]>(`/api/chats/by-id/${chat.id}/entries`)
+const {data: messages} = useLazyFetch<ChatEntry[]>(`/api/chats/by-id/${chat.id}/entries`)
 
 /*
 "id": 1,

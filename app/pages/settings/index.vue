@@ -2,8 +2,6 @@
 import * as z from "zod";
 import type {FormSubmitEvent} from "@nuxt/ui";
 
-const fileRef = ref<HTMLInputElement>();
-
 interface ProfileResponse {
   id: number
   name: string
@@ -13,12 +11,11 @@ interface ProfileResponse {
   avatarUrl: string | null;
 }
 
-const profileSchema = z.object({
-  name: z.string().min(2, "Too short"),
-  email: z.string().email("Invalid email"),
-});
-
-type ProfileSchema = z.output<typeof profileSchema> & { "avatar": string | null }
+interface ProfileSchema {
+  name: string
+  email: string
+  avatar: string
+}
 
 const {data: userData, refresh} = await useFetch<ProfileResponse>("/api/profile")
 const avatarUrl = computed(() => {
@@ -31,7 +28,7 @@ const avatarUrl = computed(() => {
   return avatarUrl.toString()
 })
 
-const profile = reactive<Partial<ProfileSchema>>({
+const profile = reactive<ProfileSchema>({
   name: userData.value!.name,
   email: userData.value!.email,
   avatar: avatarUrl.value,

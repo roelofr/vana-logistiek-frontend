@@ -5,7 +5,6 @@ const emit = defineEmits<{ update: [] }>();
 const { thread } = defineProps<{ thread: Issue }>();
 const input = useTemplateRef("input");
 
-const { $api } = useNuxtApp();
 const toast = useToast();
 
 const loading = ref(false);

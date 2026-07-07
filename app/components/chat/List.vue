@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import {format, isToday} from "date-fns";
-import type {Chat, Group, User} from "~/types";
-import type {AvatarProps} from "#ui/components/Avatar.vue";
 
 const props = defineProps<{
   chats: ListChat[];

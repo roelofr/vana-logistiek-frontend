@@ -27,7 +27,7 @@ async function sendChatReply(message: string | null, files: FileList) {
 </script>
 
 <template>
-  <ChatMessageInput :disabled="isLoading"/>
+  <ChatMessageInput @reply="sendChatReply" :disabled="isLoading"/>
 </template>
 
 <style scoped></style>

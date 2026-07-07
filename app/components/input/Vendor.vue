@@ -4,8 +4,6 @@ import type {InputMenuItem} from "@nuxt/ui";
 import {expand} from "~/utils";
 import type {UInputMenu} from "#components";
 
-const emit = defineEmits<{ (e: "update:modelValue", value: Vendor | null): void }>();
-
 type InputVendorItem = InputMenuItem & {
   vendor: Vendor;
   search: string;

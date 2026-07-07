@@ -3,17 +3,6 @@ import {createError, defineEventHandler, proxyRequest} from "h3";
 import {jwtDecode} from "jwt-decode";
 import {getUserSession} from "nuxt-oidc-auth/runtime/server/utils/session.js";
 
-const skippedRequestHeaders = [
-  "connection",
-  "transfer-encoding",
-  "host",
-  "cookie",
-];
-const skippedResponseHeaders = [
-  "connection",
-  "transfer-encoding",
-  "set-cookie",
-];
 const acceptedRequestTypes = ["GET", "HEAD", "PATCH", "POST", "PUT", "DELETE"];
 type HttpMethod = "GET" | "HEAD" | "PATCH" | "POST" | "PUT" | "DELETE";
 
@@ -24,7 +13,7 @@ function maybeUseIdToken(idToken: string | null, accessToken: string): string {
   try {
     const parsed = jwtDecode(idToken)
 
-    if (parsed.exp < (Date.now() / 1000))
+    if (parsed!.exp < (Date.now() / 1000))
       return accessToken;
 
     return idToken;

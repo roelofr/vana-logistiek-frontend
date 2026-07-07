@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ListThread } from "~/types";
 
-const { threadId, thread } = defineProps<{
+const { threadId, thread = null } = defineProps<{
   threadId: number | string;
   thread?: ListThread | null;
 }>();

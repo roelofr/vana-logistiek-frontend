@@ -107,7 +107,8 @@ const template = (d: DataRecord) =>
       class="h-96"
     >
       <VisLine :x="x" :y="y" color="var(--ui-primary)" />
-      <VisArea :opacity="0.1" :x="x" :y="y" color="var(--ui-primary)" />
+      <VisArea :opacity="0.1" :x="x" :y="y" 
+        color="var(--ui-primary)" />
 
       <VisAxis :tick-format="xTicks" :x="x" type="x" />
 

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type {Chat} from "~/types";
-import MessageList from "~/components/chat/MessageList.vue";
-import { computed } from "@vue/reactivity";
+import { computed } from "vue";
 
 definePageMeta({
   middleware: ["auth"],

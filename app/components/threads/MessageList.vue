@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Issue, LoadingType } from "~/types";
-import { localTime } from "~/utils";
 
 const threadCount = useCookie<number>("expected-threads");
 
