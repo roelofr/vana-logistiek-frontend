@@ -3,7 +3,7 @@
 A Nuxt app that renders information received by the Vana Logistiek application (Quarkus). Used since Castlefest 2025,
 and continuously iterating on that version.
 
-## Powered by Nuxt and Better Auth
+## Powered by Nuxt
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
