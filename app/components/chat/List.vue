@@ -91,7 +91,7 @@ const chatAvatars = (chat: ListChat) => {
             ? 'border-primary bg-primary/10'
             : 'border-bg hover:border-primary hover:bg-primary/5',
         ]"
-        :to="`/inbox/${chat.id}`"
+        :to="`/chats/${chat.id}`"
         @click="selectedChat = chat"
       >
         <div class="grid grid-message max-w-full gap-4">
@@ -122,7 +122,7 @@ const chatAvatars = (chat: ListChat) => {
               <template v-else-if="chat.subject && chat.subject.location">
                 Op locatie
               </template>
-              <template v-else> Reguliere chat </template>
+              <template v-else> Reguliere chat</template>
             </p>
           </div>
         </div>

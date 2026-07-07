@@ -23,7 +23,7 @@ useHead({
 });
 
 function leaveMessage() {
-  router.push("/inbox");
+  router.push("/chats");
 }
 </script>
 

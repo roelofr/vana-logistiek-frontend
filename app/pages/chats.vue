@@ -7,16 +7,11 @@ const route = useRoute();
 
 const { data: rawChats } = useLazyFetch<{ chats: ListChat[] }>("/api/chats");
 const chats = computed<ListChat[]>(() =>
-  (rawChats.value?.chats ?? [])
-    .map((chat, index) => {
-      console.log("%d: %o", index, chat);
-      return chat;
-    })
-    .map((chat) => ({
-      ...chat,
-      createdAt: new Date(chat.createdAt),
-      updatedAt: new Date(chat.updatedAt),
-    })),
+  (rawChats.value?.chats ?? []).map((chat) => ({
+    ...chat,
+    createdAt: new Date(chat.createdAt),
+    updatedAt: new Date(chat.updatedAt),
+  })),
 );
 
 const activeFilter = ref("all");

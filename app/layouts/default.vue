@@ -19,7 +19,7 @@ const links = [
     {
       label: "Inbox",
       icon: "i-lucide-inbox",
-      to: "/inbox",
+      to: "/chats",
       exact: false,
       exactQuery: "partial",
       onSelect: closeMenu,
