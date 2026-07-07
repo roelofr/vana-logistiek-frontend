@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import type {Chat} from "~/types";
 import MessageList from "~/components/chat/MessageList.vue";
+import { computed } from "@vue/reactivity";
+
+definePageMeta({
+  middleware: ["auth"],
+});
 
 const route = useRoute();
 const router = useRouter();
@@ -10,8 +15,11 @@ const {data: chat} = await useFetch<Chat>(
   () => `/api/chats/by-id/${route.params.id}`
 );
 
-const messageTitle = computed(() => chat.value?.title ?? 'Berichtdetails')
+const messageTitle = computed(() => chat.value?.title ?? 'Chat')
 
+useHead({
+  title: computed(() => chat.value?.title ? `${chat.value!.title} - Bekijk Chat` : `Bekijk Chat`)
+})
 
 function leaveMessage() {
   router.push('/inbox')

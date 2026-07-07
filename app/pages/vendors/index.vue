@@ -2,14 +2,17 @@
 import type { TableColumn } from "@nuxt/ui";
 import { getPaginationRowModel } from "@tanstack/table-core";
 import type { Vendor } from "../../types";
-import { computed } from "vue";
+import { h, computed, resolveComponent } from "vue";
 import { VendorAvatar } from "#components";
 
 definePageMeta({
   middleware: ["auth"],
 });
 
+useHead({title: 'Standhouders'})
+
 const UButton = resolveComponent("UButton");
+const NuxtLink = resolveComponent("NuxtLink");
 const table = useTemplateRef("table");
 
 const filter = ref<string | undefined>("");
@@ -47,7 +50,6 @@ const columns: TableColumn<Vendor>[] = [
     accessorFn: (row) => `${row.name}`,
     header: ({ column }) => {
       const isSorted = column.getIsSorted();
-
       return h(UButton, {
         color: "neutral",
         variant: "ghost",
@@ -65,7 +67,7 @@ const columns: TableColumn<Vendor>[] = [
       return h("div", { class: "flex items-center gap-3" }, [
         h(VendorAvatar, { vendor: row.original, size: "lg" }),
         h("div", undefined, [
-          h("p", { class: "font-medium text-highlighted" }, row.original.name),
+          h(NuxtLink, { class: "font-medium text-highlighted", to: `/vendors/${row.getValue('id')}` }, () => row.getValue('name')),
         ]),
       ]);
     },
