@@ -5,6 +5,7 @@ const {
   user,
   group = undefined,
   size = undefined,
+  single = false,
 } = defineProps<{
   user: Partial<User>;
   group?: Partial<Group> | undefined;
@@ -19,6 +20,7 @@ const {
     | "2xl"
     | "3xl"
     | undefined;
+  single?: boolean;
 }>();
 
 const groupComputed = computed<Partial<Group> | null>(
@@ -28,11 +30,14 @@ const colourComputed = computed(() => groupComputed.value?.colour ?? "pink");
 </script>
 
 <template>
-  <UAvatarGroup>
+  <template v-if="single">
+    <UAvatar :src="user.avatar ?? undefined" :alt="user.name" :size="size" />
+  </template>
+  <UAvatarGroup v-else>
     <UAvatar :src="user.avatar ?? undefined" :alt="user.name" :size="size" />
     <UAvatar
       v-if="groupComputed"
-      :class="`bg-${colourComputed}-700) dark:bg-${colourComputed}-500)`"
+      :class="`bg-${colourComputed}-700 dark:bg-${colourComputed}-500`"
       :style="{
         '--ui-text-muted': 'var(--ui-text-inverted)',
       }"

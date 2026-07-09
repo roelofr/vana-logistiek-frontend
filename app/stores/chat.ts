@@ -1,4 +1,4 @@
-import type { Chat } from "~/types";
+import { type Chat, LoadingState } from "~/types";
 
 export interface ListChat extends Pick<
   Chat,
@@ -22,12 +22,6 @@ interface ChatListResponse {
     currentPage: number;
   };
   chats: ListChat[];
-}
-
-export enum LoadingState {
-  Initial,
-  Update,
-  Idle,
 }
 
 export const useChatStore = defineStore("chatStore", {

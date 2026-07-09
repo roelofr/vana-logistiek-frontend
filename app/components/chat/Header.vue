@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Chat } from "~/types";
+import { locationToGrid } from "~/utils/location-util";
 
 const { chat } = defineProps<{ chat: Chat }>();
 
@@ -27,20 +28,20 @@ const participants = computed(() =>
     <div v-else-if="location" class="flex py-4 gap-2 items-center">
       <UUser
         size="xl"
-        name="Locatiegestuurde melding"
+        :name="`Melding in ${locationToGrid(location)}`"
         :description="participants"
         :avatar="{ icon: 'i-lucide-map-pin' }"
       />
-      <UAvatar
-        icon="i-lucide-marker"
-        class="flex-none"
-        color="secondary"
-        text="Location"
-      />
-      <div class="flex-grow">
-        <p><strong>Taak voor een locatie</strong></p>
-        <p>Iets met woorden</p>
-      </div>
+
+      <UPopover>
+        <UButton label="Toon op kaart" color="neutral" variant="subtle" />
+
+        <template #content>
+          <div class="w-screen max-w-200 h-200 max-h-[50vh] p-2">
+            <MapView :location="location" />
+          </div>
+        </template>
+      </UPopover>
     </div>
 
     <div v-else class="flex py-4 gap-2 items-center">
@@ -54,7 +55,7 @@ const participants = computed(() =>
         <p>
           <strong>{{ chat.title }}</strong>
         </p>
-        <p>Iets met woorden</p>
+        <p>{{ participants }}</p>
       </div>
     </div>
 

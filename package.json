@@ -40,14 +40,17 @@
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.8.3",
     "typescript": "^5.9.3",
+    "vitest": "^4.1.10",
     "vue-tsc": "^3.3.2"
   },
   "packageManager": "npm@11.7.0",
   "allowScripts": {
     "vue-demi@0.14.10": true,
     "esbuild@0.27.7": true,
-    "esbuild@0.28.0": true,
     "sharp@0.34.5": true,
-    "maplibre-gl@2.4.0": true
+    "maplibre-gl@2.4.0": true,
+    "unrs-resolver@1.12.2": true,
+    "esbuild@0.28.1": true,
+    "@parcel/watcher": false
   }
 }

@@ -134,3 +134,9 @@ export interface Location {
   lat: number;
   lng: number;
 }
+
+export enum LoadingState {
+  Initial,
+  Update,
+  Idle,
+}

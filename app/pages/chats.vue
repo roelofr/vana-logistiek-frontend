@@ -24,19 +24,19 @@ const filteredChats = computed<ListChat[]>(() => {
   else return chats.value;
 });
 
-const selectedChatId = ref<number | null>(null);
-const selectedChat = computed<ListChat | null>({
+const selectedChatId = ref<number | undefined>();
+const selectedChat = computed<ListChat | undefined>({
   get: () => {
     const selectedChat = selectedChatId.value; // Assign here so Vue can resolve the usage on an empty list
-    return chats.value?.find((issue) => issue.id === selectedChat) ?? null;
+    return chats.value?.find((issue) => issue.id === selectedChat);
   },
-  set: (chat: Chat | ListChat | null) =>
-    (selectedChatId.value = chat?.id ?? null),
+  set: (chat: Chat | ListChat | undefined) =>
+    (selectedChatId.value = chat?.id ?? undefined),
 });
 
 const isMailPanelOpen = computed({
   get: () => !!selectedChat.value,
-  set: (value: boolean) => (!value ? (selectedChat.value = null) : null),
+  set: (value: boolean) => (!value ? (selectedChat.value = undefined) : null),
 });
 
 // Change the selected chat if an ID is present as param
@@ -44,7 +44,7 @@ watch(
   () => route.params,
   (newParams, oldParams) => {
     if (!newParams.id && oldParams.id) {
-      selectedChatId.value = null;
+      selectedChatId.value = undefined;
       return;
     }
 
@@ -67,7 +67,7 @@ watch(filteredChats, () => {
   if (
     !filteredChats.value.find((issue) => issue.id === selectedChat.value?.id)
   ) {
-    selectedChat.value = null;
+    selectedChat.value = undefined;
   }
 });
 

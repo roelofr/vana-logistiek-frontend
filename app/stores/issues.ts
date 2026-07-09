@@ -1,23 +1,17 @@
-import type { Issue } from "~/types";
+import { type Issue, LoadingState } from "~/types";
 
 export interface ListIssue extends Pick<
   Issue,
   | "id"
-  | "subject"
-  | "createdAt"
+  | "chat"
+  | "vendor"
+  | "location"
   | "updatedAt"
   | "resolvedAt"
-  | "vendor"
   | "user"
   | "group"
 > {
   read: boolean;
-}
-
-export enum LoadingState {
-  Initial,
-  Update,
-  Idle,
 }
 
 export const useIssueStore = defineStore("issueStore", {

@@ -7,16 +7,12 @@ const props = defineProps<{
 
 const issuesRefs = ref<Record<number, Element | null>>({});
 
-const selectedChat = defineModel<ListChat | null>();
+const selectedChat = defineModel<ListChat | undefined>();
 
-watch(selectedChat, () => {
-  if (!selectedChat.value) {
-    return;
-  }
-  const ref = issuesRefs.value[selectedChat.value.id];
-  if (ref) {
-    ref.scrollIntoView({ block: "nearest" });
-  }
+watch(selectedChat, (newValue) => {
+  if (!newValue) return;
+
+  issuesRefs.value[newValue.id]?.scrollIntoView({ block: "nearest" });
 });
 
 defineShortcuts({
@@ -50,6 +46,25 @@ const formatDate = (date: Date) => {
   } catch {
     return "";
   }
+};
+
+const numberOfAvatars = 2;
+
+const chatUserAvatars = (chat: ListChat) => {
+  if (chat.users && chat.users.length > numberOfAvatars)
+    return chat.users.slice(0, numberOfAvatars);
+  if (chat.users) return chat.users;
+};
+
+const chatGroupAvatars = (chat: ListChat) => {
+  if (!chat.groups) return [];
+
+  const numberOfGroups = numberOfAvatars - (chat.users?.length ?? 0);
+  if (numberOfGroups <= 0) return [];
+
+  if (chat.groups.length > numberOfGroups)
+    return chat.groups.slice(0, numberOfGroups);
+  return chat.groups;
 };
 
 const chatAvatars = (chat: ListChat) => {
@@ -96,9 +111,17 @@ const chatAvatars = (chat: ListChat) => {
       >
         <div class="grid grid-message max-w-full gap-4">
           <UAvatarGroup size="lg">
-            <template v-for="avatar in chatAvatars(chat)" :key="avatar.name">
-              <UAvatar loading="lazy" v-bind="avatar" />
-            </template>
+            <UserAvatar
+              v-for="user in chatUserAvatars(chat)"
+              :key="user.id"
+              :user="user"
+              single
+            />
+            <GroupAvatar
+              v-for="group in chatGroupAvatars(chat)"
+              :key="group.id"
+              :group="group"
+            />
           </UAvatarGroup>
           <div class="grid">
             <div

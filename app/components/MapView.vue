@@ -11,19 +11,15 @@ interface MapEvent extends Event {
   point: { x: number; y: number };
 }
 
-interface NamedLocation extends Location {
-  name: string;
-}
-
 const { user } = useOidcAuth();
 
 const {
-  markers = [],
+  location = undefined,
   editable = false,
   interactive = true,
   disabled = false,
 } = defineProps<{
-  markers?: NamedLocation[];
+  location?: Location | undefined;
   editable?: boolean;
   interactive?: boolean;
   disabled?: boolean;
@@ -118,23 +114,27 @@ watch(
   () => renderMap(),
 );
 
-const markerInstances = ref<MapLibre.Marker[]>([]);
+const markerInstance = ref<MapLibre.Marker | undefined>();
 watch(
-  () => [markers, mapInstance.value],
+  () => [location, mapInstance.value],
   () => {
-    // Always reset the markers
-    markerInstances.value.forEach((marker) => marker.remove());
+    // Remove old marker
+    if (markerInstance.value) {
+      markerInstance.value.remove();
+      markerInstance.value = undefined;
+    }
 
     // Do not re-add if no markers are present
-    if (!mapInstance.value || !markers.length) return;
+    if (!mapInstance.value || !location) return;
 
-    const createdMarkers = markers.map((marker) => {
-      return new MapLibre.Marker()
-        .setLngLat([marker.lng, marker.lat])
-        .addTo(mapInstance.value!);
+    markerInstance.value = new MapLibre.Marker()
+      .setLngLat([location.lng, location.lat])
+      .addTo(mapInstance.value!);
+
+    mapInstance.value!.jumpTo({
+      center: location,
+      zoom: 17,
     });
-
-    markerInstances.value = createdMarkers;
   },
 );
 
