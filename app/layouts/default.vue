@@ -98,9 +98,9 @@ const links = [
       onSelect: () => confetti.dispatch("gay"),
     },
     {
-      label: "Emotional Support",
-      icon: "i-lucide-info",
-      to: "https://pornhub.com/",
+      label: "Documentatie",
+      icon: "i-lucide-book-text",
+      to: "/docs/",
       target: "_blank",
     },
   ],
