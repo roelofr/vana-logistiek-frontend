@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
-import type { Vendor } from "~/types";
+import type { Issue, Vendor } from "~/types";
+import type { TableColumn } from "@nuxt/ui";
 
 definePageMeta({
   middleware: ["auth"],
@@ -13,7 +14,13 @@ const { data: vendor } = await useFetch<Vendor>(
   () => `/api/vendors/${route.params.id}`,
 );
 
-const vendorTableColumns = ref([
+const showAll = ref(false);
+const { data: vendorIssues, status: vendorIssueStatus } = useLazyFetch<Issue[]>(
+  () => `/api/vendors/${route.params.id}/issues`,
+  { query: computed(() => ({ all: showAll.value })) },
+);
+
+const vendorTableColumns = ref<TableColumn<Issue>[]>([
   {
     accessorKey: "id",
     header: "#",
@@ -23,8 +30,11 @@ const vendorTableColumns = ref([
     header: "Onderwerp",
   },
   {
-    accessorKey: "participants",
     header: "Betrokkenen",
+    accessorFn: (row) =>
+      [...row.chat.users, ...row.chat.groups]
+        .map((entry) => entry.name)
+        .join(", "),
   },
 ]);
 
@@ -34,26 +44,59 @@ useHead({ title: computed(() => `${vendor.value?.name} - Standhouders`) });
 <template>
   <UDashboardPanel id="vendors">
     <template #header>
-      <UDashboardNavbar :title="vendor.name">
+      <UDashboardNavbar :title="vendor?.name ?? 'Standhouder'">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
       </UDashboardNavbar>
 
       <UDashboardToolbar>
-        <VendorAvatar :vendor="vendor" size="lg" />
+        <template v-if="vendor">
+          <div class="flex items-center gap-4 py-4">
+            <VendorAvatar :vendor="vendor" size="lg" />
+            <div class="flex flex-col gap-2 items-start">
+              <strong>{{ vendor.name }}</strong>
+              <VendorNumber :vendor="vendor" />
+            </div>
+          </div>
+        </template>
+        <template v-else>
+          <div class="flex items-center gap-4 py-4">
+            <USkeleton class="h-10 w-10 rounded-full" />
+            <div class="flex flex-col gap-2">
+              <USkeleton class="w-30 h-4" />
+              <USkeleton class="w-12 h-3" />
+            </div>
+          </div>
+        </template>
       </UDashboardToolbar>
     </template>
 
     <template #body>
       <div class="grid grid-cols-2 gap-2">
-        <UPageCard title="Issues">
-          <UTable :data="[]" :columns="vendorTableColumns">
+        <UCard>
+          <template #header>
+            <div class="flex w-full justify-between">
+              <h2>Issues</h2>
+              <USwitch v-model="showAll" label="Toon alle issues" />
+            </div>
+          </template>
+
+          <UTable
+            :data="vendorIssues"
+            :loading="vendorIssueStatus === 'pending'"
+            :columns="vendorTableColumns"
+          >
             <template #empty>
-              <UEmpty class="m-4" title="Geen meldingen bekend" />
+              <UEmpty
+                class="m-4"
+                title="Geen meldingen bekend"
+                description="Er zijn geen meldingen bekend, of je bent niet bevoegd ze allemaal te zien."
+                icon="i-lucide-inbox"
+              />
             </template>
           </UTable>
-        </UPageCard>
+        </UCard>
       </div>
     </template>
   </UDashboardPanel>

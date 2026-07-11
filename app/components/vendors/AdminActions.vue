@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from "@nuxt/ui";
 import type { Vendor } from "~/types";
+import { FetchError } from "ofetch";
 
 const emit = defineEmits<{ update: [] }>();
 
@@ -25,6 +26,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
   ],
 ]);
 
+const confetti = useConfetti();
 onFileDialogChange(async (files) => {
   if (!files || files.length != 1) {
     toast.add({
@@ -72,13 +74,15 @@ onFileDialogChange(async (files) => {
       color: "info",
     });
 
+    confetti.dispatch("dino");
+
     emit("update");
   } catch (error) {
     console.error("Error importing vendors: %o", error);
 
     let message =
       "Er is iets misgegaan bij het importeren van de standhouders.";
-    if (error.data) message = error.data;
+    if (error instanceof FetchError) message = error.message;
 
     toast.add({
       title: "Import mislukt",

@@ -47,7 +47,11 @@ const pagination = ref({
 const columns: TableColumn<Vendor>[] = [
   {
     id: "name",
-    accessorFn: (row) => `${row.name}`,
+    accessorFn: (row) =>
+      String(row.name)
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim(),
     header: ({ column }) => {
       const isSorted = column.getIsSorted();
       return h(UButton, {
@@ -71,7 +75,7 @@ const columns: TableColumn<Vendor>[] = [
             NuxtLink,
             {
               class: "font-medium text-highlighted",
-              to: `/vendors/${row.getValue("id")}`,
+              to: `/vendors/${row.original.id}`,
             },
             () => row.getValue("name"),
           ),
@@ -80,6 +84,7 @@ const columns: TableColumn<Vendor>[] = [
     },
   },
   {
+    id: "number",
     accessorKey: "number",
     header: ({ column }) => {
       const isSorted = column.getIsSorted();
@@ -99,9 +104,9 @@ const columns: TableColumn<Vendor>[] = [
     },
   },
   {
-    accessorKey: "district",
+    id: "district",
     header: "Wijk",
-    cell: ({ row }) => row.original.district?.name,
+    accessorFn: (row) => row.district?.name,
   },
   {
     id: "actions",
@@ -153,7 +158,7 @@ const columns: TableColumn<Vendor>[] = [
 
       <UTable
         ref="table"
-        v-model:filter="filter"
+        v-model:global-filter="filter"
         v-model:column-filters="columnFilters"
         v-model:column-visibility="columnVisibility"
         v-model:pagination="pagination"

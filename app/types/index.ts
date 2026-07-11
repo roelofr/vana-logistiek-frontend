@@ -123,7 +123,7 @@ export interface ChatIssue {
 
 export interface Issue {
   id: number;
-  chat: Chat;
+  chat: Pick<Chat, "id" | "title" | "type" | "state" | "users" | "groups">;
   vendor: null | Vendor;
   location: null | Location;
 }
