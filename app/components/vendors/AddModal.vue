@@ -12,7 +12,7 @@ const schema = object({
     .min(2, "Naam moet 2 tekens zijn")
     .max(200, "Naam mag maximaal 200 tekens zijn"),
   number: string().required("Nummer is verplicht"),
-  district: number().required("Wijk is verplicht"),
+  districtId: number().required("Wijk is verplicht"),
 });
 const open = ref(false);
 
@@ -21,7 +21,7 @@ type Schema = InferType<typeof schema>;
 const state = reactive<Partial<Schema>>({
   name: undefined,
   number: undefined,
-  district: undefined,
+  districtId: undefined,
 });
 
 const {
@@ -47,8 +47,9 @@ function onModalOpen() {
 
 watch(open, (newOpen) => newOpen && onModalOpen());
 
+const confetti = useConfetti();
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  const vendor = await $fetch<Vendor>("/api/vendors", {
+  const vendor = await $fetch<Vendor>("/api/vendors/admin", {
     method: "POST",
     body: event.data,
   });
@@ -58,6 +59,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     description: `Standhouder ${vendor.number} toegevoegd.`,
     color: "success",
   });
+
+  confetti.dispatch("normal");
 
   await router.push(`/vendors/${vendor.id}`);
 }
@@ -92,7 +95,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
         <UFormField label="Wijk" name="district">
           <USelect
-            v-model="state.district"
+            v-model="state.districtId"
             placeholder="Selecteer een leuke wijk"
             :loading="status !== 'success'"
             :items="mappedDistricts"
