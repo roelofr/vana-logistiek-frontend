@@ -40,7 +40,7 @@ const iconComputed = computed(() => {
 
 <template>
   <UAvatar
-    :class="`bg-${colourComputed}-700) dark:bg-${colourComputed}-500)`"
+    :class="`bg-${colourComputed}-700 dark:bg-${colourComputed}-500`"
     :style="{
       '--ui-text-muted': 'var(--ui-text-inverted)',
     }"
