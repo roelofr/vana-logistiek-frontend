@@ -73,7 +73,7 @@ useHead({ title: computed(() => `${vendor.value?.name} - Standhouders`) });
     </template>
 
     <template #body>
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
         <UCard>
           <template #header>
             <div class="flex w-full justify-between">
