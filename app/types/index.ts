@@ -49,6 +49,8 @@ export interface ChatSubject {
   id: number;
   vendor: null | Pick<Vendor, "id" | "name" | "number" | "icon" | "colour">;
   location: null | Location;
+  createdAt: Date;
+  resolvedAt: Date | null;
 }
 
 export interface Chat {

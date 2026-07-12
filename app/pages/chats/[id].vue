@@ -14,7 +14,7 @@ const messageList =
   useTemplateRef<InstanceType<typeof ChatMessageList>>("messageList");
 
 // Fetches new data every time you switch messages
-const { data: chat } = await useFetch<Chat>(
+const { data: chat, refresh: chatRefresh } = await useFetch<Chat>(
   () => `/api/chats/by-id/${route.params.id}`,
 );
 
@@ -30,8 +30,13 @@ function leaveMessage() {
   router.push("/chats");
 }
 
+function refresh() {
+  messageList.value?.refresh();
+  chatRefresh();
+}
+
 function onSendReply() {
-  messageList.value.refresh();
+  messageList.value?.refresh();
 }
 </script>
 
@@ -55,16 +60,20 @@ function onSendReply() {
             @click="leaveMessage()"
           />
         </template>
+
+        <template #right>
+          <ChatActions :chat="chat" @refresh="refresh()"/>
+        </template>
       </UDashboardNavbar>
 
-      <ChatHeader :chat="chat!" />
+      <ChatHeader :chat="chat!"/>
     </template>
 
     <template #body>
-      <ChatMessageList ref="messageList" :chat="chat!" />
+      <ChatMessageList ref="messageList" :chat="chat!"/>
     </template>
     <template #footer>
-      <ChatMessageInput :chat="chat!" @send="onSendReply()" />
+      <ChatMessageInput :chat="chat!" @send="onSendReply()"/>
     </template>
   </UDashboardPanel>
 </template>
