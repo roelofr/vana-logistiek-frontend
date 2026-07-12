@@ -8,15 +8,6 @@ const { chat, disabled = false } = defineProps<{
 }>();
 const emit = defineEmits<{ send: [ChatEntry[]] }>();
 
-const schema = object({
-  files: array<File>(),
-  message: string().when("files", {
-    is: (files: File[]) => files?.length > 0,
-    then: () => string().required("Je moet een reactie invullen"),
-    otherwise: () => string().nullable(),
-  }),
-});
-
 const formState = reactive({
   message: "",
   files: [] as File[],
@@ -47,6 +38,7 @@ defineExpose({ reset });
 const isLoading = ref(false);
 async function sendMessage() {
   if (disabled || isLoading.value) return;
+  isLoading.value = true;
 
   const data = new FormData();
   data.append("message", formState.message);
@@ -61,8 +53,6 @@ async function sendMessage() {
         body: data,
       },
     );
-
-    console.log("Response = %o", response);
 
     if (response) emit("send", response);
 

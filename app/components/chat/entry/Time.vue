@@ -4,6 +4,7 @@ const { datetime } = defineProps<{ datetime: Date }>();
 defineOptions({
   inheritAttrs: false,
 });
+
 const iso = datetime.toISOString();
 const human = useTimeAgoIntl(datetime);
 const humanLong = localTime(datetime);

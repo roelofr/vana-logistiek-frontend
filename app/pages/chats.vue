@@ -1,23 +1,20 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { breakpointsTailwind } from "@vueuse/core";
-import type { Chat, ListChat } from "~/types";
+import type { Chat } from "~/types";
+import { unpackDates } from "~/utils/date-util";
 
 const route = useRoute();
 
-const { data: rawChats } = useLazyFetch<{ chats: ListChat[] }>("/api/chats");
-const chats = computed<ListChat[]>(() =>
-  (rawChats.value?.chats ?? []).map((chat) => ({
-    ...chat,
-    createdAt: new Date(chat.createdAt),
-    updatedAt: new Date(chat.updatedAt),
-  })),
+const { data: rawChats } = useLazyFetch<{ chats: Chat[] }>("/api/chats");
+const chats = computed<Chat[]>(() =>
+  unpackDates(rawChats.value?.chats ?? [], ["createdAt", "updatedAt"]),
 );
 
 const activeFilter = ref("active");
 
 // Filter chats based on the selected tab
-const filteredChats = computed<ListChat[]>(() => {
+const filteredChats = computed<Chat[]>(() => {
   if (!chats.value) return [];
   else if (activeFilter.value === "active")
     return chats.value.filter((chat) => {
@@ -28,12 +25,12 @@ const filteredChats = computed<ListChat[]>(() => {
 });
 
 const selectedChatId = ref<number | undefined>();
-const selectedChat = computed<ListChat | undefined>({
+const selectedChat = computed<Chat | undefined>({
   get: () => {
     const selectedChat = selectedChatId.value; // Assign here so Vue can resolve the usage on an empty list
     return chats.value?.find((issue) => issue.id === selectedChat);
   },
-  set: (chat: Chat | ListChat | undefined) =>
+  set: (chat: Chat | undefined) =>
     (selectedChatId.value = chat?.id ?? undefined),
 });
 

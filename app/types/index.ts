@@ -69,8 +69,6 @@ export interface Chat {
   unread: boolean;
 }
 
-export type ListChat = Omit<Chat, "users" | "groups">;
-
 export type IssueUpdateType = "message" | "file" | "location" | "system";
 
 interface ChatEntryBase {

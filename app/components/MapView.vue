@@ -31,8 +31,8 @@ const mapRef = useTemplateRef("map");
 const mapMarkerInstance = ref<MapLibre.Marker | undefined>();
 
 const authenticatedDomains = [
+  useRequestURL().origin,
   "https://map.logistiek.myvana.dev/",
-  document?.location?.origin,
 ].filter(Boolean);
 
 const clickMap = (event: MapEvent) => {
