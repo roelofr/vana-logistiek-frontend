@@ -14,13 +14,16 @@ const chats = computed<ListChat[]>(() =>
   })),
 );
 
-const activeFilter = ref("all");
+const activeFilter = ref("active");
 
 // Filter chats based on the selected tab
 const filteredChats = computed<ListChat[]>(() => {
   if (!chats.value) return [];
-  else if (activeFilter.value === "unread")
-    return chats.value.filter((chat) => chat.unread);
+  else if (activeFilter.value === "active")
+    return chats.value.filter((chat) => {
+      if (chat.subject) return chat.subject.resolvedAt == null;
+      return chat.state != "Closed";
+    });
   else return chats.value;
 });
 

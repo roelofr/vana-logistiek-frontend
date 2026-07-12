@@ -1,14 +1,14 @@
 <script setup lang="ts">
-const selectedTab = defineModel<string>("all");
+const selectedTab = defineModel<string>("active");
 
 const tabItems = [
   {
-    label: "All",
-    value: "all",
+    label: "Actief",
+    value: "active",
   },
   {
-    label: "Unread",
-    value: "unread",
+    label: "Alle",
+    value: "all",
   },
 ];
 </script>
