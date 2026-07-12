@@ -149,6 +149,7 @@ defineShortcuts({
       <div class="flex items-center justify-end gap-2 flex-none">
         <UButton
           :disabled="disabled"
+          :loading="isLoading"
           color="neutral"
           icon="i-lucide-send"
           label="Versturen"

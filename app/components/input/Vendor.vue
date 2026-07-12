@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { Vendor } from "~/types";
 import type { InputMenuItem } from "@nuxt/ui";
-import { expand } from "~/utils";
 import type { UInputMenu } from "#components";
+import { expand } from "#imports";
 
 type InputVendorItem = InputMenuItem & {
   vendor: Vendor;

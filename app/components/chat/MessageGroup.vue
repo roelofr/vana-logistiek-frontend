@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import type { ChatEntryGroup } from "~/types";
+import { computed, h } from "vue";
+import type { ChatEntry, ChatEntryGroup } from "~/types";
+import {
+  ChatEntryFile,
+  ChatEntryInvalid,
+  ChatEntryLocation,
+  ChatEntryMessage,
+  ChatEntrySystemMessage,
+} from "#components";
 
 const { group } = defineProps<{ group: ChatEntryGroup }>();
 
@@ -8,48 +16,46 @@ const avatarProps = computed(() => ({
   user: group.user!,
   group: group.group ?? undefined,
 }));
+
+const lastEntry = computed(() => group.entries.at(-1)!);
+
+function ChatEntry({ entry }: { entry: ChatEntry }) {
+  switch (entry.type) {
+    case "message":
+      return h(ChatEntryMessage, { entry });
+    case "system":
+      return h(ChatEntrySystemMessage, { entry });
+    case "file":
+      return h(ChatEntryFile, { entry });
+    case "location":
+      return h(ChatEntryLocation, { entry });
+    default:
+      return h(ChatEntryInvalid);
+  }
+}
 </script>
 
 <template>
-  <div class="flex gap-2" :class="isMe ? 'flex-row-reverse' : 'flex-row'">
+  <template v-if="group.role == 'system'">
+    <ChatEntry v-for="entry of group.entries" :key="entry.id" :entry="entry" />
+  </template>
+  <div
+    v-else
+    class="flex gap-2"
+    :class="isMe ? 'flex-row-reverse' : 'flex-row'"
+  >
     <UserAvatar v-bind="avatarProps" class="flex-none" />
     <div
-      class="flex flex-col gap-2"
-      :class="isMe ? 'justify-end' : 'justify-start'"
+      class="flex flex-col gap-1"
+      :class="isMe ? 'items-end' : 'items-start'"
     >
-      <template v-for="entry of group.entries" :key="entry.id">
-        <div v-if="entry.type == 'message'" class="bg-muted rounded p-2">
-          {{ entry.message }}
-        </div>
-        <template v-else-if="entry.type == 'file'">
-          <img
-            v-if="entry.fileStatus == 'ready'"
-            class="bg-muted rounded max-w-[80%] max-h-[300px]"
-            :src="entry.url"
-          />
-          <UEmpty
-            class="border border-muted rounded p-2"
-            icon="i-lucide-file-x"
-            description="Bijlage beschadigd"
-          />
-        </template>
-        <template v-else-if="entry.type == 'location'">
-          <MapView
-            class="w-[80%] h-40"
-            :interactive="false"
-            :markers="[
-              {
-                name: '',
-                lat: entry.latitude,
-                lng: entry.longitude,
-              },
-            ]"
-          />
-        </template>
-        <div v-else class="bg-muted rounded p-2">
-          <em>Onbekend bericht</em>
-        </div>
-      </template>
+      <ChatEntry
+        v-for="entry of group.entries"
+        :key="entry.id"
+        :entry="entry"
+      />
+
+      <ChatEntryTime :datetime="lastEntry.createdAt" class="text-xs mb-2" />
     </div>
   </div>
 </template>

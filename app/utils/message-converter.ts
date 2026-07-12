@@ -1,4 +1,8 @@
-import type { ChatEntry, ChatEntryGroup } from "~/types";
+import type {
+  ChatEntry,
+  ChatEntryGroup,
+  ChatEntryWithPossibleStringDates,
+} from "~/types";
 
 function getMyId() {
   const { user } = useOidcAuth();
@@ -8,11 +12,29 @@ function getMyId() {
 
 export function groupChatMessages(chatEntries: ChatEntry[]): ChatEntryGroup[] {
   return chatEntries
+    .map(properDataTypes)
     .map(mapToGroups.bind(undefined, getMyId()))
     .reduce(mergeGroups, [] as ChatEntryGroup[]);
 }
 
+function properDataTypes(
+  chatEntry: ChatEntryWithPossibleStringDates,
+): ChatEntry {
+  return {
+    ...chatEntry,
+    createdAt: new Date(chatEntry.createdAt),
+  } satisfies ChatEntry;
+}
+
 function mapToGroups(userId: string | null, entry: ChatEntry): ChatEntryGroup {
+  if (entry.type == "system")
+    return {
+      id: entry.groupingKey ?? crypto.randomUUID(),
+      role: entry.type == "system" ? "system" : "user",
+      isMe: false,
+      entries: [entry],
+    };
+
   return {
     id: entry.groupingKey ?? crypto.randomUUID(),
     role: "user",

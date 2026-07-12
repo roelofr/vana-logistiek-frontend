@@ -78,7 +78,7 @@ useHead({ title: computed(() => `${vendor.value?.name} - Standhouders`) });
           <template #header>
             <div class="flex w-full justify-between">
               <h2>Issues</h2>
-              <USwitch v-model="showAll" label="Toon alle issues" />
+              <USwitch v-model="showAll" label="Toon van iedereen" />
             </div>
           </template>
 
@@ -91,7 +91,11 @@ useHead({ title: computed(() => `${vendor.value?.name} - Standhouders`) });
               <UEmpty
                 class="m-4"
                 title="Geen meldingen bekend"
-                description="Er zijn geen meldingen bekend, of je bent niet bevoegd ze allemaal te zien."
+                :description="
+                  showAll
+                    ? 'Er zijn nog geen meldingen gedaan voor deze standhouder.'
+                    : 'Je hebt nog geen meldingen gedaan voor deze standhouder.'
+                "
                 icon="i-lucide-inbox"
               />
             </template>

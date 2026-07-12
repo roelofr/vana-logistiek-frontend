@@ -51,6 +51,22 @@ function onSendReply() {
   <UDashboardPanel v-else>
     <template #header>
       <UDashboardNavbar :toggle="false" :title="messageTitle">
+        <template v-if="chat.subject?.resolvedAt" #trailing>
+          <UBadge
+            variant="outline"
+            color="success"
+            icon="i-lucide-check"
+            class="hidden lg:inline"
+          >
+            Opgelost
+          </UBadge>
+          <UBadge
+            variant="outline"
+            color="success"
+            icon="i-lucide-check"
+            class="lg:hidden"
+          />
+        </template>
         <template #leading>
           <UButton
             icon="i-lucide-x"
@@ -62,18 +78,18 @@ function onSendReply() {
         </template>
 
         <template #right>
-          <ChatActions :chat="chat" @refresh="refresh()"/>
+          <ChatActions :chat="chat" @refresh="refresh()" />
         </template>
       </UDashboardNavbar>
 
-      <ChatHeader :chat="chat!"/>
+      <ChatHeader :chat="chat!" />
     </template>
 
     <template #body>
-      <ChatMessageList ref="messageList" :chat="chat!"/>
+      <ChatMessageList ref="messageList" :chat="chat!" />
     </template>
     <template #footer>
-      <ChatMessageInput :chat="chat!" @send="onSendReply()"/>
+      <ChatMessageInput :chat="chat!" @send="onSendReply()" />
     </template>
   </UDashboardPanel>
 </template>

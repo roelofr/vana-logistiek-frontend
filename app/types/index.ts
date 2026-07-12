@@ -90,8 +90,8 @@ export interface ChatFile extends ChatEntryBase {
   type: "file";
   filename: string;
   mimetype: string;
-  fileStatus: "new" | "ready" | "corrupted";
-  fileType: "image" | "binary" | "unknown";
+  fileStatus: "New" | "Ready" | "Corrupted";
+  fileType: "Image" | "Binary" | "Unknown";
   url: string;
 }
 
@@ -101,14 +101,28 @@ export interface ChatLocation extends ChatEntryBase {
   longitude: number;
 }
 
-export type ChatEntry = ChatMessage | ChatFile | ChatLocation;
+export interface ChatSystemMessage extends ChatEntryBase {
+  type: "system";
+  messageType: string;
+  message: string;
+  user: null | Pick<User, "id" | "providerId" | "name" | "avatar">;
+  group: null | Pick<Group, "id" | "name" | "icon" | "colour">;
+}
+
+export type ChatEntry =
+  ChatMessage | ChatFile | ChatLocation | ChatSystemMessage;
+
+export type ChatEntryWithPossibleStringDates = ChatEntry & {
+  createdAt: string | Date;
+  updatedAt: string | Date | null;
+};
 
 export type ChatEntryGroup = {
   id: string;
   role: "user" | "system";
   isMe: boolean;
-  user: Pick<User, "id" | "providerId" | "name" | "avatar"> | null;
-  group: Pick<Group, "id" | "name" | "colour" | "icon"> | null;
+  user?: Pick<User, "id" | "providerId" | "name" | "avatar"> | null;
+  group?: Pick<Group, "id" | "name" | "colour" | "icon"> | null;
   entries: ChatEntry[];
 };
 

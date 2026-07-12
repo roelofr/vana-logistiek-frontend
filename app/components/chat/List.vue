@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { format, isToday } from "date-fns";
+import { localTime } from "#imports";
 
 const props = defineProps<{
   chats: ListChat[];
@@ -39,14 +39,6 @@ defineShortcuts({
     }
   },
 });
-
-const formatDate = (date: Date) => {
-  try {
-    return isToday(date) ? format(date, "HH:mm") : format(date, "dd MMM HH:mm");
-  } catch {
-    return "";
-  }
-};
 
 const numberOfAvatars = 2;
 
@@ -132,9 +124,18 @@ const chatAvatars = (chat: ListChat) => {
                 {{ chat.title }}
 
                 <UChip v-if="chat.unread" />
+
+                <UBadge
+                  v-if="chat.subject?.resolvedAt"
+                  variant="outline"
+                  size="xs"
+                  color="success"
+                  icon="i-lucide-check"
+                  aria-label="Opgelost"
+                />
               </div>
 
-              <span>{{ formatDate(chat.updatedAt) }}</span>
+              <span>{{ localTime(chat.updatedAt) }}</span>
             </div>
             <p class="truncate max-w-full text-dimmed line-clamp-1">
               <template v-if="chat.subject && chat.subject.vendor">

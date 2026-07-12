@@ -24,13 +24,16 @@ const {
 }>();
 
 const groupComputed = computed<Partial<Group> | null>(
-  () => group ?? user.group ?? null,
+  () => group ?? user?.group ?? null,
 );
 const colourComputed = computed(() => groupComputed.value?.colour ?? "pink");
 </script>
 
 <template>
-  <template v-if="single">
+  <template v-if="!user">
+    <UAvatar icon="i-lucide-triangle-alert" color="error" :size="size" />
+  </template>
+  <template v-else-if="single">
     <UAvatar :src="user.avatar ?? undefined" :alt="user.name" :size="size" />
   </template>
   <UAvatarGroup v-else>

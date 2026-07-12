@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import type { Chat, ChatEntry, User } from "~/types";
-import type { ChatMessageProps } from "@nuxt/ui/components/ChatMessage.vue";
+import type { Chat, ChatEntry } from "~/types";
 import { groupChatMessages } from "~/utils/message-converter";
 
 const { chat } = defineProps<{ chat: Chat }>();
-const { user } = useOidcAuth();
 
 const skels = ["l", "r", "c", "r", "r", "l", "c", "r"];
 
