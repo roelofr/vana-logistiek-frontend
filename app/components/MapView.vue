@@ -32,8 +32,8 @@ const mapMarkerInstance = ref<MapLibre.Marker | undefined>();
 
 const authenticatedDomains = [
   "https://map.logistiek.myvana.dev/",
-  document.location.origin,
-];
+  document?.location?.origin,
+].filter(Boolean);
 
 const clickMap = (event: MapEvent) => {
   if (!editable) return;
