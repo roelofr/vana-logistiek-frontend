@@ -6,6 +6,8 @@ const { chat } = defineProps<{ chat: Chat }>();
 
 const emit = defineEmits<{ refresh: [] }>();
 
+const confetti = useConfetti();
+
 type PartialDropdown = Pick<
   DropdownMenuItem,
   "label" | "icon" | "disabled" | "onClick" | "color"
@@ -23,6 +25,8 @@ const items = computed(() => {
           method: "POST",
         });
         emit("refresh");
+
+        requestAnimationFrame(() => confetti.dispatch("done"));
       },
     });
 
