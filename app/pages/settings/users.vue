@@ -1,9 +1,14 @@
 <script lang="ts" setup>
-import type { User } from "~/types";
+import type { Group, User } from "~/types";
 
-const { data: members } = await useFetch<User[]>("/api/users", {
-  default: () => [],
-});
+const { data: members, refresh: refreshUsers } = await useFetch<User[]>(
+  "/api/users",
+  {
+    default: () => [],
+  },
+);
+
+const { data: groups } = useFetch<Group[]>("/api/groups");
 
 const query = ref("");
 
@@ -51,7 +56,11 @@ const filteredUsers = computed(() => {
         />
       </template>
 
-      <SettingsUserList :users="filteredUsers" />
+      <SettingsUserList
+        :groups="groups ?? []"
+        :users="filteredUsers"
+        @refresh="refreshUsers()"
+      />
     </UPageCard>
   </div>
 </template>

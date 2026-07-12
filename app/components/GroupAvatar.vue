@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Group } from "~/types";
+import { toLucideIcon } from "~/utils/string-util";
 
 const { group, size = undefined } = defineProps<{
   group: Partial<Group>;
@@ -17,11 +18,9 @@ const { group, size = undefined } = defineProps<{
 }>();
 
 const colourComputed = computed(() => group.colour ?? "pink");
-const iconComputed = computed(() => {
-  if (group.icon && group.icon.startsWith("i-")) return group.icon;
-  if (group.icon) return `i-lucide-${group.icon}`;
-  return undefined;
-});
+const iconComputed = computed(() =>
+  group.icon ? toLucideIcon(group.icon) : undefined,
+);
 </script>
 
 <template>

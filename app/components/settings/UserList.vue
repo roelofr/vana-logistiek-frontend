@@ -1,22 +1,54 @@
 <script lang="ts" setup>
-import type { DropdownMenuItem } from "@nuxt/ui";
-import type { User } from "~/types";
+import type { SelectItem } from "@nuxt/ui";
+import type { Group, User } from "~/types";
+import { toLucideIcon } from "~/utils/string-util";
 
-defineProps<{
+const { groups, users } = defineProps<{
+  groups: Group[];
   users: User[];
 }>();
 
-const items = [
-  {
-    label: "Bewerk gebruiker",
-    onSelect: () => console.log("Bewerk gebruiker"),
-  },
-  {
-    label: "Verwijder gebruiker",
-    color: "error" as const,
-    onSelect: () => console.log("Verwijder gebruiker"),
-  },
-] satisfies DropdownMenuItem[];
+const emit = defineEmits<{ refresh: [] }>();
+
+const groupItems = computed<SelectItem[]>(() =>
+  groups.map(
+    (group) =>
+      ({
+        value: group.id,
+        label: group.name,
+        group: group,
+        avatar: {
+          icon: toLucideIcon(group.icon),
+        },
+      }) satisfies SelectItem,
+  ),
+);
+
+const indexedGroupMap = computed(() => new Map(groups.map((g) => [g.id, g])));
+
+const updatingUsers = ref<User[]>([]);
+async function handeRoleChange(user: User, groupId: number | undefined | null) {
+  const wantedGroup = groupId ? indexedGroupMap.value.get(groupId) : null;
+
+  if (!wantedGroup) throw new Error("Group not found in indexedGroupMap");
+
+  updatingUsers.value = [...updatingUsers.value, user];
+
+  try {
+    await $fetch(`/api/users/${user.id}/groups`, {
+      method: "PATCH",
+      body: {
+        groups: wantedGroup ? [wantedGroup.id] : [],
+      },
+    });
+
+    emit("refresh");
+  } catch (e) {
+    console.error("Failed to update user group", e);
+  } finally {
+    updatingUsers.value = updatingUsers.value.filter((x) => x.id != user.id);
+  }
+}
 </script>
 
 <template>
@@ -39,21 +71,35 @@ const items = [
         </div>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center grow gap-3">
         <USelect
-          :items="['member', 'owner']"
-          :model-value="member.roles"
+          class="w-full"
+          :model-value="member.group?.id"
+          :items="groupItems"
           :ui="{ value: 'capitalize', item: 'capitalize' }"
           color="neutral"
-        />
-
-        <UDropdownMenu :content="{ align: 'end' }" :items="items">
-          <UButton
-            color="neutral"
-            icon="i-lucide-ellipsis-vertical"
-            variant="ghost"
-          />
-        </UDropdownMenu>
+          :loading="updatingUsers.includes(member)"
+          @update:model-value="
+            handeRoleChange(member, $event as number | undefined)
+          "
+        >
+          <template #leading="{ modelValue }">
+            <template
+              v-if="modelValue && indexedGroupMap.has(modelValue as number)"
+            >
+              <GroupAvatar
+                :group="indexedGroupMap.get(modelValue as number)!"
+                size="2xs"
+              />
+            </template>
+          </template>
+          <template #item-leading="{ item }">
+            <GroupAvatar
+              :group="indexedGroupMap.get(item!.value)!"
+              size="2xs"
+            />
+          </template>
+        </USelect>
       </div>
     </li>
   </ul>
