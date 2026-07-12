@@ -47,7 +47,10 @@ export type ChatState = "active" | "permanent" | "closed";
 
 export interface ChatSubject {
   id: number;
-  vendor: null | Pick<Vendor, "id" | "name" | "number" | "icon" | "colour">;
+  vendor: null | Pick<
+    Vendor,
+    "id" | "name" | "number" | "icon" | "colour" | "type"
+  >;
   location: null | Location;
   createdAt: Date;
   resolvedAt: Date | null;

@@ -56,7 +56,7 @@ function onSendReply() {
             variant="outline"
             color="success"
             icon="i-lucide-check"
-            class="hidden lg:inline"
+            class="hidden lg:inline-flex"
           >
             Opgelost
           </UBadge>

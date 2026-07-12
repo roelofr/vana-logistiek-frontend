@@ -2,7 +2,7 @@
 import type { Vendor } from "~/types";
 
 const { vendor, size = undefined } = defineProps<{
-  vendor: Vendor;
+  vendor: Pick<Vendor, "name" | "number" | "colour" | "type">;
   size?:
     | "md"
     | "3xs"

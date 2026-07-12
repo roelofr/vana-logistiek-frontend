@@ -39,35 +39,6 @@ defineShortcuts({
     }
   },
 });
-
-const numberOfAvatars = 2;
-
-const chatUserAvatars = (chat: ListChat) => {
-  if (chat.users && chat.users.length > numberOfAvatars)
-    return chat.users.slice(0, numberOfAvatars);
-  if (chat.users) return chat.users;
-};
-
-const chatGroupAvatars = (chat: ListChat) => {
-  if (!chat.groups) return [];
-
-  const numberOfGroups = numberOfAvatars - (chat.users?.length ?? 0);
-  if (numberOfGroups <= 0) return [];
-
-  if (chat.groups.length > numberOfGroups)
-    return chat.groups.slice(0, numberOfGroups);
-  return chat.groups;
-};
-
-const chatAvatars = (chat: ListChat) => {
-  return [...chat.users, ...chat.groups].slice(0, 2).map((user) => ({
-    alt: user.name,
-    src: (user as unknown as Record<string, string | null>).avatar ?? undefined,
-    icon: (user as unknown as Record<string, string | null>).icon ?? undefined,
-    color:
-      (user as unknown as Record<string, string | null>).colour ?? undefined,
-  }));
-};
 </script>
 
 <template>
@@ -102,19 +73,7 @@ const chatAvatars = (chat: ListChat) => {
         @click="selectedChat = chat"
       >
         <div class="grid grid-message max-w-full gap-4">
-          <UAvatarGroup size="lg">
-            <UserAvatar
-              v-for="user in chatUserAvatars(chat)"
-              :key="user.id"
-              :user="user"
-              single
-            />
-            <GroupAvatar
-              v-for="group in chatGroupAvatars(chat)"
-              :key="group.id"
-              :group="group"
-            />
-          </UAvatarGroup>
+          <ChatAvatars :chat="chat" size="lg" />
           <div class="grid">
             <div
               class="flex items-center justify-between"
