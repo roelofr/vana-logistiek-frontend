@@ -77,7 +77,7 @@ const columns: TableColumn<Vendor>[] = [
               class: "font-medium text-highlighted",
               to: `/vendors/${row.original.id}`,
             },
-            () => row.getValue("name"),
+            () => row.original.name,
           ),
         ]),
       ]);

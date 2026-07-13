@@ -39,6 +39,8 @@ const items = computed(() => {
           method: "POST",
         });
         emit("refresh");
+
+        requestAnimationFrame(() => confetti.dispatch("cry"));
       },
     });
   }

@@ -10,28 +10,23 @@ const links = [
     {
       label: "Profiel",
       icon: "i-lucide-user",
-      to: "/settings",
+      to: "/profile",
       exact: true,
-    },
-    {
-      label: "Gebruikers",
-      icon: "i-lucide-users",
-      to: "/settings/users",
     },
   ],
 ] satisfies NavigationMenuItem[][];
 </script>
 
 <template>
-  <UDashboardPanel id="settings" :ui="{ body: 'lg:py-12' }">
+  <UDashboardPanel id="profile" :ui="{ body: 'lg:py-12' }">
     <template #header>
-      <UDashboardNavbar title="Instellingen">
+      <UDashboardNavbar title="Profiel">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
       </UDashboardNavbar>
 
-      <UDashboardToolbar>
+      <UDashboardToolbar v-if="links.length > 1">
         <!-- NOTE: The `-mx-1` class is used to align with the `DashboardSidebarCollapse` button here. -->
         <UNavigationMenu :items="links" class="-mx-1 flex-1" highlight />
       </UDashboardToolbar>

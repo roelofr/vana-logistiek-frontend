@@ -22,19 +22,20 @@ const { data: vendorIssues, status: vendorIssueStatus } = useLazyFetch<Issue[]>(
 
 const vendorTableColumns = ref<TableColumn<Issue>[]>([
   {
+    id: "id",
     accessorKey: "id",
     header: "#",
   },
   {
-    accessorKey: "title",
+    id: "subject",
+    accessorFn: (row) => row.chat.title,
     header: "Onderwerp",
   },
   {
+    id: "participants",
     header: "Betrokkenen",
     accessorFn: (row) =>
-      [...row.chat.users, ...row.chat.groups]
-        .map((entry) => entry.name)
-        .join(", "),
+      [...row.chat.users, ...row.chat.groups].map((p) => p.name).join(", "),
   },
 ]);
 
@@ -87,6 +88,39 @@ useHead({ title: computed(() => `${vendor.value?.name} - Standhouders`) });
             :loading="vendorIssueStatus === 'pending'"
             :columns="vendorTableColumns"
           >
+            <template #subject-cell="{ row }">
+              <div class="flex items-center gap-4">
+                <NuxtLink :to="`/chats/${row.original.chat.id}`">
+                  {{ row.original.chat.title }}
+                </NuxtLink>
+
+                <UBadge
+                  v-if="row.original.resolvedAt"
+                  variant="outline"
+                  size="xs"
+                  color="success"
+                  icon="i-lucide-check"
+                  aria-label="Opgelost"
+                />
+              </div>
+            </template>
+
+            <template #participants-cell="{ row }">
+              <UAvatarGroup>
+                <UserAvatar
+                  v-for="user of row.original.chat.users ?? []"
+                  :key="`chat-${row.id}-user-${user.id}`"
+                  :user="user"
+                  single
+                />
+                <GroupAvatar
+                  v-for="group of row.original.chat.groups ?? []"
+                  :key="`chat-${row.id}-group-${group.id}`"
+                  :group="group"
+                />
+              </UAvatarGroup>
+            </template>
+
             <template #empty>
               <UEmpty
                 class="m-4"

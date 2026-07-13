@@ -39,24 +39,10 @@ const links = [
       onSelect: closeMenu,
     },
     {
-      label: "Instellingen",
-      to: "/settings",
-      icon: "i-lucide-settings",
-      defaultOpen: true,
-      type: "trigger",
-      children: [
-        {
-          label: "Profiel",
-          to: "/settings",
-          exact: true,
-          onSelect: closeMenu,
-        },
-        {
-          label: "Gebruikers",
-          to: "/settings/users",
-          onSelect: closeMenu,
-        },
-      ],
+      label: "Profiel",
+      to: "/profile",
+      icon: "i-lucide-user",
+      onSelect: closeMenu,
     },
     {
       label: "Systeem",
