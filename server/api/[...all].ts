@@ -1,23 +1,10 @@
 import { createError, defineEventHandler, proxyRequest } from "h3";
 import { jwtDecode } from "jwt-decode";
 import { getUserSession } from "nuxt-oidc-auth/runtime/server/utils/session.js";
+import { firstValidToken } from "#server/util/jwt";
 
 const acceptedRequestTypes = ["GET", "HEAD", "PATCH", "POST", "PUT", "DELETE"];
 type HttpMethod = "GET" | "HEAD" | "PATCH" | "POST" | "PUT" | "DELETE";
-
-function maybeUseIdToken(idToken: string | null, accessToken: string): string {
-  if (!idToken) return accessToken;
-
-  try {
-    const parsed = jwtDecode(idToken);
-
-    if (!parsed!.exp || parsed!.exp < Date.now() / 1000) return accessToken;
-
-    return idToken;
-  } catch {
-    return accessToken;
-  }
-}
 
 export default defineEventHandler(async (event) => {
   // Only intercept expected methods
@@ -68,7 +55,7 @@ export default defineEventHandler(async (event) => {
   const proxyHeaders = new Headers();
   proxyHeaders.set(
     "Authorization",
-    `Bearer ${maybeUseIdToken(event.context.sessionIdToken, event.context.sessionAccessToken)}`,
+    `Bearer ${firstValidToken(event.context.sessionIdToken, event.context.sessionAccessToken)}`,
   );
   proxyHeaders.set("X-User-Id", event.context.userId);
 

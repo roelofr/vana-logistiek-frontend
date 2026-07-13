@@ -5,9 +5,6 @@ import type { ChatMessageList } from "#components";
 
 definePageMeta({
   middleware: ["auth"],
-  keepalive: {
-    max: 2,
-  },
 });
 
 const route = useRoute();

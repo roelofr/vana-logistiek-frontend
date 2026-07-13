@@ -37,6 +37,25 @@ const confettiTypes: Record<string, AddConfettiType[]> = {
       confettiNumber: 8,
     },
   ],
+  sad: [
+    {
+      confettiNumber: 400,
+      confettiColors: [
+        "#2563eb",
+        "#0284c7",
+        "#0891b2",
+        "#4f46e5",
+        "#164e63",
+        "#0c4a6e",
+        "#1e3a8a",
+        "#312e81",
+      ],
+    },
+    {
+      emojis: ["🥲", "🥺", "😭", "😢"],
+      confettiNumber: 8,
+    },
+  ],
   normal: [{}],
 };
 

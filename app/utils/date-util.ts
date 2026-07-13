@@ -13,18 +13,23 @@ function toDate(value: Date | string | undefined): Date | null {
   }
 }
 
+export function unpackDatesOfObject<T extends object>(
+  data: T,
+  dateKeys: (keyof T)[],
+): T {
+  for (const dateKey of dateKeys)
+    if (Object.hasOwn(data, dateKey) && data[dateKey]) {
+      // @ts-expect-error Let's just assume the user knows what they're doing.
+      data[dateKey] = toDate(data[dateKey]);
+    }
+  return data;
+}
+
 export function unpackDates<T extends object>(
   data: T[],
   dateKeys: (keyof T)[],
 ): T[] {
-  return data.map((row) => {
-    for (const dateKey of dateKeys)
-      if (Object.hasOwn(row, dateKey) && row[dateKey]) {
-        // @ts-expect-error Let's just assume the user knows what they're doing.
-        row[dateKey] = toDate(row[dateKey]);
-      }
-    return row;
-  });
+  return data.map((row) => unpackDatesOfObject(row, dateKeys));
 }
 
 export function formattedLocalTime(

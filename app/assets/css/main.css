@@ -2,7 +2,7 @@
 @import "@nuxt/ui";
 
 /* Load additional Tailwind colours for the districts */
-@source inline("{bg,fill,border}-{amber,stone,red,blue,yellow,lime,pink}-{500,600,700}");
+@source inline("{bg,fill,border}-{amber,stone,slate,red,blue,yellow,lime,pink}-{500,600,700}");
 
 @theme static {
   --font-sans: "Public Sans", sans-serif;

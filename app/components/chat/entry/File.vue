@@ -12,7 +12,7 @@ const { entry } = defineProps<{ entry: ChatFile }>();
     description="Bijlage verwerken..."
   />
   <UEmpty
-    v-if="entry.fileStatus === 'corrupted'"
+    v-else-if="entry.fileStatus === 'corrupted'"
     class="border border-muted rounded p-2"
     icon="i-lucide-file-x"
     description="Bijlage beschadigd"

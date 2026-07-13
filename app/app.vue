@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import "maplibre-gl/dist/maplibre-gl.css";
+import { useGroupStore } from "~/stores/groups";
 
 const colorMode = useColorMode();
 const color = computed(() =>
@@ -18,6 +19,9 @@ useSeoMeta({
   description,
   robots: "noindex, nofollow",
 });
+
+const groupStore = useGroupStore();
+callOnce(() => groupStore.fetch());
 </script>
 
 <template>

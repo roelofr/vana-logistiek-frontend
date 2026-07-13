@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Chat, ChatEntry } from "~/types";
+import { FetchError } from "ofetch";
 
 const { chat, disabled = false } = defineProps<{
   chat: Chat;
@@ -35,6 +36,7 @@ function reset() {
 defineExpose({ reset });
 
 const isLoading = ref(false);
+const submitError = ref<string | undefined>();
 async function sendMessage() {
   if (disabled || isLoading.value) return;
   isLoading.value = true;
@@ -53,9 +55,18 @@ async function sendMessage() {
       },
     );
 
+    submitError.value = undefined;
+
     if (response) emit("send", response);
 
     reset();
+  } catch (error) {
+    if (error instanceof FetchError) {
+      submitError.value = `Fout bij versturen bericht: ${error.message}`;
+    } else {
+      submitError.value =
+        "Er is iets misgegaan bij het versturen van het bericht.";
+    }
   } finally {
     isLoading.value = false;
   }
@@ -87,6 +98,7 @@ defineShortcuts({
     class="p-4 grid grid-cols-1 gap-4"
     @submit.prevent="sendMessage"
   >
+    <UAlert v-if="submitError" color="warning" description="submitError" />
     <UTextarea
       ref="reply-field"
       v-model="formState.message"
