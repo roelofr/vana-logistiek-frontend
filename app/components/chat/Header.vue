@@ -4,27 +4,12 @@ import { locationToGrid } from "~/utils/location-util";
 
 const { chat } = defineProps<{ chat: Chat }>();
 
-const isIssue = computed(() => Boolean(chat.subject));
 const vendor = computed(() => chat.subject?.vendor);
 const location = computed(() => chat.subject?.location);
 
 const participants = computed(() =>
   [...chat.users, ...chat.groups].map((row) => row.name).join(", "),
 );
-
-const userAvatars = computed(() => {
-  if (!chat.users) return [];
-  if (chat.users.length > 2) return chat.users.slice(0, 2);
-  return chat.users;
-});
-
-const groupAvatars = computed(() => {
-  const wantedCount = 2 - userAvatars.value.length;
-  if (!chat.groups || wantedCount <= 0) return [];
-  if (chat.groups.length > wantedCount)
-    return chat.groups.slice(0, wantedCount);
-  return chat.groups;
-});
 </script>
 
 <template>

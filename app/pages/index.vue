@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { DropdownMenuItem } from "@nuxt/ui";
-
 const confetti = useConfetti();
 
 function pop() {
@@ -30,14 +28,15 @@ definePageMeta({
             voor standhouders, op locatie en gewoon dingen schreeuwen naar de
             Centrale Post van Logistiek en TBS.
           </p>
-          <div class="p-4 mt-12">
+          <div class="py-4 mt-8 flex justify-center">
             <UButton
               color="primary"
               size="xl"
               icon="i-lucide-party-popper"
               @click="pop"
-              >Klik voor feest</UButton
             >
+              Klik voor feest
+            </UButton>
           </div>
         </UCard>
         <UCard title="Over je data" variant="soft">

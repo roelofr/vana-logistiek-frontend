@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { object, array, string } from "yup";
 import type { Chat, ChatEntry } from "~/types";
 
 const { chat, disabled = false } = defineProps<{
