@@ -1,4 +1,3 @@
-// server/middleware/proxy-useAuth.ts
 import { createError, defineEventHandler, proxyRequest } from "h3";
 import { jwtDecode } from "jwt-decode";
 import { getUserSession } from "nuxt-oidc-auth/runtime/server/utils/session.js";
@@ -12,7 +11,7 @@ function maybeUseIdToken(idToken: string | null, accessToken: string): string {
   try {
     const parsed = jwtDecode(idToken);
 
-    if (parsed!.exp < Date.now() / 1000) return accessToken;
+    if (!parsed!.exp || parsed!.exp < Date.now() / 1000) return accessToken;
 
     return idToken;
   } catch {

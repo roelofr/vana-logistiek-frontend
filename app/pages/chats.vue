@@ -19,7 +19,7 @@ const filteredChats = computed<Chat[]>(() => {
   else if (activeFilter.value === "active")
     return chats.value.filter((chat) => {
       if (chat.subject) return chat.subject.resolvedAt == null;
-      return chat.state != "Closed";
+      return chat.state != "closed";
     });
   else return chats.value;
 });

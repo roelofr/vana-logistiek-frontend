@@ -47,6 +47,13 @@ function onModalOpen() {
 
 watch(open, (newOpen) => newOpen && onModalOpen());
 
+function closeAndReset() {
+  open.value = false;
+  state.name = undefined;
+  state.number = undefined;
+  state.districtId = undefined;
+}
+
 const confetti = useConfetti();
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   const vendor = await $fetch<Vendor>("/api/vendors/admin", {
@@ -108,7 +115,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             color="neutral"
             label="Annuleren"
             variant="subtle"
-            @click="open = false"
+            @click="closeAndReset()"
           />
           <UButton
             color="primary"

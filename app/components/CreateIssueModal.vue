@@ -83,6 +83,10 @@ const typeItems = [
   },
 ];
 
+function applySuggestion(suggestion: string) {
+  issue.subject = suggestion;
+}
+
 const continueOrSubmit = async (event: Event) => {
   if (issue.issueType != "standalone" && currentPage.value == 1) {
     event.stopPropagation();
@@ -193,7 +197,7 @@ watch(modalOpen, (newVal, oldVal) => {
             :key="value"
             size="xs"
             variant="soft"
-            @click="issue.subject = value"
+            @click="applySuggestion(value)"
           >
             {{ value }}
           </UButton>

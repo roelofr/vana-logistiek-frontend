@@ -23,6 +23,7 @@ export interface User {
   avatar: string | null;
   group?: Group;
   roles?: string[];
+  flags?: string[];
 }
 
 export interface District {
@@ -91,8 +92,8 @@ export interface ChatFile extends ChatEntryBase {
   type: "file";
   filename: string;
   mimetype: string;
-  fileStatus: "New" | "Ready" | "Corrupted";
-  fileType: "Image" | "Binary" | "Unknown";
+  fileStatus: "new" | "ready" | "corrupted";
+  fileType: "image" | "binary" | "unknown";
   url: string;
 }
 

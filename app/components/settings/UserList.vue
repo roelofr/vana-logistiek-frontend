@@ -2,6 +2,7 @@
 import type { SelectItem } from "@nuxt/ui";
 import type { Group, User } from "~/types";
 import { toLucideIcon } from "~/utils/string-util";
+import type { SelectValue } from "@nuxt/ui/components/Select.vue";
 
 const { groups, users } = defineProps<{
   groups: Group[];
@@ -59,7 +60,11 @@ async function handeRoleChange(user: User, groupId: number | undefined | null) {
       class="flex items-center justify-between gap-3 py-3 px-4 sm:px-6"
     >
       <div class="flex items-center gap-3 min-w-0">
-        <UAvatar size="md" :alt="member.name" :src="member.avatar" />
+        <UAvatar
+          size="md"
+          :alt="member.name"
+          :src="member.avatar ?? undefined"
+        />
 
         <div class="text-sm min-w-0">
           <p class="text-highlighted font-medium truncate">
@@ -95,7 +100,11 @@ async function handeRoleChange(user: User, groupId: number | undefined | null) {
           </template>
           <template #item-leading="{ item }">
             <GroupAvatar
-              :group="indexedGroupMap.get(item!.value)!"
+              :group="
+                indexedGroupMap.get(
+                  (item as { value: SelectValue }).value as number,
+                )!
+              "
               size="2xs"
             />
           </template>

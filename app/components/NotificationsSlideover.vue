@@ -1,6 +1,18 @@
 <script lang="ts" setup>
 import { formatTimeAgo } from "@vueuse/core";
-import type { Notification } from "../types";
+import type { AvatarProps } from "#ui/components/Avatar.vue";
+
+interface Notification {
+  id: number;
+  date: string;
+  body: string;
+  unread: boolean;
+  sender: {
+    id: number;
+    name: string;
+    avatar: AvatarProps;
+  };
+}
 
 const { isNotificationsSlideoverOpen } = useDashboard();
 

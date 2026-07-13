@@ -122,12 +122,16 @@ onChange(async () => {
       label="Profielfoto"
     >
       <div class="flex flex-wrap items-center gap-3">
-        <UAvatar :alt="profile.name" :src="profile.avatar" size="lg" />
+        <UAvatar
+          :alt="profile.name"
+          :src="profile.avatar ?? undefined"
+          size="lg"
+        />
         <UButton
           color="neutral"
           label="Kiezen"
           :disabled="avatarUploading"
-          @click="selectFile"
+          @click="selectFile()"
         />
       </div>
     </UFormField>
