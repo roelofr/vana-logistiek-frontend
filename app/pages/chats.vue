@@ -5,6 +5,7 @@ import type { Chat } from "~/types";
 
 const route = useRoute();
 const chatStore = useChatStore();
+useRafFn(chatStore.fetchIfStale, { immediate: true });
 
 const activeFilter = ref("active");
 
@@ -52,7 +53,6 @@ watch(
 );
 
 onMounted(() => {
-  chatStore.fetchIfStale();
   if (route.params.id && String(route.params.id).match(/^\d+$/)) {
     selectedChatId.value = Number.parseInt(route.params.id as string, 10);
     isMailPanelOpen.value = true;
@@ -109,7 +109,11 @@ const isMobile = breakpoints.smaller("lg");
         <ChatListFilter v-model="activeFilter" />
       </template>
     </UDashboardNavbar>
-    <ChatList v-model="selectedChat" :chats="filteredChats" />
+    <ChatList
+      v-model="selectedChat"
+      :chats="filteredChats"
+      :loading="chatStore.isLoading"
+    />
   </UDashboardPanel>
 
   <NuxtPage />

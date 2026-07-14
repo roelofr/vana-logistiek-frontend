@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { localTime } from "#imports";
+import { localTime, locationToGrid } from "#imports";
 import type { Chat } from "~/types";
 
-const props = defineProps<{
+const { chats, loading } = defineProps<{
   chats: Chat[];
+  loading: boolean;
 }>();
+
+const skeletonRows = Array(20)
+  .fill(null)
+  .map((_, index) => index);
 
 const issuesRefs = ref<Record<number, Element | null>>({});
 
@@ -18,33 +23,62 @@ watch(selectedChat, (newValue) => {
 
 defineShortcuts({
   arrowdown: () => {
-    const index = props.chats.findIndex(
+    const index = chats.findIndex(
       (chat: Chat) => chat.id === selectedChat.value?.id,
     );
 
     if (index === -1) {
-      selectedChat.value = props.chats[0];
-    } else if (index < props.chats.length - 1) {
-      selectedChat.value = props.chats[index + 1];
+      selectedChat.value = chats[0];
+    } else if (index < chats.length - 1) {
+      selectedChat.value = chats[index + 1];
     }
   },
   arrowup: () => {
-    const index = props.chats.findIndex(
+    const index = chats.findIndex(
       (chat: Chat) => chat.id === selectedChat.value?.id,
     );
 
     if (index === -1) {
-      selectedChat.value = props.chats[props.chats.length - 1];
+      selectedChat.value = chats[chats.length - 1];
     } else if (index > 0) {
-      selectedChat.value = props.chats[index - 1];
+      selectedChat.value = chats[index - 1];
     }
   },
 });
 </script>
 
 <template>
-  <div class="overflow-y-auto divide-y divide-default">
-    <div v-if="!chats?.length" class="p-4">
+  <div
+    class="divide-y divide-default"
+    :class="loading ? 'overflow-y-hidden' : 'overflow-y-auto'"
+  >
+    <template v-if="loading">
+      <div v-for="row in skeletonRows" :key="row">
+        <div
+          class="block p-4 sm:pr-6 text-sm cursor-pointer border-l-2 border-bg"
+        >
+          <div class="grid grid-message max-w-full gap-4">
+            <UAvatarGroup>
+              <USkeleton class="rounded-full h-12 w-12" />
+            </UAvatarGroup>
+
+            <div class="grid">
+              <div class="flex items-center justify-between">
+                <USkeleton class="h-4 w-8/12" />
+
+                <USkeleton class="h-4 w-16" />
+              </div>
+
+              <div class="flex items-center gap-4">
+                <USkeleton class="h-4 w-4" />
+                <USkeleton class="h-3 w-14" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+    <div v-else-if="!chats?.length" class="p-4">
       <UEmpty
         icon="i-lucide-inbox"
         title="Geen meldingen"
@@ -97,16 +131,22 @@ defineShortcuts({
 
               <span>{{ localTime(chat.updatedAt) }}</span>
             </div>
-            <p class="truncate max-w-full text-dimmed line-clamp-1">
+            <p
+              class="truncate max-w-full text-dimmed line-clamp-1 flex items-center gap-2"
+            >
               <template v-if="chat.subject && chat.subject.vendor">
-                {{ chat.subject.vendor.name }} ({{
-                  chat.subject.vendor.number
-                }})
+                <UIcon
+                  :name="toLucideIcon(chat.subject.vendor.icon)"
+                  class="h-4"
+                />
+                <span>{{ chat.subject.vendor.name }}</span>
+                <span>({{ chat.subject.vendor.number }})</span>
               </template>
               <template v-else-if="chat.subject && chat.subject.location">
-                Op locatie
+                <UIcon name="i-lucide-pin" class="h-4" />
+                <span>{{ locationToGrid(chat.subject.location) }}</span>
               </template>
-              <template v-else> Reguliere chat</template>
+              <template v-else>{{ getChatParticipants(chat) }}</template>
             </p>
           </div>
         </div>

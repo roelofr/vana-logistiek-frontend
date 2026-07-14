@@ -1,19 +1,39 @@
 import type { Chat } from "~/types";
 import type { AsyncDataRequestStatus } from "#app/composables/asyncData";
 import { unpackDates } from "~/utils/date-util";
+import type { UnwrapRef } from "vue";
 
 interface ChatResponse {
-  chats: Chat[];
+  chats: Chat[] & {
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+interface ChatStore {
+  data: Chat[];
+  error: string | null;
+  status: AsyncDataRequestStatus;
+  lastSuccessfulFetch: null | number;
+  pending: boolean;
 }
 
 export const useChatStore = defineStore("chatStore", {
-  state: () => ({
+  state: (): ChatStore => ({
     data: [] as Chat[],
-    error: null as Error | null,
+    error: null as string | null,
     status: "idle" as AsyncDataRequestStatus,
     lastSuccessfulFetch: null as null | number,
     pending: false,
   }),
+  getters: {
+    isLoading(state: ChatStore): boolean {
+      return (
+        state.status === "idle" ||
+        (state.status === "pending" && state.lastSuccessfulFetch == null)
+      );
+    },
+  },
   actions: {
     async fetch(): Promise<void> {
       if (this.pending) return;
@@ -32,7 +52,9 @@ export const useChatStore = defineStore("chatStore", {
         this.status = "success";
         this.lastSuccessfulFetch = Date.now();
       } catch (error) {
-        this.error = error as Error;
+        this.error = String(
+          error instanceof Error ? error.message : "Unknown error",
+        );
         this.status = "error";
       } finally {
         this.pending = false;

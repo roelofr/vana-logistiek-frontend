@@ -1,15 +1,11 @@
 <script setup lang="ts">
 import type { Chat } from "~/types";
-import { locationToGrid } from "~/utils/location-util";
 
 const { chat } = defineProps<{ chat: Chat }>();
 
 const vendor = computed(() => chat.subject?.vendor);
 const location = computed(() => chat.subject?.location);
-
-const participants = computed(() =>
-  [...chat.users, ...chat.groups].map((row) => row.name).join(", "),
-);
+const participants = computed(() => getChatParticipants(chat));
 </script>
 
 <template>
@@ -29,10 +25,20 @@ const participants = computed(() =>
         <template #name>
           <NuxtLink :href="`/vendors/${vendor.id}`">{{ vendor.name }}</NuxtLink>
         </template>
+
+        <template #description>
+          <div class="flex flex-wrap items-center gap-2">
+            <VendorNumber :vendor="vendor" />
+            <span>{{ participants }}</span>
+          </div>
+        </template>
       </UUser>
     </div>
 
-    <div v-else-if="location" class="flex py-4 gap-2 items-center">
+    <div
+      v-else-if="location"
+      class="flex py-4 gap-2 w-full justify-between items-center"
+    >
       <UUser
         size="xl"
         :name="`Melding in ${locationToGrid(location)}`"
@@ -40,7 +46,7 @@ const participants = computed(() =>
         :avatar="{ icon: 'i-lucide-map-pin', color: 'primary' }"
       />
 
-      <UPopover>
+      <UPopover arrow>
         <UButton
           label="Toon op kaart"
           color="neutral"
