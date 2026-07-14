@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Chat } from "~/types";
+import type { Chat, ChatEntry } from "~/types";
 import { computed } from "vue";
 import type { ChatMessageList } from "#components";
 
@@ -9,12 +9,13 @@ definePageMeta({
 
 const route = useRoute();
 const router = useRouter();
+const { refresh: refreshChats } = useChatStore();
 
 const messageList =
   useTemplateRef<InstanceType<typeof ChatMessageList>>("messageList");
 
 // Fetches new data every time you switch messages
-const { data: chat, refresh: chatRefresh } = await useFetch<Chat>(
+const { data: chat, refresh: refreshChat } = await useFetch<Chat>(
   () => `/api/chats/by-id/${route.params.id}`,
 );
 
@@ -30,13 +31,26 @@ function leaveMessage() {
   router.push("/chats");
 }
 
-function refresh() {
+function refreshData() {
+  refreshChat(); // Refresh this chat
+  refreshChats(); // Refresh chat list too
+}
+
+function refreshMessages() {
   messageList.value?.refresh();
-  chatRefresh();
+}
+
+function onChatAction() {
+  refreshData();
+  refreshMessages();
 }
 
 function onSendReply() {
-  messageList.value?.refresh();
+  refreshMessages();
+}
+
+function onSystemMessage(_message: ChatEntry) {
+  refreshData();
 }
 </script>
 
@@ -78,7 +92,7 @@ function onSendReply() {
         </template>
 
         <template #right>
-          <ChatActions :chat="chat" @refresh="refresh()" />
+          <ChatActions :chat="chat" @refresh="onChatAction()" />
         </template>
       </UDashboardNavbar>
 
@@ -86,7 +100,11 @@ function onSendReply() {
     </template>
 
     <template #body>
-      <ChatMessageList ref="messageList" :chat="chat!" />
+      <ChatMessageList
+        ref="messageList"
+        :chat="chat!"
+        @system-message="onSystemMessage($event)"
+      />
     </template>
     <template #footer>
       <ChatMessageInput :chat="chat!" @send="onSendReply()" />

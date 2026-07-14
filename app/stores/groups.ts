@@ -15,11 +15,17 @@ export const useGroupStore = defineStore("groupStore", {
       this.state = "loading";
 
       try {
-        this.groups = await $fetch<Group[]>("/api/groups");
+        const response = await $fetch<Group[]>("/api/groups");
+        if (!Array.isArray(response))
+          throw new Error("Invalid response format");
+
+        this.groups = response;
         this.state = "success";
+      } catch (err) {
+        this.state = "error";
+        console.error("Failed to fetch groups:%o", err);
       } finally {
         this.isLoading = false;
-        this.state = "error";
       }
     },
   },

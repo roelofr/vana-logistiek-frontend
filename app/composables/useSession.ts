@@ -13,13 +13,13 @@ export function useSession() {
 
   // Vana extensions
   // @ts-expect-error Vana extensions are present!
-  const roles = computed(() => user.value?.vana.roles ?? []);
+  const roles = computed(() => user.value?.vana?.roles ?? []);
 
   const { groups } = useGroupStore();
 
   const group = computed(() => {
     // @ts-expect-error Vana extensions are present!
-    const vanaGroup = user.value?.vana.group;
+    const vanaGroup = user.value?.vana?.group;
 
     return vanaGroup ? groups.find((g) => g.id == vanaGroup) : null;
   });

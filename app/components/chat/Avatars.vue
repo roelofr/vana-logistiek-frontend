@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { Chat } from "~/types";
+
 const { chat, count = 2 } = defineProps<{
-  chat: ListChat;
+  chat: Pick<Chat, "users" | "groups">;
   count?: number;
 }>();
 

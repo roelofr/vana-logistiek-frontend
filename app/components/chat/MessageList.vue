@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { Chat, ChatEntry } from "~/types";
 import { groupChatMessages } from "~/utils/message-converter";
-import type { Toast } from "@nuxt/ui/composables";
 import { unpackDatesOfObject } from "~/utils/date-util";
 import { expand } from "~/utils/data-util";
 import type { UChatMessages } from "#components";
 
 const { chat } = defineProps<{ chat: Chat }>();
+const emit = defineEmits<{ systemMessage: [ChatEntry] }>();
 
 const {
   data: messages,
@@ -23,7 +23,6 @@ watch(
   () => (additionalMessages.value = []),
 );
 
-type EventSourceStatus = "CONNECTING" | "OPEN" | "CLOSED";
 const {
   data: streamData,
   status: streamStatus,
@@ -93,6 +92,8 @@ onUnmounted(() => {
 
 watch(streamData, (newData) => {
   if (!newData) return;
+
+  if (newData.type === "system") emit("systemMessage", newData);
 
   additionalMessages.value = [...additionalMessages.value, { ...newData }];
   isStreaming.value = true;

@@ -34,10 +34,10 @@ export default defineNitroPlugin(() => {
     try {
       await downloadSessionInformation(session);
     } catch {
-      throw createError({
-        statusCode: 500,
-        message: "Failed to download session information",
-      });
+      console.warn(
+        "Failed to download session information for %o",
+        session.userName,
+      );
     }
   });
 
@@ -45,10 +45,10 @@ export default defineNitroPlugin(() => {
     try {
       await downloadSessionInformation(session);
     } catch {
-      throw createError({
-        statusCode: 500,
-        message: "Failed to download session information",
-      });
+      console.warn(
+        "Failed to download session information for %o",
+        session.userName,
+      );
     }
   });
 });

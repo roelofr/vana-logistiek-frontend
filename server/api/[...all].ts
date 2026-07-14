@@ -1,10 +1,24 @@
-import { createError, defineEventHandler, proxyRequest } from "h3";
-import { jwtDecode } from "jwt-decode";
+import {
+  createError,
+  defineEventHandler,
+  type H3Event,
+  proxyRequest,
+} from "h3";
 import { getUserSession } from "nuxt-oidc-auth/runtime/server/utils/session.js";
 import { firstValidToken } from "#server/util/jwt";
 
 const acceptedRequestTypes = ["GET", "HEAD", "PATCH", "POST", "PUT", "DELETE"];
 type HttpMethod = "GET" | "HEAD" | "PATCH" | "POST" | "PUT" | "DELETE";
+
+const streamPaths = [new RegExp("^/api/chats/stream/\\d+$")];
+function isStreaming(event: H3Event<EventHandlerRequest>): boolean {
+  if (!event.headers.get("accept")?.includes("text/event-stream")) return false;
+  if (!streamPaths.some((path) => path.test(event.path))) return false;
+
+  console.log("Streaming %s", event.path);
+
+  return true;
+}
 
 export default defineEventHandler(async (event) => {
   // Only intercept expected methods
@@ -38,7 +52,7 @@ export default defineEventHandler(async (event) => {
     event.context.userId = session.userInfo?.sub ?? null;
   } catch (e) {
     console.error("Failed to fetch session %o", e);
-    // noop
+    throw e;
   }
 
   if (!event.context.sessionAccessToken || !event.context.userId) {
@@ -59,9 +73,15 @@ export default defineEventHandler(async (event) => {
   );
   proxyHeaders.set("X-User-Id", event.context.userId);
 
+  const shouldStream = isStreaming(event);
+
   // 6. Proxy the Request
   try {
-    return proxyRequest(event, targetUrl.toString(), { headers: proxyHeaders });
+    return proxyRequest(event, targetUrl.toString(), {
+      headers: proxyHeaders,
+      streamRequest: shouldStream || undefined,
+      sendStream: shouldStream || undefined,
+    });
   } catch (error) {
     console.log(`Proxy %s %s: ERROR %s`, method, targetUrl, error);
 

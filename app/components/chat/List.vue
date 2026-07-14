@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { localTime } from "#imports";
+import type { Chat } from "~/types";
 
 const props = defineProps<{
-  chats: ListChat[];
+  chats: Chat[];
 }>();
 
 const issuesRefs = ref<Record<number, Element | null>>({});
 
-const selectedChat = defineModel<ListChat | undefined>();
+const selectedChat = defineModel<Chat | undefined>();
 
 watch(selectedChat, (newValue) => {
   if (!newValue) return;
@@ -18,7 +19,7 @@ watch(selectedChat, (newValue) => {
 defineShortcuts({
   arrowdown: () => {
     const index = props.chats.findIndex(
-      (chat: ListChat) => chat.id === selectedChat.value?.id,
+      (chat: Chat) => chat.id === selectedChat.value?.id,
     );
 
     if (index === -1) {
@@ -29,7 +30,7 @@ defineShortcuts({
   },
   arrowup: () => {
     const index = props.chats.findIndex(
-      (chat: ListChat) => chat.id === selectedChat.value?.id,
+      (chat: Chat) => chat.id === selectedChat.value?.id,
     );
 
     if (index === -1) {

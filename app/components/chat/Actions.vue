@@ -40,7 +40,7 @@ const items = computed(() => {
         });
         emit("refresh");
 
-        requestAnimationFrame(() => confetti.dispatch("cry"));
+        requestAnimationFrame(() => confetti.dispatch("sad"));
       },
     });
   }

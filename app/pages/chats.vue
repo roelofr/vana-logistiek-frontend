@@ -2,33 +2,29 @@
 import { computed, ref, watch } from "vue";
 import { breakpointsTailwind } from "@vueuse/core";
 import type { Chat } from "~/types";
-import { unpackDates } from "~/utils/date-util";
 
 const route = useRoute();
-
-const { data: rawChats } = useLazyFetch<{ chats: Chat[] }>("/api/chats");
-const chats = computed<Chat[]>(() =>
-  unpackDates(rawChats.value?.chats ?? [], ["createdAt", "updatedAt"]),
-);
+const chatStore = useChatStore();
 
 const activeFilter = ref("active");
 
 // Filter chats based on the selected tab
 const filteredChats = computed<Chat[]>(() => {
-  if (!chats.value) return [];
+  const chats = chatStore.data;
+  if (!chats) return [];
   else if (activeFilter.value === "active")
-    return chats.value.filter((chat) => {
+    return chats.filter((chat) => {
       if (chat.subject) return chat.subject.resolvedAt == null;
       return chat.state != "closed";
     });
-  else return chats.value;
+  else return chats;
 });
 
 const selectedChatId = ref<number | undefined>();
 const selectedChat = computed<Chat | undefined>({
   get: () => {
     const selectedChat = selectedChatId.value; // Assign here so Vue can resolve the usage on an empty list
-    return chats.value?.find((issue) => issue.id === selectedChat);
+    return chatStore.data.find((issue) => issue.id === selectedChat);
   },
   set: (chat: Chat | undefined) =>
     (selectedChatId.value = chat?.id ?? undefined),
@@ -56,6 +52,7 @@ watch(
 );
 
 onMounted(() => {
+  chatStore.fetchIfStale();
   if (route.params.id && String(route.params.id).match(/^\d+$/)) {
     selectedChatId.value = Number.parseInt(route.params.id as string, 10);
     isMailPanelOpen.value = true;

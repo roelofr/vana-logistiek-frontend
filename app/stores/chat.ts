@@ -1,86 +1,54 @@
-import { type Chat, LoadingState } from "~/types";
+import type { Chat } from "~/types";
+import type { AsyncDataRequestStatus } from "#app/composables/asyncData";
+import { unpackDates } from "~/utils/date-util";
 
-export interface ListChat extends Pick<
-  Chat,
-  | "id"
-  | "title"
-  | "type"
-  | "state"
-  | "subject"
-  | "groups"
-  | "users"
-  | "createdAt"
-  | "updatedAt"
-> {
-  unread: boolean;
-}
-
-interface ChatListResponse {
-  statistics: {
-    totalItems: number;
-    totalPages: number;
-    currentPage: number;
-  };
-  chats: ListChat[];
+interface ChatResponse {
+  chats: Chat[];
 }
 
 export const useChatStore = defineStore("chatStore", {
   state: () => ({
-    _isLoading: false,
-    loadingState: LoadingState.Initial,
-    chats: [] as ListChat[],
-    unreadChats: [] as number[],
-    activeChatId: null as number | null,
+    data: [] as Chat[],
+    error: null as Error | null,
+    status: "idle" as AsyncDataRequestStatus,
+    lastSuccessfulFetch: null as null | number,
+    pending: false,
   }),
-  getters: {
-    activeChat(state): ListChat | null {
-      return state.activeChatId !== null
-        ? (state.chats.find((chat) => chat.id === state.activeChatId) ?? null)
-        : null;
-    },
-  },
   actions: {
-    async fetch() {
-      // Check loading flag
-      if (this._isLoading) return;
-      this._isLoading = true;
+    async fetch(): Promise<void> {
+      if (this.pending) return;
 
-      // Check if this might be a re-load
-      if (this.loadingState == LoadingState.Idle)
-        this.loadingState = LoadingState.Update;
+      this.pending = true;
+      this.status = "pending";
 
-      const { statistics, chats } =
-        await $fetch<ChatListResponse>("/api/chats");
+      console.log("Fetching data...");
 
-      console.log(
-        "Recieved page %d / %d (%d chats)",
-        statistics.currentPage,
-        statistics.totalPages,
-        statistics.totalItems,
-      );
-      console.log("Chats = %o", chats);
-
-      const mappedChats = expand(chats, []).map((chat) => ({
-        ...chat,
-        read: true,
-      }));
-
-      console.log("Mapped Chats = %o", mappedChats);
-
-      this.chats = mappedChats;
-
-      this.unreadChats = mappedChats
-        .filter((chat) => !chat.read)
-        .map((chat) => chat.id);
-
-      this.loadingState = LoadingState.Idle;
-      this._isLoading = false;
+      try {
+        const { chats } = await $fetch<ChatResponse>("/api/chats");
+        this.data = unpackDates(expand(chats ?? [], ["groups", "users"]), [
+          "createdAt",
+          "updatedAt",
+        ]);
+        this.status = "success";
+        this.lastSuccessfulFetch = Date.now();
+      } catch (error) {
+        this.error = error as Error;
+        this.status = "error";
+      } finally {
+        this.pending = false;
+      }
     },
+    async fetchIfStale(): Promise<void> {
+      const fetchAge = (Date.now() - (this.lastSuccessfulFetch ?? 0)) / 1000;
+      console.info("Fetching if stale, %o", fetchAge > 300);
 
-    setActiveChat(chat: number | Chat | ListChat | null) {
-      if (chat === null) this.activeChatId = null;
-      else if (typeof chat === "number") this.activeChatId = chat;
-      else this.activeChatId = chat.id;
+      if (fetchAge > 300) await this.fetch();
+    },
+    /**
+     * Reload if already loaded.
+     */
+    async refresh(): Promise<void> {
+      if (this.status !== "idle") await this.fetch();
     },
   },
 });
