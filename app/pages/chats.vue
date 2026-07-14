@@ -59,6 +59,23 @@ onMounted(() => {
   }
 });
 
+const { idle: userIsIdle } = useIdle(5 * 60 * 1000); // 5 min
+const { pause: pauseRefreshTimer, resume: resumeRefreshTimer } = useIntervalFn(
+  () => chatStore.refresh(),
+  30_000,
+);
+
+watch(userIsIdle, (isIdle) => {
+  if (isIdle) return pauseRefreshTimer();
+
+  resumeRefreshTimer();
+  chatStore.refresh();
+});
+
+useIntervalFn(async () => {
+  chatStore.refresh();
+}, 60_000);
+
 // Reset selected issue if it's not in the filtered chats
 watch(filteredChats, () => {
   if (
