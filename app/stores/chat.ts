@@ -1,13 +1,12 @@
 import type { Chat } from "~/types";
 import type { AsyncDataRequestStatus } from "#app/composables/asyncData";
 import { unpackDates } from "~/utils/date-util";
-import type { UnwrapRef } from "vue";
 
 interface ChatResponse {
-  chats: Chat[] & {
+  chats: (Chat & {
     createdAt: string;
     updatedAt: string;
-  };
+  })[];
 }
 
 interface ChatStore {
@@ -17,6 +16,8 @@ interface ChatStore {
   lastSuccessfulFetch: null | number;
   pending: boolean;
 }
+
+const fetchChats = useFetch<ChatResponse>("/api/chats");
 
 export const useChatStore = defineStore("chatStore", {
   state: (): ChatStore => ({
@@ -44,8 +45,10 @@ export const useChatStore = defineStore("chatStore", {
       console.log("Fetching data...");
 
       try {
-        const { chats } = await $fetch<ChatResponse>("/api/chats");
-        this.data = unpackDates(expand(chats ?? [], ["groups", "users"]), [
+        await fetchChats.execute();
+
+        const data = fetchChats.data.value ?? { chats: [] };
+        this.data = unpackDates(expand(data.chats, ["groups", "users"]), [
           "createdAt",
           "updatedAt",
         ]);

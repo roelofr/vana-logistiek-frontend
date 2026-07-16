@@ -32,6 +32,12 @@ export function unpackDates<T extends object>(
   return data.map((row) => unpackDatesOfObject(row, dateKeys));
 }
 
+export function mapDates<T extends object>(
+  dateKeys: (keyof T)[],
+): (value: T) => T {
+  return (value) => unpackDatesOfObject(value, dateKeys);
+}
+
 export function formattedLocalTime(
   time: Date | string | undefined,
   wantedFormat: string,

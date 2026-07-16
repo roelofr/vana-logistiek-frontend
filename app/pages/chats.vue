@@ -5,7 +5,7 @@ import type { Chat } from "~/types";
 
 const route = useRoute();
 const chatStore = useChatStore();
-useRafFn(chatStore.fetchIfStale, { immediate: true });
+callOnce(() => chatStore.fetchIfStale());
 
 const activeFilter = ref("active");
 

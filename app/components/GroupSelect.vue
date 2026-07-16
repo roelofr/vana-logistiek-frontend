@@ -3,19 +3,18 @@ import type { SelectValue } from "@nuxt/ui/components/Select.vue";
 import type { Group } from "~/types";
 import type { SelectItem } from "@nuxt/ui";
 import { toLucideIcon } from "~/utils/string-util";
-import { useGroupStore } from "~/stores/groups";
 
 const publicValue = defineModel<Group | undefined>();
 
-const { groups, isLoading: groupItemsLoading } = useGroupStore();
+const { groups, pending: groupItemsLoading } = useGroups();
 
 const keyedGroups = computed<Map<number, Group>>(
-  () => new Map(groups?.map((g) => [g.id, g]) ?? []),
+  () => new Map(groups.value?.map((g) => [g.id, g]) ?? []),
 );
 
 const groupItems = computed<SelectItem[]>(
   () =>
-    groups?.map(
+    groups.value?.map(
       (group) =>
         ({
           value: group.id,
@@ -41,7 +40,7 @@ const innerValue = computed<number | undefined>({
   <USelect
     v-model="innerValue"
     class="w-full"
-    :loading="groupItemsLoading"
+    :loading="groupItemsLoading && !keyedGroups"
     :items="groupItems"
     :ui="{ value: 'capitalize', item: 'capitalize' }"
     color="neutral"

@@ -9,6 +9,8 @@ definePageMeta({
 
 useHead({ title: "Gebruikers" });
 
+useGroups();
+
 const filter = ref<string | undefined>("");
 const pagination = ref({
   pageIndex: 0,
