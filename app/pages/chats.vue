@@ -4,7 +4,7 @@ import { breakpointsTailwind } from "@vueuse/core";
 import type { Chat } from "~/types";
 
 const route = useRoute();
-const { chats, refresh: refreshChats } = useChats();
+const { chats, refresh: refreshChats, pending: isLoading } = useChats();
 
 const activeFilter = ref("active");
 
@@ -112,7 +112,7 @@ const isMobile = breakpoints.smaller("lg");
     <ChatList
       v-model="selectedChat"
       :chats="filteredChats"
-      :loading="chats.isLoading"
+      :loading="Boolean(isLoading && !chats)"
     />
   </UDashboardPanel>
 
