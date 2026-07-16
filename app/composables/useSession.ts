@@ -15,13 +15,13 @@ export function useSession() {
   // @ts-expect-error Vana extensions are present!
   const roles = computed(() => user.value?.vana?.roles ?? []);
 
-  const { groups } = useGroupStore();
+  const { groups } = useGroups();
 
   const group = computed(() => {
     // @ts-expect-error Vana extensions are present!
     const vanaGroup = user.value?.vana?.group;
 
-    return vanaGroup ? groups.find((g) => g.id == vanaGroup) : null;
+    return vanaGroup ? groups.value?.find((g) => g.id == vanaGroup) : null;
   });
 
   type ValidPermission = "admin" | "centrale-post" | "wijkhouder" | "gebruiker";

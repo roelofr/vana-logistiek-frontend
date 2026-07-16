@@ -9,7 +9,7 @@ definePageMeta({
 
 const route = useRoute();
 const router = useRouter();
-const { refresh: refreshChats } = useChatStore();
+const { refresh: refreshChats } = useChats();
 
 const messageList =
   useTemplateRef<InstanceType<typeof ChatMessageList>>("messageList");

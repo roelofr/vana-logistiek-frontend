@@ -7,7 +7,7 @@ const confetti = useConfetti();
 const router = useRouter();
 const toast = useToast();
 
-const chatStore = useChatStore();
+const chats = useChats();
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller("lg");
 
@@ -132,7 +132,7 @@ const submit = async () => {
     modalOpen.value = false;
     confetti.dispatch("normal");
 
-    await chatStore.refresh();
+    await chats.refresh();
 
     await router.push(`/chats/${result.chat.id}`);
   } catch {

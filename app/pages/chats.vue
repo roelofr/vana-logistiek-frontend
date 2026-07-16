@@ -4,28 +4,28 @@ import { breakpointsTailwind } from "@vueuse/core";
 import type { Chat } from "~/types";
 
 const route = useRoute();
-const chatStore = useChatStore();
-callOnce(() => chatStore.fetchIfStale());
+const { chats, refresh: refreshChats } = useChats();
 
 const activeFilter = ref("active");
 
 // Filter chats based on the selected tab
 const filteredChats = computed<Chat[]>(() => {
-  const chats = chatStore.data;
-  if (!chats) return [];
-  else if (activeFilter.value === "active")
-    return chats.filter((chat) => {
+  if (!chats.value) return [];
+
+  if (activeFilter.value === "active")
+    return chats.value!.filter((chat) => {
       if (chat.subject) return chat.subject.resolvedAt == null;
       return chat.state != "closed";
     });
-  else return chats;
+
+  return chats.value!;
 });
 
 const selectedChatId = ref<number | undefined>();
 const selectedChat = computed<Chat | undefined>({
   get: () => {
     const selectedChat = selectedChatId.value; // Assign here so Vue can resolve the usage on an empty list
-    return chatStore.data.find((issue) => issue.id === selectedChat);
+    return chats.value?.find((issue) => issue.id === selectedChat);
   },
   set: (chat: Chat | undefined) =>
     (selectedChatId.value = chat?.id ?? undefined),
@@ -61,7 +61,7 @@ onMounted(() => {
 
 const { idle: userIsIdle } = useIdle(5 * 60 * 1000); // 5 min
 const { pause: pauseRefreshTimer, resume: resumeRefreshTimer } = useIntervalFn(
-  () => chatStore.refresh(),
+  () => refreshChats(),
   30_000,
 );
 
@@ -69,11 +69,11 @@ watch(userIsIdle, (isIdle) => {
   if (isIdle) return pauseRefreshTimer();
 
   resumeRefreshTimer();
-  chatStore.refresh();
+  refreshChats();
 });
 
 useIntervalFn(async () => {
-  chatStore.refresh();
+  refreshChats();
 }, 60_000);
 
 // Reset selected issue if it's not in the filtered chats
@@ -112,7 +112,7 @@ const isMobile = breakpoints.smaller("lg");
     <ChatList
       v-model="selectedChat"
       :chats="filteredChats"
-      :loading="chatStore.isLoading"
+      :loading="chats.isLoading"
     />
   </UDashboardPanel>
 
