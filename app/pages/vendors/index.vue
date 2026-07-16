@@ -26,8 +26,6 @@ const columnFilters = ref([
     value: "",
   },
 ]);
-const columnVisibility = ref();
-const rowSelection = ref({ 1: true });
 
 const {
   data: apiData,
@@ -160,7 +158,6 @@ const columns: TableColumn<Vendor>[] = [
         ref="table"
         v-model:global-filter="filter"
         v-model:column-filters="columnFilters"
-        v-model:column-visibility="columnVisibility"
         v-model:pagination="pagination"
         :columns="columns"
         :data="data"

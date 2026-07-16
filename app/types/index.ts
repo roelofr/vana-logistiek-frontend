@@ -48,13 +48,6 @@ export type ChatState = "active" | "permanent" | "closed";
 
 export interface ChatSubject {
   id: number;
-  vendor: null | Pick<
-    Vendor,
-    "id" | "name" | "number" | "icon" | "colour" | "type"
-  >;
-  location: null | Location;
-  createdAt: Date;
-  resolvedAt: Date | null;
 }
 
 export interface Chat {
@@ -139,11 +132,13 @@ export interface ChatIssue {
   type: ChatIssueType;
 }
 
-export interface Issue {
+export interface Issue extends ChatSubject {
   id: number;
   chat: Pick<Chat, "id" | "title" | "type" | "state" | "users" | "groups">;
   vendor: null | Vendor;
   location: null | Location;
+  createdAt: Date;
+  resolvedAt: Date | null;
 }
 
 export { type ConfettiVariant } from "~/plugins/confetti.client";
