@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { TableColumn } from "@nuxt/ui";
-import type { Column } from "@tanstack/table-core";
+import { type Column, getPaginationRowModel } from "@tanstack/table-core";
 import type { User } from "~/types";
 
 definePageMeta({
@@ -134,6 +134,9 @@ async function applyRoles(user: User, callback: () => void) {
     ref="table"
     v-model:global-filter="filter"
     v-model:pagination="pagination"
+    :pagination-options="{
+      getPaginationRowModel: getPaginationRowModel(),
+    }"
     :columns="columns"
     :data="data"
     :loading="status === 'pending'"
@@ -222,8 +225,8 @@ async function applyRoles(user: User, callback: () => void) {
     <div class="text-sm text-muted">
       {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }}
       van
-      {{ table?.tableApi?.getRowModel().rows.length || 0 }} rij(en)
-      geselecteerd.
+      {{ table?.tableApi?.getCoreRowModel().rows.length || 0 }} rij(en) in
+      filter.
     </div>
 
     <div class="flex items-center gap-1.5">

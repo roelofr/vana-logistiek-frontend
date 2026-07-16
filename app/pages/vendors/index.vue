@@ -162,7 +162,6 @@ const columns: TableColumn<Vendor>[] = [
         v-model:column-filters="columnFilters"
         v-model:column-visibility="columnVisibility"
         v-model:pagination="pagination"
-        v-model:row-selection="rowSelection"
         :columns="columns"
         :data="data"
         :loading="status === 'pending'"
@@ -194,10 +193,10 @@ const columns: TableColumn<Vendor>[] = [
         class="flex items-center justify-between gap-3 border-t border-default pt-4 mt-auto"
       >
         <div class="text-sm text-muted">
-          {{ table?.tableApi?.getFilteredSelectedRowModel().rows.length || 0 }}
+          {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }}
           van
-          {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }} rij(en)
-          geselecteerd.
+          {{ table?.tableApi?.getCoreRowModel().rows.length || 0 }} rij(en) in
+          filter.
         </div>
 
         <div class="flex items-center gap-1.5">
