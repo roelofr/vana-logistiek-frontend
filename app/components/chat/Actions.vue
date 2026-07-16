@@ -81,7 +81,7 @@ const addGroupOption = computed(
 );
 
 const menuDesktop = computed(() => [addGroupOption.value]);
-const menuMobile = computed(() => [[actions.value], [addGroupOption.value]]);
+const menuMobile = computed(() => [actions.value, [addGroupOption.value]]);
 
 const buttonItems = computed(() => {
   return actions.value
