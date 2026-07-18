@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { SelectItem } from "@nuxt/ui";
 
 const { defaultType, defaultSort } = defineProps<{
@@ -49,39 +49,41 @@ const chatSortOptions: SelectItem[] = [
 <template>
   <UPopover>
     <UButton
-      label="Filter"
       :color="active ? 'primary' : 'neutral'"
+      :content="{ side: 'bottom', align: 'right' }"
+      arrow
       icon="i-lucide-filter"
+      label="Filter"
       size="xs"
-      variant="subtle"
       trailing-icon="i-lucide-chevron-down"
+      variant="subtle"
     />
 
     <template #content>
       <div class="p-4 grid gap-2">
         <UFormField
-          label="Filter"
           :hint="typeFilterActive ? 'Actief' : undefined"
+          label="Filter"
         >
           <USelect
             v-model="chatType"
-            size="sm"
-            class="w-full"
             :items="chatTypeOptions"
             :ui="{ content: 'min-w-fit' }"
+            class="w-full"
+            size="sm"
             value-key="value"
           />
         </UFormField>
         <UFormField
-          label="Sortering"
           :hint="sortFilterActive ? 'Actief' : undefined"
+          label="Sortering"
         >
           <USelect
             v-model="chatSort"
-            size="sm"
-            class="w-full"
             :items="chatSortOptions"
             :ui="{ content: 'min-w-fit' }"
+            class="w-full"
+            size="sm"
           />
         </UFormField>
       </div>

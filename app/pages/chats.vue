@@ -12,13 +12,6 @@ const defaultSortFilter = "updated-at";
 const activeTypeFilter = ref(defaultTypeFilter);
 const activeSortFilter = ref(defaultSortFilter);
 
-const filterActive = computed(() =>
-  Boolean(
-    activeTypeFilter.value !== defaultTypeFilter ||
-    activeSortFilter.value !== defaultSortFilter,
-  ),
-);
-
 // Filter chats based on the selected tab
 const filteredChats = computed<Chat[]>(() => {
   if (!chats.value) return [];
@@ -144,10 +137,10 @@ const isMobile = breakpoints.smaller("lg");
 
       <template #right>
         <ChatListFilter
-          :default-type="defaultTypeFilter"
-          :default-sort="defaultSortFilter"
           v-model:sort="activeSortFilter"
           v-model:type="activeTypeFilter"
+          :default-type="defaultTypeFilter"
+          :default-sort="defaultSortFilter"
         />
       </template>
     </UDashboardNavbar>

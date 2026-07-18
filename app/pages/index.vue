@@ -82,9 +82,9 @@ definePageMeta({
         </UCard>
 
         <DevOnly>
-        <UCard title="Sessie informatie">
-          <pre><code>{{ JSON.stringify(user, undefined, 2)}}</code></Pre>
-        </UCard>
+          <UCard title="Sessie informatie">
+            <pre><code>{{ JSON.stringify(user, undefined, 2)}}</code></pre>
+          </UCard>
         </DevOnly>
       </div>
     </template>

@@ -6,7 +6,7 @@ import { expand } from "~/utils/data-util";
 
 const { chat } = defineProps<{ chat: Chat }>();
 const emit = defineEmits<{ systemMessage: [ChatEntry] }>();
-const scrollArea = useTemplateRef('scrollArea')
+const scrollArea = useTemplateRef("scrollArea");
 
 const {
   data: messages,
@@ -21,9 +21,12 @@ const additionalMessages = ref<ChatEntry[]>([]);
 watch(
   () => messages,
   (messages) => {
-    additionalMessages.value = []
+    additionalMessages.value = [];
     if (messages.value)
-      scrollArea.value?.virtualizer?.scrollToIndex(messages.value.length - 1, { align: 'end', behavior: 'smooth' })
+      scrollArea.value?.virtualizer?.scrollToIndex(messages.value.length - 1, {
+        align: "end",
+        behavior: "smooth",
+      });
   },
 );
 
@@ -38,11 +41,6 @@ const {
     read: (rawData) => JSON.parse(rawData!) as ChatEntry,
   },
 });
-
-const isStreaming = ref(false);
-const chatStatus = computed(() =>
-  isStreaming.value ? "streaming" : isLoading.value ? "submitted" : "ready",
-);
 
 const toast = useToast();
 const reconnectToast = ref<string | number | undefined>();
@@ -100,7 +98,6 @@ watch(streamData, (newData) => {
   if (newData.type === "system") emit("systemMessage", newData);
 
   additionalMessages.value = [...additionalMessages.value, { ...newData }];
-  isStreaming.value = true;
 });
 
 const isLoading = computed(() => ["pending", "idle"].includes(status.value));
@@ -125,18 +122,15 @@ const chatMessages = computed(() => {
   return groupChatMessages(joinedMessages);
 });
 
-watch(chatMessages, () => {
-  isStreaming.value = false;
-});
-
 defineExpose({ refresh });
 
-const itemAsGroup = (group): ChatEntryGroup => group as unknown as ChatEntryGroup
+const itemAsGroup = (group): ChatEntryGroup =>
+  group as unknown as ChatEntryGroup;
 </script>
 
 <template>
   <ClientOnly>
-    <ChatMessageLoading v-if="isLoading && !chatMessages"/>
+    <ChatMessageLoading v-if="isLoading && !chatMessages" />
     <template v-else>
       <UScrollArea
         ref="scrollArea"
@@ -145,12 +139,12 @@ const itemAsGroup = (group): ChatEntryGroup => group as unknown as ChatEntryGrou
         class="w-full h-full"
         virtualize
       >
-        <ChatMessageGroup :group="itemAsGroup(item)"/>
+        <ChatMessageGroup :group="itemAsGroup(item)" />
       </UScrollArea>
     </template>
 
     <template #fallback>
-      <ChatMessageLoading/>
+      <ChatMessageLoading />
     </template>
   </ClientOnly>
 

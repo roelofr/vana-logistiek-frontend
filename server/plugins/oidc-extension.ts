@@ -1,4 +1,3 @@
-import { createError } from "h3";
 // @ts-expect-error Runtimes seem to not register nicely, but they are there!
 import type { UserSession } from "nuxt-oidc-auth/runtime/types";
 import { firstValidToken, getUpstreamUrl } from "#server/util/jwt";
