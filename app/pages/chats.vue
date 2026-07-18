@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, ref, watch } from "vue";
 import { breakpointsTailwind } from "@vueuse/core";
 import type { Chat } from "~/types";
@@ -6,19 +6,60 @@ import type { Chat } from "~/types";
 const route = useRoute();
 const { chats, refresh: refreshChats, pending: isLoading } = useChats();
 
-const activeFilter = ref("active");
+const defaultTypeFilter = "active";
+const defaultSortFilter = "updated-at";
+
+const activeTypeFilter = ref(defaultTypeFilter);
+const activeSortFilter = ref(defaultSortFilter);
+
+const filterActive = computed(() =>
+  Boolean(
+    activeTypeFilter.value !== defaultTypeFilter ||
+    activeSortFilter.value !== defaultSortFilter,
+  ),
+);
 
 // Filter chats based on the selected tab
 const filteredChats = computed<Chat[]>(() => {
   if (!chats.value) return [];
 
-  if (activeFilter.value === "active")
+  const activeFilter = activeTypeFilter.value;
+
+  if (activeFilter === "active")
     return chats.value!.filter((chat) => {
       if (chat.subject) return chat.subject.resolvedAt == null;
       return chat.state != "closed";
     });
 
+  if (activeFilter === "inactive")
+    return chats.value!.filter((chat) => {
+      if (chat.subject) return chat.subject.resolvedAt != null;
+      return chat.state == "closed";
+    });
+
   return chats.value!;
+});
+
+const sortedChats = computed<Chat[]>(() => {
+  const activeSort = activeSortFilter.value;
+
+  // Updated-at is default sort
+  if (activeSort === "updated-at")
+    return filteredChats.value.toSorted(
+      (a, b) => a.updatedAt.getTime() - b.updatedAt.getTime(),
+    );
+
+  if (activeSort === "created-at")
+    return filteredChats.value.toSorted(
+      (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
+    );
+
+  if (activeSort === "vendor-id")
+    return filteredChats.value.toSorted(
+      (a, b) => (a.subject?.vendor?.id ?? 0) - (b.subject?.vendor?.id ?? 0),
+    );
+
+  return filteredChats.value;
 });
 
 const selectedChatId = ref<number | undefined>();
@@ -72,10 +113,6 @@ watch(userIsIdle, (isIdle) => {
   refreshChats();
 });
 
-useIntervalFn(async () => {
-  refreshChats();
-}, 60_000);
-
 // Reset selected issue if it's not in the filtered chats
 watch(filteredChats, () => {
   if (
@@ -93,8 +130,8 @@ const isMobile = breakpoints.smaller("lg");
   <UDashboardPanel
     id="inbox-1"
     :default-size="25"
-    :min-size="20"
     :max-size="30"
+    :min-size="20"
     resizable
   >
     <UDashboardNavbar title="Inbox">
@@ -106,7 +143,11 @@ const isMobile = breakpoints.smaller("lg");
       </template>
 
       <template #right>
-        <ChatListFilter v-model="activeFilter" />
+        <ChatListFilter
+          :active="filterActive"
+          v-model:sort="activeSortFilter"
+          v-model:type="activeTypeFilter"
+        />
       </template>
     </UDashboardNavbar>
     <ChatList

@@ -46,10 +46,6 @@ export type ChatType = "regular" | "group" | "issue";
 
 export type ChatState = "active" | "permanent" | "closed";
 
-export interface ChatSubject {
-  id: number;
-}
-
 export interface Chat {
   id: number;
   title: string;
@@ -59,7 +55,7 @@ export interface Chat {
   groups: Pick<Group, "id" | "name" | "icon" | "colour">[];
   createdAt: Date;
   updatedAt: Date;
-  subject: ChatSubject | null;
+  subject: Issue | null;
   unread: boolean;
 }
 
@@ -121,15 +117,8 @@ export type ChatEntryGroup = {
   entries: ChatEntry[];
 };
 
-export type ChatIssueType = "system" | "user";
-
-export interface ChatIssue {
+export interface ChatSubject {
   id: number;
-  groups: Group[];
-  participants: User[];
-  subject: string;
-  closed: boolean;
-  type: ChatIssueType;
 }
 
 export interface Issue extends ChatSubject {

@@ -1,12 +1,12 @@
-<script setup lang="ts">
-import type { Chat, ChatEntry } from "~/types";
+<script lang="ts" setup>
+import type { Chat, ChatEntry, ChatEntryGroup } from "~/types";
 import { groupChatMessages } from "~/utils/message-converter";
 import { unpackDatesOfObject } from "~/utils/date-util";
 import { expand } from "~/utils/data-util";
-import type { UChatMessages } from "#components";
 
 const { chat } = defineProps<{ chat: Chat }>();
 const emit = defineEmits<{ systemMessage: [ChatEntry] }>();
+const scrollArea = useTemplateRef('scrollArea')
 
 const {
   data: messages,
@@ -20,7 +20,11 @@ const additionalMessages = ref<ChatEntry[]>([]);
 
 watch(
   () => messages,
-  () => (additionalMessages.value = []),
+  (messages) => {
+    additionalMessages.value = []
+    if (messages.value)
+      scrollArea.value?.virtualizer?.scrollToIndex(messages.value.length - 1, { align: 'end', behavior: 'smooth' })
+  },
 );
 
 const {
@@ -126,46 +130,48 @@ watch(chatMessages, () => {
 });
 
 defineExpose({ refresh });
+
+const itemAsGroup = (group): ChatEntryGroup => group as unknown as ChatEntryGroup
 </script>
 
 <template>
-  <UChatMessages
-    :status="chatStatus"
-    should-auto-scroll
-    should-scroll-to-bottom
-  >
-    <ClientOnly>
-      <ChatMessageLoading v-if="isLoading && !chatMessages" />
-      <template v-else>
-        <ChatMessageGroup
-          v-for="group of chatMessages"
-          :key="group.id"
-          :group="group"
-        />
-      </template>
+  <ClientOnly>
+    <ChatMessageLoading v-if="isLoading && !chatMessages"/>
+    <template v-else>
+      <UScrollArea
+        ref="scrollArea"
+        v-slot="{ item }"
+        :items="chatMessages"
+        class="w-full h-full"
+        virtualize
+      >
+        <ChatMessageGroup :group="itemAsGroup(item)"/>
+      </UScrollArea>
+    </template>
 
-      <template #fallback>
-        <ChatMessageLoading />
-      </template>
-    </ClientOnly>
-  </UChatMessages>
+    <template #fallback>
+      <ChatMessageLoading/>
+    </template>
+  </ClientOnly>
 
   <DevOnly>
     <details>
       <summary>Raw response</summary>
-      <pre><code>{{ JSON.stringify(messages, undefined, 2)}}</code></pre>
+      <pre><code>{{ JSON.stringify(messages, undefined, 2) }}</code></pre>
     </details>
     <details>
       <summary>Mapped response</summary>
-      <pre><code>{{ JSON.stringify(chatMessages, undefined, 2)}}</code></pre>
+      <pre><code>{{ JSON.stringify(chatMessages, undefined, 2) }}</code></pre>
     </details>
     <details>
       <summary>Parameters</summary>
-      <pre><code>{{ JSON.stringify({
-        status,
-        streamData,
-        streamStatus,
-      }, undefined, 2)}}</code></pre>
+      <pre><code>{{
+          JSON.stringify({
+            status,
+            streamData,
+            streamStatus,
+          }, undefined, 2)
+        }}</code></pre>
     </details>
   </DevOnly>
 </template>
