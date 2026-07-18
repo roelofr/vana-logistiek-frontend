@@ -8,9 +8,9 @@ const { defaultType, defaultSort } = defineProps<{
 const chatType = defineModel<string>("type");
 const chatSort = defineModel<string>("sort");
 
-const typeFilterActive = computed(() => defaultType !== chatType.value);
-const sortFilterActive = computed(() => defaultSort !== chatSort.value);
-const active = computed(() => typeFilterActive.value || sortFilterActive.value);
+const active = computed(
+  () => defaultType !== chatType.value || defaultSort !== chatSort.value,
+);
 
 const chatTypeOptions: SelectItem[] = [
   {
@@ -61,31 +61,19 @@ const chatSortOptions: SelectItem[] = [
 
     <template #content>
       <div class="p-4 grid gap-2">
-        <UFormField
-          :hint="typeFilterActive ? 'Actief' : undefined"
+        <ChatListFilterField
           label="Filter"
-        >
-          <USelect
-            v-model="chatType"
-            :items="chatTypeOptions"
-            :ui="{ content: 'min-w-fit' }"
-            class="w-full"
-            size="sm"
-            value-key="value"
-          />
-        </UFormField>
-        <UFormField
-          :hint="sortFilterActive ? 'Actief' : undefined"
+          v-model="chatType"
+          :default-value="defaultType"
+          :items="chatTypeOptions"
+        />
+
+        <ChatListFilterField
           label="Sortering"
-        >
-          <USelect
-            v-model="chatSort"
-            :items="chatSortOptions"
-            :ui="{ content: 'min-w-fit' }"
-            class="w-full"
-            size="sm"
-          />
-        </UFormField>
+          v-model="chatSort"
+          :default-value="defaultSort"
+          :items="chatSortOptions"
+        />
       </div>
     </template>
   </UPopover>
