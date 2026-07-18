@@ -153,7 +153,7 @@ const isMobile = breakpoints.smaller("lg");
     </UDashboardNavbar>
     <ChatList
       v-model="selectedChat"
-      :chats="filteredChats"
+      :chats="sortedChats"
       :loading="Boolean(isLoading && !chats)"
     />
   </UDashboardPanel>
