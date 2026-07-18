@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import type { SelectItem } from "@nuxt/ui";
 
-const { active } = defineProps<{ active: boolean }>();
+const { defaultType, defaultSort } = defineProps<{
+  defaultType: string;
+  defaultSort: string;
+}>();
 const chatType = defineModel<string>("type");
 const chatSort = defineModel<string>("sort");
+
+const typeFilterActive = computed(() => defaultType !== chatType.value);
+const sortFilterActive = computed(() => defaultSort !== chatSort.value);
+const active = computed(() => typeFilterActive.value || sortFilterActive.value);
 
 const chatTypeOptions: SelectItem[] = [
   {
@@ -52,7 +59,10 @@ const chatSortOptions: SelectItem[] = [
 
     <template #content>
       <div class="p-4 grid gap-2">
-        <UFormField label="Filter">
+        <UFormField
+          label="Filter"
+          :hint="typeFilterActive ? 'Actief' : undefined"
+        >
           <USelect
             v-model="chatType"
             size="sm"
@@ -62,7 +72,10 @@ const chatSortOptions: SelectItem[] = [
             value-key="value"
           />
         </UFormField>
-        <UFormField label="Sortering">
+        <UFormField
+          label="Sortering"
+          :hint="sortFilterActive ? 'Actief' : undefined"
+        >
           <USelect
             v-model="chatSort"
             size="sm"

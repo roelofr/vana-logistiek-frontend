@@ -144,7 +144,8 @@ const isMobile = breakpoints.smaller("lg");
 
       <template #right>
         <ChatListFilter
-          :active="filterActive"
+          :default-type="defaultTypeFilter"
+          :default-sort="defaultSortFilter"
           v-model:sort="activeSortFilter"
           v-model:type="activeTypeFilter"
         />
