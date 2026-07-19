@@ -85,7 +85,7 @@ const menuMobile = computed(() => [actions.value, [addGroupOption.value]]);
 
 const buttonItems = computed(() => {
   return actions.value
-    .filter((a) => a.disabled !== false)
+    .filter((a) => !a.disabled)
     .map(
       (row) =>
         ({
