@@ -40,7 +40,7 @@ const idleParticipants = computed<ParticipantUser[]>(
 
     <template #content>
       <div class="p-4 grid grid-cols-1 gap-4">
-        <div v-if="activeParticipants" class="gap-4 grid grid-cols-2">
+        <div v-if="activeParticipants" class="gap-4 grid lg:grid-cols-2">
           <UUser
             v-for="user in activeParticipants"
             :key="user.id"
@@ -63,7 +63,7 @@ const idleParticipants = computed<ParticipantUser[]>(
           </UUser>
         </div>
 
-        <div v-if="idleParticipants" class="gap-4 grid grid-cols-2">
+        <div v-if="idleParticipants" class="gap-4 grid lg:grid-cols-2">
           <UUser
             v-for="user in idleParticipants"
             :key="user.id"
