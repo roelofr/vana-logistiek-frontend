@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
-import { breakpointsTailwind } from "@vueuse/core";
+import { breakpointsTailwind, useStorage } from "@vueuse/core";
 import type { Chat, Group, Vendor } from "~/types";
 
 const route = useRoute();
@@ -9,8 +9,8 @@ const { chats, refresh: refreshChats, pending: isLoading } = useChats();
 const defaultTypeFilter = "active";
 const defaultSortFilter = "updated-at";
 
-const activeTypeFilter = ref(defaultTypeFilter);
-const activeSortFilter = ref(defaultSortFilter);
+const activeTypeFilter = useStorage("chat-type-filter", defaultTypeFilter);
+const activeSortFilter = useStorage("chat-sort-filter", defaultSortFilter);
 
 // Find vendors and groups in chats
 const allGroups = computed<Partial<Group>[]>(
