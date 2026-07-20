@@ -121,6 +121,8 @@ async function applyRoles(user: User, callback: () => void) {
 </script>
 
 <template>
+  <UPageHeader title="Gebruikers" />
+
   <div class="flex flex-wrap items-center justify-between gap-1.5">
     <UInput
       v-model="filter"

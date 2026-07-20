@@ -3,6 +3,8 @@ const confetti = useConfetti();
 </script>
 
 <template>
+  <UPageHeader title="Algemeen" />
+
   <UEmpty
     variant="soft"
     title="Instellingen niet beschikbaar"

@@ -27,6 +27,8 @@ const { data: districts } = useLazyFetch<SummaryDistrict[]>(
 </script>
 
 <template>
+  <UPageHeader title="Wijken" />
+
   <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
     <UCard v-for="district in districts" :key="district.id" as="article">
       <template #header>
