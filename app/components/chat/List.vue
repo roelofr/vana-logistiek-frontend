@@ -118,7 +118,30 @@ defineShortcuts({
                 {{ chat.title }}
 
                 <UChip v-if="chat.unread" />
+              </div>
 
+              <span>{{ localTime(chat.updatedAt) }}</span>
+            </div>
+            <div class="flex gap-2">
+              <p
+                class="truncate max-w-full text-dimmed line-clamp-1 flex items-center gap-2 grow"
+              >
+                <template v-if="chat.subject && chat.subject.vendor">
+                  <UIcon
+                    :name="toLucideIcon(chat.subject.vendor.icon)"
+                    class="h-4"
+                  />
+                  <span>{{ chat.subject.vendor.name }}</span>
+                  <span>({{ chat.subject.vendor.number }})</span>
+                </template>
+                <template v-else-if="chat.subject && chat.subject.location">
+                  <UIcon name="i-lucide-pin" class="h-4" />
+                  <span>{{ locationToGrid(chat.subject.location) }}</span>
+                </template>
+                <template v-else>{{ getChatParticipants(chat) }}</template>
+              </p>
+
+              <div class="flex-none">
                 <UBadge
                   v-if="chat.subject?.resolvedAt"
                   variant="outline"
@@ -128,26 +151,7 @@ defineShortcuts({
                   aria-label="Opgelost"
                 />
               </div>
-
-              <span>{{ localTime(chat.updatedAt) }}</span>
             </div>
-            <p
-              class="truncate max-w-full text-dimmed line-clamp-1 flex items-center gap-2"
-            >
-              <template v-if="chat.subject && chat.subject.vendor">
-                <UIcon
-                  :name="toLucideIcon(chat.subject.vendor.icon)"
-                  class="h-4"
-                />
-                <span>{{ chat.subject.vendor.name }}</span>
-                <span>({{ chat.subject.vendor.number }})</span>
-              </template>
-              <template v-else-if="chat.subject && chat.subject.location">
-                <UIcon name="i-lucide-pin" class="h-4" />
-                <span>{{ locationToGrid(chat.subject.location) }}</span>
-              </template>
-              <template v-else>{{ getChatParticipants(chat) }}</template>
-            </p>
           </div>
         </div>
       </NuxtLink>
