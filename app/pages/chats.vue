@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
 import { breakpointsTailwind, useStorage } from "@vueuse/core";
-import type { Chat, Group, Vendor } from "~/types";
+import type { Chat, ChatGroup, Vendor } from "~/types";
 
 const route = useRoute();
 const { chats, refresh: refreshChats, pending: isLoading } = useChats();
@@ -13,7 +13,7 @@ const activeTypeFilter = useStorage("chat-type-filter", defaultTypeFilter);
 const activeSortFilter = useStorage("chat-sort-filter", defaultSortFilter);
 
 // Find vendors and groups in chats
-const allGroups = computed<Partial<Group>[]>(
+const allGroups = computed<ChatGroup[]>(
   () =>
     chats.value
       ?.flatMap((chat) => chat.groups)
@@ -51,6 +51,9 @@ const filteredChats = computed<Chat[]>(() => {
       if (chat.subject) return chat.subject.resolvedAt != null;
       return chat.state == "closed";
     });
+
+  if (activeFilter === "unread")
+    return chats.value!.filter((chat) => chat.unread);
 
   if (activeFilter.startsWith("group:")) {
     const groupId = Number.parseInt(activeFilter.split(":")[1]!, 10);

@@ -18,17 +18,21 @@ const {
 
 const additionalMessages = ref<ChatEntry[]>([]);
 
-watch(
-  () => messages,
-  (messages) => {
-    additionalMessages.value = [];
-    if (messages.value)
-      scrollArea.value?.virtualizer?.scrollToIndex(messages.value.length - 1, {
-        align: "end",
-        behavior: "smooth",
-      });
-  },
-);
+watch(messages, () => (additionalMessages.value = []));
+
+effect(() => {
+  const messageCount = messages.value?.length ?? 0;
+  const additionalCount = additionalMessages.value?.length ?? 0;
+  const totalMessageCount = messageCount + additionalCount;
+  if (totalMessageCount == 0) return;
+
+  requestAnimationFrame(() => {
+    scrollArea.value?.virtualizer?.scrollToIndex(totalMessageCount - 1, {
+      align: "end",
+      behavior: "smooth",
+    });
+  });
+});
 
 const {
   data: streamData,
@@ -101,6 +105,7 @@ watch(streamData, (newData) => {
 });
 
 const isLoading = computed(() => ["pending", "idle"].includes(status.value));
+const finalMessageId = ref<number | null>(null);
 
 const chatMessages = computed(() => {
   const messagesValue = expand(messages.value, ["user", "group"]) ?? [];
@@ -122,10 +127,21 @@ const chatMessages = computed(() => {
   return groupChatMessages(joinedMessages);
 });
 
+watch(chatMessages, (messages) => {
+  const lastMessageId = messages?.at(-1)?.entries.at(-1)?.id;
+  if (lastMessageId) finalMessageId.value = lastMessageId;
+});
+
+watch(finalMessageId, (newValue) => {
+  $fetch(`/api/chats/by-id/${chat.id}/read`, {
+    method: "POST",
+    body: { entryId: newValue },
+  });
+});
+
 defineExpose({ refresh });
 
-const itemAsGroup = (group): ChatEntryGroup =>
-  group as unknown as ChatEntryGroup;
+const itemAsGroup = (group: unknown): ChatEntryGroup => group as ChatEntryGroup;
 </script>
 
 <template>

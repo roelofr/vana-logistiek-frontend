@@ -18,26 +18,46 @@ const {
 const chatType = defineModel<string>("type");
 const chatSort = defineModel<string>("sort");
 
-const active = computed(
-  () => defaultType !== chatType.value || defaultSort !== chatSort.value,
+const isOpen = ref(false);
+const isActive = computed(() =>
+  Boolean(defaultType !== chatType.value || defaultSort !== chatSort.value),
 );
 
-const defaultChatTypeOptions: SelectMenuItem[] = [
+function reset() {
+  chatType.value = defaultType;
+  chatSort.value = defaultSort;
+
+  close();
+}
+
+function close() {
+  isOpen.value = false;
+}
+
+type SelectMenuItemWithValue = SelectMenuItem & { value: string };
+
+const defaultChatTypeOptions: SelectMenuItemWithValue[] = [
   {
     value: "active",
-    icon: "i-lucide-mail",
+    icon: "i-lucide-message-square-heart",
     label: "Actief",
     description: "Toon alleen active meldingen.",
   },
   {
     value: "inactive",
-    icon: "i-lucide-mail-open",
+    icon: "i-lucide-message-square-check",
     label: "Afgerond",
     description: "Toon alleen afgeronde meldingen.",
   },
   {
+    value: "unread",
+    icon: "i-lucide-message-square-dot",
+    label: "Ongelezen",
+    description: "Toon alleen meldingen met ongelezen berichten.",
+  },
+  {
     value: "all",
-    icon: "i-lucide-text-align-justify",
+    icon: "i-lucide-messages-square",
     label: "Alle",
     description: "Toon alle meldingen, ongeacht status",
   },
@@ -52,7 +72,7 @@ const chatTypeOptions = computed(() => [
         value: `group:${group.id}`,
         label: `${group.name}`,
         description: `Toon meldingen waaraan ${group.name} deelneemt`,
-      }) as SelectMenuItem,
+      }) as SelectMenuItemWithValue,
   ),
 
   availableVendors.map(
@@ -62,11 +82,11 @@ const chatTypeOptions = computed(() => [
         value: `vendor:${vendor.id}`,
         label: `${vendor.name}`,
         description: `Toon meldingen waaraan ${vendor.name} deelneemt`,
-      }) as SelectMenuItem,
+      }) as SelectMenuItemWithValue,
   ),
 ]);
 
-const chatSortOptions: SelectMenuItem[] = [
+const chatSortOptions: SelectMenuItemWithValue[] = [
   {
     value: "updated-at",
     label: "Laatst gewijzigd",
@@ -86,9 +106,9 @@ const chatSortOptions: SelectMenuItem[] = [
 </script>
 
 <template>
-  <UPopover>
+  <UPopover v-model:open="isOpen">
     <UButton
-      :color="active ? 'primary' : 'neutral'"
+      :color="isActive ? 'primary' : 'neutral'"
       :content="{ side: 'bottom', align: 'right' }"
       arrow
       icon="i-lucide-filter"
@@ -99,7 +119,7 @@ const chatSortOptions: SelectMenuItem[] = [
     />
 
     <template #content>
-      <div class="p-4 grid gap-2">
+      <div class="p-4 grid gap-2 max-w-72">
         <ListFilterField
           v-model="chatType"
           label="Filter"
@@ -114,6 +134,20 @@ const chatSortOptions: SelectMenuItem[] = [
           :default-value="defaultSort"
           :items="chatSortOptions"
         />
+
+        <p class="text-muted flex items-center">
+          <UIcon class="mr-2 text-base" name="i-lucide-info" />
+          <span class="text-xs text-left">
+            Instellingen worden gesynchroniseerd.
+          </span>
+        </p>
+
+        <div class="flex justify-end gap-2">
+          <UButton size="xs" variant="soft" color="error" @click="reset()"
+            >Reset</UButton
+          >
+          <UButton size="xs" @click="close()">Opslaan</UButton>
+        </div>
       </div>
     </template>
   </UPopover>

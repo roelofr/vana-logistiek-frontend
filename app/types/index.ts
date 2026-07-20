@@ -42,17 +42,17 @@ export interface Vendor {
   district?: Pick<District, "id" | "name">;
 }
 
-export type ChatType = "regular" | "group" | "issue";
+export type ChatUser = Pick<User, "id" | "providerId" | "name" | "avatar">;
 
-export type ChatState = "active" | "permanent" | "closed";
+export type ChatGroup = Pick<Group, "id" | "name" | "icon" | "colour">;
 
 export interface Chat {
   id: number;
   title: string;
   type: string;
   state: string;
-  users: Pick<User, "id" | "providerId" | "name" | "avatar">[];
-  groups: Pick<Group, "id" | "name" | "icon" | "colour">[];
+  users: ChatUser[];
+  groups: ChatGroup[];
   createdAt: Date;
   updatedAt: Date;
   subject: Issue | null;
