@@ -31,20 +31,41 @@ const { data: districts } = useLazyFetch<SummaryDistrict[]>(
     <UCard v-for="district in districts" :key="district.id" as="article">
       <template #header>
         <div class="flex items-center gap-4">
-          <GroupAvatar :group="district" size="lg" />
+          <DistrictAvatar :district="district" size="lg" />
           <div>
-            <h2>{{ district.name }}</h2>
-            <p class="text-muted">Beheerd door {{ district.group.name }}</p>
+            <h1 class="font-bold">{{ district.name }}</h1>
+            <p class="text-sm text-muted">
+              Beheerd door <GroupAvatar :group="district.group" size="2xs" />
+              {{ district.group.name }}
+            </p>
           </div>
         </div>
-        <Placeholder class="h-8" />
       </template>
 
-      <Placeholder class="h-32" />
+      <div class="grid grid-cols-1 gap-2">
+        <UPageFeature title="Wijkhouders" />
 
-      <template #footer>
-        <Placeholder class="h-8" />
-      </template>
+        <div
+          v-if="district.users?.length > 0"
+          class="grid grid-cols-2 border border-muted rounded p-4"
+        >
+          <UUser
+            v-for="user in district.users"
+            :key="user.id"
+            :avatar="{}"
+            :name="user.name"
+          >
+            <template #avatar>
+              <UChip inset :show="user.atWork">
+                <UserAvatar :user="user" single />
+              </UChip>
+            </template>
+          </UUser>
+        </div>
+        <div v-else class="grid border border-muted rounded p-4">
+          <p class="text-center italic text-sm">Geen wijkhouders bekend.</p>
+        </div>
+      </div>
     </UCard>
   </div>
 </template>
