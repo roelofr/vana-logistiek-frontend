@@ -1,10 +1,20 @@
 <script lang="ts" setup>
-import type { SelectItem } from "@nuxt/ui";
+import type { SelectMenuItem } from "@nuxt/ui";
+import type { Group, Vendor } from "~/types";
+import ListFilterField from "~/components/chat/ListFilterField.vue";
 
-const { defaultType, defaultSort } = defineProps<{
+const {
+  defaultType,
+  defaultSort,
+  availableGroups = [],
+  availableVendors = [],
+} = defineProps<{
   defaultType: string;
   defaultSort: string;
+  availableGroups?: (Pick<Group, "id" | "name"> & Partial<Group>)[];
+  availableVendors?: (Pick<Vendor, "id" | "name"> & Partial<Vendor>)[];
 }>();
+
 const chatType = defineModel<string>("type");
 const chatSort = defineModel<string>("sort");
 
@@ -12,22 +22,51 @@ const active = computed(
   () => defaultType !== chatType.value || defaultSort !== chatSort.value,
 );
 
-const chatTypeOptions: SelectItem[] = [
+const defaultChatTypeOptions: SelectMenuItem[] = [
   {
-    label: "Actief",
     value: "active",
+    icon: "i-lucide-mail",
+    label: "Actief",
+    description: "Toon alleen active meldingen.",
   },
   {
-    label: "Afgerond",
     value: "inactive",
+    icon: "i-lucide-mail-open",
+    label: "Afgerond",
+    description: "Toon alleen afgeronde meldingen.",
   },
   {
-    label: "Alle",
     value: "all",
+    icon: "i-lucide-text-align-justify",
+    label: "Alle",
+    description: "Toon alle meldingen, ongeacht status",
   },
 ];
 
-const chatSortOptions: SelectItem[] = [
+const chatTypeOptions = computed(() => [
+  defaultChatTypeOptions,
+  availableGroups.map(
+    (group) =>
+      ({
+        group,
+        value: `group:${group.id}`,
+        label: `${group.name}`,
+        description: `Toon meldingen waaraan ${group.name} deelneemt`,
+      }) as SelectMenuItem,
+  ),
+
+  availableVendors.map(
+    (vendor) =>
+      ({
+        vendor,
+        value: `vendor:${vendor.id}`,
+        label: `${vendor.name}`,
+        description: `Toon meldingen waaraan ${vendor.name} deelneemt`,
+      }) as SelectMenuItem,
+  ),
+]);
+
+const chatSortOptions: SelectMenuItem[] = [
   {
     value: "updated-at",
     label: "Laatst gewijzigd",
@@ -61,16 +100,17 @@ const chatSortOptions: SelectItem[] = [
 
     <template #content>
       <div class="p-4 grid gap-2">
-        <ChatListFilterField
-          label="Filter"
+        <ListFilterField
           v-model="chatType"
+          label="Filter"
           :default-value="defaultType"
           :items="chatTypeOptions"
+          search
         />
 
-        <ChatListFilterField
-          label="Sortering"
+        <ListFilterField
           v-model="chatSort"
+          label="Sortering"
           :default-value="defaultSort"
           :items="chatSortOptions"
         />

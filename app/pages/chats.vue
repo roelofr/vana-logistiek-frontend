@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
 import { breakpointsTailwind } from "@vueuse/core";
-import type { Chat } from "~/types";
+import type { Chat, Group, Vendor } from "~/types";
 
 const route = useRoute();
 const { chats, refresh: refreshChats, pending: isLoading } = useChats();
@@ -11,6 +11,28 @@ const defaultSortFilter = "updated-at";
 
 const activeTypeFilter = ref(defaultTypeFilter);
 const activeSortFilter = ref(defaultSortFilter);
+
+// Find vendors and groups in chats
+const allGroups = computed<Partial<Group>[]>(
+  () =>
+    chats.value
+      ?.flatMap((chat) => chat.groups)
+      .filter((item) => item != undefined)
+      .filter(
+        (item, index, list) =>
+          list.findIndex((listItem) => listItem.id == item.id) == index,
+      ) ?? [],
+);
+const allVendors = computed<Vendor[]>(
+  () =>
+    chats.value
+      ?.map((chat) => chat.subject?.vendor)
+      .filter((item) => item != undefined)
+      .filter(
+        (item, index, list) =>
+          list.findIndex((listItem) => listItem.id == item.id) == index,
+      ) ?? [],
+);
 
 // Filter chats based on the selected tab
 const filteredChats = computed<Chat[]>(() => {
@@ -30,6 +52,20 @@ const filteredChats = computed<Chat[]>(() => {
       return chat.state == "closed";
     });
 
+  if (activeFilter.startsWith("group:")) {
+    const groupId = Number.parseInt(activeFilter.split(":")[1]!, 10);
+    return chats.value!.filter(
+      (chat) => chat.groups?.some((g) => g.id == groupId) ?? false,
+    );
+  }
+
+  if (activeFilter.startsWith("vendor:")) {
+    const vendorId = Number.parseInt(activeFilter.split(":")[1]!, 10);
+    return chats.value!.filter(
+      (chat) => (chat.subject?.vendor?.id ?? 0) === vendorId,
+    );
+  }
+
   return chats.value!;
 });
 
@@ -39,17 +75,19 @@ const sortedChats = computed<Chat[]>(() => {
   // Updated-at is default sort
   if (activeSort === "updated-at")
     return filteredChats.value.toSorted(
-      (a, b) => a.updatedAt.getTime() - b.updatedAt.getTime(),
+      (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
     );
 
   if (activeSort === "created-at")
     return filteredChats.value.toSorted(
-      (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
     );
 
   if (activeSort === "vendor-id")
-    return filteredChats.value.toSorted(
-      (a, b) => (a.subject?.vendor?.id ?? 0) - (b.subject?.vendor?.id ?? 0),
+    return filteredChats.value.toSorted((a, b) =>
+      (a.subject?.vendor?.number ?? "XXX").localeCompare(
+        b.subject?.vendor?.number ?? "XXX",
+      ),
     );
 
   return filteredChats.value;
@@ -141,6 +179,8 @@ const isMobile = breakpoints.smaller("lg");
           v-model:type="activeTypeFilter"
           :default-type="defaultTypeFilter"
           :default-sort="defaultSortFilter"
+          :available-groups="allGroups"
+          :available-vendors="allVendors"
         />
       </template>
     </UDashboardNavbar>
