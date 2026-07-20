@@ -20,7 +20,7 @@ const additionalMessages = ref<ChatEntry[]>([]);
 
 watch(messages, () => (additionalMessages.value = []));
 
-effect(() => {
+watch([messages, additionalMessages], () => {
   const messageCount = messages.value?.length ?? 0;
   const additionalCount = additionalMessages.value?.length ?? 0;
   const totalMessageCount = messageCount + additionalCount;
