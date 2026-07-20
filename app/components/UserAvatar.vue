@@ -26,7 +26,6 @@ const {
 const groupComputed = computed<Partial<Group> | null>(
   () => group ?? user?.group ?? null,
 );
-const colourComputed = computed(() => groupComputed.value?.colour ?? "pink");
 </script>
 
 <template>
@@ -38,15 +37,6 @@ const colourComputed = computed(() => groupComputed.value?.colour ?? "pink");
   </template>
   <UAvatarGroup v-else>
     <UAvatar :src="user.avatar ?? undefined" :alt="user.name" :size="size" />
-    <UAvatar
-      v-if="groupComputed"
-      :class="`bg-${colourComputed}-700 dark:bg-${colourComputed}-500`"
-      :style="{
-        '--ui-text-muted': 'var(--ui-text-inverted)',
-      }"
-      :icon="groupComputed.icon"
-      :alt="groupComputed.name"
-      :size="size"
-    />
+    <GroupAvatar v-if="groupComputed" :group="groupComputed" :size="size" />
   </UAvatarGroup>
 </template>
