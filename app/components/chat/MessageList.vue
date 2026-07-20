@@ -26,6 +26,8 @@ watch([messages, additionalMessages], () => {
   const totalMessageCount = messageCount + additionalCount;
   if (totalMessageCount == 0) return;
 
+  console.log("Scolling to bottom using %o", scrollArea.value?.virtualizer);
+
   requestAnimationFrame(() => {
     scrollArea.value?.virtualizer?.scrollToIndex(totalMessageCount - 1, {
       align: "end",

@@ -7,6 +7,7 @@ defineProps<{
 
 const { loggedIn, logout, user, name, avatar, group, refresh } = useSession();
 
+const workModalOpen = ref(false);
 const userPending = computed(() => !user.value);
 const menuDisabled = computed(() => !loggedIn || user.value == null);
 
@@ -16,6 +17,11 @@ const items = computed<DropdownMenuItem[][]>(() => [
       label: "Profiel",
       icon: "i-lucide-user",
       to: "/profile",
+    },
+    {
+      label: "Werkstatus",
+      icon: "i-lucide-pickaxe",
+      onClick: () => (workModalOpen.value = true),
     },
   ],
   [
@@ -91,4 +97,6 @@ const items = computed<DropdownMenuItem[][]>(() => [
       </div>
     </template>
   </UDropdownMenu>
+
+  <UserActiveModal v-model:open="workModalOpen" />
 </template>

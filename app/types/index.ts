@@ -26,6 +26,11 @@ export interface User {
   flags?: string[];
 }
 
+type UserFlags = "onboarded" | "active";
+export interface UserMeDto extends User {
+  flags: UserFlags[];
+}
+
 export interface District {
   id: number;
   name: string;
