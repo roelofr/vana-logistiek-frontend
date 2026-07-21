@@ -58,8 +58,8 @@ const links = [
           onSelect: closeMenu,
         },
         {
-          label: "Wijken",
-          to: "/admin/districts",
+          label: "Groepen",
+          to: "/admin/groups",
           onSelect: closeMenu,
         },
         {

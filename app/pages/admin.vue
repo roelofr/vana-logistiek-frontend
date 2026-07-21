@@ -14,13 +14,13 @@ const links = [
       exact: true,
     },
     {
-      label: "Wijken",
-      icon: "i-lucide-user",
-      to: "/admin/districts",
+      label: "Groepen",
+      icon: "i-lucide-users",
+      to: "/admin/groups",
     },
     {
       label: "Gebruikers",
-      icon: "i-lucide-users",
+      icon: "i-lucide-user-round-cog",
       to: "/admin/users",
     },
   ],
