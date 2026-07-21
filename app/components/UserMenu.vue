@@ -69,19 +69,28 @@ const items = computed<DropdownMenuItem[][]>(() => [
     >
       <div v-if="userPending" class="flex flex-row items-center gap-4 w-full">
         <USkeleton class="h-6 w-6 rounded-full" />
-        <USkeleton class="h-4 w-[70%]" />
+        <USkeleton v-if="!collapsed" class="h-4 w-[70%]" />
       </div>
       <span v-else class="flex items-center gap-2">
-        <UAvatarGroup>
-          <UAvatar :src="avatar" :alt="name" class="w-6 h-6" loading="lazy" />
-          <GroupAvatar
-            v-if="group"
-            :group="group"
-            class="w-6 h-6"
-            loading="lazy"
-          />
-        </UAvatarGroup>
-        {{ name ?? "Onbekende gebruiker" }}
+        <UAvatar
+          v-if="collapsed"
+          :src="avatar"
+          :alt="name"
+          class="w-6 h-6"
+          loading="lazy"
+        />
+        <template v-else>
+          <UAvatarGroup>
+            <UAvatar :src="avatar" :alt="name" class="w-6 h-6" loading="lazy" />
+            <GroupAvatar
+              v-if="group"
+              :group="group"
+              class="w-6 h-6"
+              loading="lazy"
+            />
+          </UAvatarGroup>
+          {{ name ?? "Onbekende gebruiker" }}
+        </template>
       </span>
     </UButton>
 
