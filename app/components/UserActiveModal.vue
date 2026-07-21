@@ -32,6 +32,7 @@ function close() {
 }
 
 const toast = useToast();
+const confetti = useConfetti();
 async function saveAndClose() {
   isSending.value = true;
 
@@ -50,6 +51,8 @@ async function saveAndClose() {
         ? 'Je staat nu als "aan het werk" gemarkeerd'
         : 'Je staat niet meer als "aan het werk" gemarkeerd',
     });
+
+    confetti.dispatch(isActive ? "work-on" : "work-off");
 
     close();
   } catch (error) {

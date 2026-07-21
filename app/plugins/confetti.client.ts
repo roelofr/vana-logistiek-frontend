@@ -56,6 +56,46 @@ const confettiTypes: Record<string, AddConfettiType[]> = {
       confettiNumber: 8,
     },
   ],
+  "work-on": [
+    {
+      confettiNumber: 200,
+      confettiColors: [
+        "#3f3f46",
+        "#404040",
+        "#374151",
+        "#6b7280",
+        "#737373",
+        "#3b82f6",
+        "#0ea5e9",
+        "#0369a1",
+        "#1d4ed8",
+      ],
+    },
+    {
+      emojis: ["⛏️", "🦺", "🗑️", "📞", "📻", "🪛"],
+      confettiNumber: 20,
+    },
+  ],
+  "work-off": [
+    {
+      confettiNumber: 300,
+      confettiColors: [
+        "#b91c1c",
+        "#b45309",
+        "#f59e0b",
+        "#4d7c0f",
+        "#047857",
+        "#0e7490",
+        "#7e22ce",
+        "#a855f7",
+        "#ec4899",
+      ],
+    },
+    {
+      emojis: ["🍺", "🌞", "🏖️", "🪩", "💃", "🕺"],
+      confettiNumber: 20,
+    },
+  ],
   normal: [{}],
 };
 
