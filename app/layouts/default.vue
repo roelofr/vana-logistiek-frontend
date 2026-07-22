@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { NavigationMenuItem } from "@nuxt/ui";
+import { useWorkState } from "~/composables/useWorkState";
 
 const menuOpen = ref(false);
 const closeMenu = () => {
@@ -157,10 +158,12 @@ const createIssue = () => {
           orientation="vertical"
           tooltip
         />
+
+        <UserWorkSwitch :compact="collapsed" />
       </template>
 
       <template #footer="{ collapsed }">
-        <UserMenu :collapsed="collapsed" />
+        <UserNavMenu :collapsed="collapsed" />
       </template>
     </UDashboardSidebar>
 
@@ -175,5 +178,6 @@ const createIssue = () => {
   </UDashboardGroup>
 
   <!-- modals -->
+  <!--  <UserOnboarding />-->
   <CreateIssueModal v-model:open="showCreateIssue" />
 </template>

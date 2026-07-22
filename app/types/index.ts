@@ -28,6 +28,7 @@ export interface User {
 
 type UserFlags = "onboarded" | "active";
 export interface UserMeDto extends User {
+  groups: Group[];
   flags: UserFlags[];
 }
 
