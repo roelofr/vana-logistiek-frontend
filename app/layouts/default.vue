@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { NavigationMenuItem } from "@nuxt/ui";
-import { useWorkState } from "~/composables/useWorkState";
 
 const menuOpen = ref(false);
 const closeMenu = () => {
@@ -178,6 +177,6 @@ const createIssue = () => {
   </UDashboardGroup>
 
   <!-- modals -->
-  <!--  <UserOnboarding />-->
+  <UserOnboarding />
   <CreateIssueModal v-model:open="showCreateIssue" />
 </template>

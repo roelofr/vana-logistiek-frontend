@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import type { District, Group, User, Vendor } from "~/types";
-
-const confetti = useConfetti();
+import type { District, Group, User } from "~/types";
 
 type SummaryUser = Pick<User, "id" | "name" | "avatar"> & {
   atWork: boolean;
