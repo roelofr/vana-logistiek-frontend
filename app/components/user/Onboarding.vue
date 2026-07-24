@@ -9,6 +9,7 @@ const { files, open: openFileDialog } = useFileDialog();
 const { data: user } = useLazyFetch<UserMeDto>("/api/users/me");
 
 const modalOpen = ref(false);
+const isLoading = ref(false);
 const formError = ref<string | null>(null);
 const chosenGroup = ref<Group | undefined>(undefined);
 
@@ -67,7 +68,10 @@ function showError(error: string | null): void {
 }
 
 async function trySubmit(): Promise<void> {
+  if (isLoading.value) return;
   if (!chosenImage.value) return showError("Je moet een afbeelding kiezen.");
+
+  isLoading.value = true;
 
   const data = new FormData();
   data.set("picture", chosenImage.value!);
@@ -101,6 +105,8 @@ async function trySubmit(): Promise<void> {
       default:
         return showError("Er ging iets fout.");
     }
+  } finally {
+    isLoading.value = false;
   }
 }
 </script>
@@ -169,7 +175,9 @@ async function trySubmit(): Promise<void> {
     </template>
 
     <template #footer>
-      <UButton class="ml-auto" @click="trySubmit()">Versturen</UButton>
+      <UButton :loading="isLoading" class="ml-auto" @click="trySubmit()">
+        Versturen
+      </UButton>
     </template>
   </UModal>
 </template>
