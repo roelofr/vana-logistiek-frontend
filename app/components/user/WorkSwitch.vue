@@ -21,24 +21,10 @@ const isAtWork = computed({
     <USwitch
       v-model="isAtWork"
       :loading="workState.isLoading.value"
-      :description="compact ? undefined : `Aan het werk`"
+      :label="compact ? undefined : `Aan het werk`"
       checked-icon="i-lucide-pickaxe"
       unchecked-icon="i-lucide-parasol"
     />
-
-    <UTooltip
-      v-if="showHelp && !compact"
-      :delay-duration="0"
-      text="Opgeslagen als “Ja” of “Nee”, niks meer"
-    >
-      <UButton
-        size="sm"
-        color="neutral"
-        class="rounded-full"
-        variant="soft"
-        icon="i-lucide-info"
-      />
-    </UTooltip>
   </div>
 </template>
 
