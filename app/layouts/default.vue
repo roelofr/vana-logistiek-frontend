@@ -78,12 +78,6 @@ const links = [
       onSelect: () => confetti.dispatch("dino"),
     },
     {
-      label: "Noodknop",
-      icon: "i-lucide-rainbow",
-      type: "trigger",
-      onSelect: () => confetti.dispatch("gay"),
-    },
-    {
       label: "Documentatie",
       icon: "i-lucide-book-text",
       to: "/docs/",
