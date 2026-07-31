@@ -127,7 +127,7 @@ async function trySubmit(): Promise<void> {
 
       <div v-else class="space-y-4">
         <h1 class="text-lg">Welkom in de LogistiekApp {{ user!.name }}!</h1>
-        <UAlert v-if="formError" color="warning" :description="formError" />
+        <UAlert v-if="formError" :description="formError" color="warning" />
         <p>
           Voordat je verder kan, vragen we je even een profielfoto te uploaden.
           Maakt de app en de beleving iets persoonlijker.
@@ -136,14 +136,14 @@ async function trySubmit(): Promise<void> {
         <div class="flex flex-col gap-4 items-center">
           <UAvatar
             :src="chosenImageUrl"
+            :ui="{ root: 'w-40 h-40 text-[4rem]' }"
             class="mx-auto"
             icon="i-lucide-file-image"
-            :ui="{ root: 'w-40 h-40 text-[4rem]' }"
           />
 
           <UButton
-            size="lg"
             :color="chosenImage ? 'neutral' : 'primary'"
+            size="lg"
             @click="selectAvatar()"
           >
             <template v-if="chosenImage">Verander afbeelding</template>

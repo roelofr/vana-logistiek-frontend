@@ -3,9 +3,8 @@ defineComponent({
   inheritAttrs: false,
 });
 
-const { compact = false, showHelp = true } = defineProps<{
+const { compact = false } = defineProps<{
   compact?: boolean;
-  showHelp?: boolean;
 }>();
 
 const workState = useWorkState();
