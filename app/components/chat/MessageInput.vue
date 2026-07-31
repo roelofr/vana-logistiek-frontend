@@ -61,6 +61,7 @@ async function sendMessage() {
 
     reset();
   } catch (error) {
+    console.error("Submit failed: %o", error);
     if (error instanceof FetchError) {
       submitError.value = `Fout bij versturen bericht: ${error.message}`;
     } else {
@@ -98,7 +99,7 @@ defineShortcuts({
     class="p-4 grid grid-cols-1 gap-4"
     @submit.prevent="sendMessage"
   >
-    <UAlert v-if="submitError" color="warning" description="submitError" />
+    <UAlert v-if="submitError" color="warning" :description="submitError" />
     <UTextarea
       ref="reply-field"
       v-model="formState.message"
