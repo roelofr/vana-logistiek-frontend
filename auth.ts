@@ -1,3 +1,4 @@
-import { getAuth } from "./server/lib/auth";
+import { betterAuth } from "better-auth";
+import { options } from "./server/auth.config";
 
-export const auth = getAuth();
+export const auth = betterAuth(options);

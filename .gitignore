@@ -26,3 +26,4 @@ logs
 # VSC
 .history
 storage
+/*.db

@@ -1,5 +1,7 @@
+import clientAuth from "@/auth.config";
+
 export function useSession() {
-  const { user, loggedIn, logout, login, refresh } = useOidcAuth();
+  const { user, loggedIn, logout, login, refresh } = clientAuth();
 
   const name = computed(
     () => (user.value?.userInfo?.["display_name"] as string) ?? null,

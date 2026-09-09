@@ -8,9 +8,6 @@ function env<T>(
   return defaultValue;
 }
 
-const authUrl = (path: string): string =>
-  new URL(path, "https://login.troela.fun").toString();
-
 export default defineNuxtConfig({
   modules: [
     "@nuxt/eslint",
@@ -19,7 +16,7 @@ export default defineNuxtConfig({
     "@nuxt/ui",
     "@vueuse/nuxt",
     "@pinia/nuxt",
-    "nuxt-oidc-auth",
+    "@nuxtjs/better-auth",
   ],
 
   $development: {
@@ -41,37 +38,6 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/main.css"],
 
-  // OpenID
-  oidc: {
-    enabled: true,
-    defaultProvider: "oidc",
-    providers: {
-      oidc: {
-        clientId: "logistiek-nuxt-dev",
-        clientSecret: "",
-        redirectUri: "http://localhost:3000/auth/oidc/callback",
-        authorizationUrl: authUrl("/authorize"),
-        logoutUrl: authUrl("/api/oidc/end-session"),
-        tokenUrl: authUrl("/api/oidc/token"),
-        userInfoUrl: authUrl("/api/oidc/userinfo"),
-        openIdConfiguration: authUrl("/.well-known/openid-configuration"),
-        scope: ["openid", "email", "profile", "groups"],
-        pkce: true,
-        state: true,
-        exposeAccessToken: true,
-        exposeIdToken: true,
-      },
-    },
-    session: {
-      expirationCheck: true,
-      automaticRefresh: true,
-      expirationThreshold: 3600,
-    },
-    middleware: {
-      globalMiddlewareEnabled: true,
-    },
-  },
-
   runtimeConfig: {
     upstreamUrl: env("UPSTREAM_URL", "https://api.logistiek.myvana.dev"),
     authBase: env("BETTER_AUTH_URL", "http://localhost:3000"),
@@ -83,6 +49,22 @@ export default defineNuxtConfig({
     public: {
       // noop
     },
+  },
+
+  auth: {
+    redirects: {
+      login: "/login",
+      guest: "/",
+      authenticated: "/app",
+      logout: "/logged-out",
+    },
+    preserveRedirect: true,
+    redirectQueryKey: "redirect",
+  },
+
+  routeRules: {
+    "/app/**": { auth: { only: "user" } },
+    "/login": { auth: { only: "guest" } },
   },
 
   compatibilityDate: "2025-12-20",

@@ -4,7 +4,6 @@ import {
   type H3Event,
   proxyRequest,
 } from "h3";
-import { getUserSession } from "nuxt-oidc-auth/runtime/server/utils/session.js";
 import { firstValidToken } from "#server/util/jwt";
 
 const acceptedRequestTypes = ["GET", "HEAD", "PATCH", "POST", "PUT", "DELETE"];
