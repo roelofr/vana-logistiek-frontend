@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FormSubmitEvent, AuthFormField } from "@nuxt/ui";
+import type { AuthFormField, FormSubmitEvent } from "@nuxt/ui";
 import { type InferType, object, string } from "yup";
 
 definePageMeta({ auth: "guest", layout: "auth" });
@@ -39,7 +39,7 @@ const providers = [
     label: "Passkey",
     icon: "i-lucide-fingerprint",
     onClick: () => {
-      toast.add({ title: "Google", description: "Login with Google" });
+      toast.add({ title: "Fingerprint", description: "Login with Webauthn" });
     },
   },
 ];

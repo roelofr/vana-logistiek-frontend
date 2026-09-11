@@ -17,6 +17,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "@pinia/nuxt",
     "@nuxtjs/better-auth",
+    "./server/modules/migrate-better-auth",
   ],
 
   $development: {

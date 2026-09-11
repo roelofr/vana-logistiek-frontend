@@ -5,9 +5,9 @@ import type {
 } from "~/types";
 
 function getMyId() {
-  const { user } = useOidcAuth();
+  const { user } = useUserSession();
 
-  return (user.value?.userInfo?.sub ?? null) as string | null;
+  return (user.value?.id ?? null) as string | null;
 }
 
 export function groupChatMessages(chatEntries: ChatEntry[]): ChatEntryGroup[] {

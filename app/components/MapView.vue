@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Location } from "~/types";
-import { useOidcAuth } from "#imports";
 import MapLibre from "maplibre-gl";
 
 interface MapEvent extends Event {
@@ -11,7 +10,7 @@ interface MapEvent extends Event {
   point: { x: number; y: number };
 }
 
-const { user } = useOidcAuth();
+const jwtToken = (await authClient.token()).data ?? null;
 
 const {
   location = undefined,
@@ -84,7 +83,7 @@ function renderMap() {
       if (authenticatedDomains.some((domain) => url.startsWith(domain))) {
         return {
           url,
-          headers: { Authorization: `Bearer ${user.value?.accessToken}` },
+          headers: { Authorization: `Bearer ${jwtToken}` },
           credentials: "include",
         };
       }

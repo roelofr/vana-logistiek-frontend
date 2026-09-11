@@ -5,7 +5,8 @@ function pop() {
   confetti.dispatch(randomFrom(["dino", "gay", "normal"]));
 }
 
-const { user } = useOidcAuth();
+const { user } = useUserSession();
+const userInfo = computed(() => JSON.stringify(user.value, null, 2));
 
 definePageMeta({
   middleware: ["auth"],
@@ -83,7 +84,7 @@ definePageMeta({
 
         <DevOnly>
           <UCard title="Sessie informatie">
-            <pre><code>{{ JSON.stringify(user, undefined, 2)}}</code></pre>
+            <pre><code>{{ userInfo }}</code></pre>
           </UCard>
         </DevOnly>
       </div>

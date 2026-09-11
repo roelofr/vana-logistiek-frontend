@@ -42,24 +42,16 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // 3. Local Validation
-  try {
-    const session = await getUserSession(event);
-
-    event.context.sessionAccessToken = session.accessToken ?? null;
-    event.context.sessionIdToken = session.idToken ?? null;
-    event.context.userId = session.userInfo?.sub ?? null;
-  } catch (e) {
-    console.error("Failed to fetch session %o", e);
-    throw e;
-  }
-
-  if (!event.context.sessionAccessToken || !event.context.userId) {
+  // 3. Obtain session information
+  const userSession = await getRequestSession(event);
+  if (!userSession)
     throw createError({
       statusCode: 401,
-      message: "Invalid or expired token",
+      message: "Session invalid or expired",
     });
-  }
+
+  console.log("User session = %o", userSession);
+  const accessToken = userSession;
 
   // 4. Construct Target URL
   const targetUrl = new URL(event.path, upstreamUrl);

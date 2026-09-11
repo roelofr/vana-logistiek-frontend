@@ -1,19 +1,28 @@
-import Database from "better-sqlite3";
 import { Pool } from "pg";
+import { DatabaseSync } from "node:sqlite";
 
 export function getAuthDatabase() {
-  const isDev = process.env.NODE_ENV === "development";
+  const dbUrl = process.env.BETTER_AUTH_DB_URL ?? "sqlite://db.sqlite";
 
-  if (isDev) return new Database("./sqlite.db");
+  const isSqlite = dbUrl.startsWith("sqlite://");
+  const isPostgres = dbUrl.startsWith("postgres://");
 
-  return new Pool({
-    // Pool settings
-    max: 2,
+  if (isSqlite) {
+    const dbPath = dbUrl.replace(/^sqlite:\/\//, "./");
+    return new DatabaseSync(dbPath);
+  }
 
-    // Client settings
-    connectionString: process.env.BETTER_AUTH_DB_URL,
-    user: process.env.BETTER_AUTH_DB_USERNAME,
-    password: process.env.BETTER_AUTH_DB_PASSWORD,
-    fallback_application_name: "Penis LogistiekApp",
-  });
+  if (isPostgres)
+    return new Pool({
+      // Pool settings
+      max: 2,
+
+      // Client settings
+      connectionString: process.env.BETTER_AUTH_DB_URL,
+      user: process.env.BETTER_AUTH_DB_USERNAME,
+      password: process.env.BETTER_AUTH_DB_PASSWORD,
+      fallback_application_name: "Penis LogistiekApp",
+    });
+
+  throw new Error(`Failed to parse DB connection URL: ${dbUrl}`);
 }
