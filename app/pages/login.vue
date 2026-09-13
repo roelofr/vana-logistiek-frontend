@@ -5,6 +5,8 @@ import { type InferType, object, string } from "yup";
 definePageMeta({ auth: "guest", layout: "auth" });
 
 const signInEmail = useSignIn("email");
+const signInPasskey = useSignIn("passkey");
+const signInPhoneNumber = useSignIn("phone");
 
 async function login(email: string, password: string) {
   await signInEmail.execute(
@@ -12,6 +14,9 @@ async function login(email: string, password: string) {
     { onSuccess: () => navigateTo("/app") },
   );
 }
+
+const usernamePlaceholder = ref(dummyUsername());
+const passwordPlaceholder = ref(dummyPassword());
 
 const toast = useToast();
 
@@ -21,7 +26,7 @@ const fields: AuthFormField[] = [
     name: "username",
     label: "Gebruikersnaam",
     autocomplete: "username",
-    placeholder: "smith.69",
+    placeholder: usernamePlaceholder.value,
     required: true,
   },
   {
@@ -29,7 +34,7 @@ const fields: AuthFormField[] = [
     name: "password",
     label: "Wachtwoord",
     autocomplete: "current-password",
-    placeholder: "Blubberjaar!23",
+    placeholder: passwordPlaceholder.value,
     required: true,
   },
 ];

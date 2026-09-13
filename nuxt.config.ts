@@ -43,6 +43,9 @@ export default defineNuxtConfig({
     upstreamUrl: env("UPSTREAM_URL", "https://api.logistiek.myvana.dev"),
     authBase: env("BETTER_AUTH_URL", "http://localhost:3000"),
     authSecret: env("BETTER_AUTH_SECRET", "secret"),
+    brevo: {
+      apiKey: env("BREVO_API_KEY", "unset"),
+    },
     authCache: {
       version: "1",
       maxAge: 300, // Seconds

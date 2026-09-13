@@ -4,7 +4,7 @@ import type { Issue, Vendor } from "~/types";
 import type { TableColumn } from "@nuxt/ui";
 
 definePageMeta({
-  middleware: ["auth"],
+  auth: "user",
 });
 
 const route = useRoute();

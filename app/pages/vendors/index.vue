@@ -6,7 +6,7 @@ import { h, computed, resolveComponent } from "vue";
 import { VendorAvatar } from "#components";
 
 definePageMeta({
-  middleware: ["auth"],
+  auth: "user",
 });
 
 useHead({ title: "Standhouders" });

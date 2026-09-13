@@ -4,7 +4,7 @@ import { type Column, getPaginationRowModel } from "@tanstack/table-core";
 import type { User } from "~/types";
 
 definePageMeta({
-  middleware: ["auth"],
+  auth: "user",
 });
 
 useHead({ title: "Gebruikers" });

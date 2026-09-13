@@ -4,7 +4,7 @@ import { computed } from "vue";
 import type { ChatMessageList } from "#components";
 
 definePageMeta({
-  middleware: ["auth"],
+  auth: "user",
 });
 
 const route = useRoute();

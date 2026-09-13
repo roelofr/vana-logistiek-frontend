@@ -1,5 +1,5 @@
 // modules/better-auth-migrate.ts
-import { defineNuxtModule, logger } from "@nuxt/kit";
+import { defineNuxtModule, useLogger } from "@nuxt/kit";
 import { getMigrations } from "better-auth/db/migration";
 import { options as betterAuthOptions } from "#server/auth.config";
 
@@ -8,6 +8,8 @@ export default defineNuxtModule({
     name: "better-auth-migrate",
   },
   setup(options, nuxt) {
+    const logger = useLogger("better-auth-migrate");
+
     // Hook into nitro:prepare to run migration BEFORE the server builds
     nuxt.hook("modules:done", async () => {
       logger.start("Checking for better-auth migrations...");
@@ -24,7 +26,7 @@ export default defineNuxtModule({
 
         logger.success("Database migrations completed successfully.");
       } else {
-        logger.success("Database migrations are up-to-date.");
+        logger.info("Database migrations are up-to-date.");
       }
     });
   },

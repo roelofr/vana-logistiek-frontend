@@ -1,6 +1,7 @@
 import { defineClientAuth } from "@nuxtjs/better-auth/config";
-import { jwtClient } from "better-auth/client/plugins";
+import { adminClient, jwtClient } from "better-auth/client/plugins";
+import { ac, acRoles } from "~/auth.permissions.ts";
 
 export default defineClientAuth({
-  plugins: [jwtClient()],
+  plugins: [adminClient({ ac, roles: acRoles }), jwtClient()],
 });

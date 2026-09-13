@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({
-  middleware: ["auth"],
+  auth: "user",
 });
 
 useHead({ title: "Plattegrond" });

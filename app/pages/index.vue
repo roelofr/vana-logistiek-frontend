@@ -9,7 +9,7 @@ const { user } = useUserSession();
 const userInfo = computed(() => JSON.stringify(user.value, null, 2));
 
 definePageMeta({
-  middleware: ["auth"],
+  auth: "user",
 });
 </script>
 
